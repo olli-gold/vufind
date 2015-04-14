@@ -309,6 +309,7 @@ $config = [
                     'librarything' => 'VuFind\Content\Covers\LibraryThing',
                     'openlibrary' => 'VuFind\Content\Covers\OpenLibrary',
                     'summon' => 'VuFind\Content\Covers\Summon',
+                    'gbv' => 'VuFind\Content\Covers\GBV',
                 ],
             ],
             'content_reviews' => [
