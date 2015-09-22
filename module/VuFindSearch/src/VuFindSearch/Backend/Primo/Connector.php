@@ -143,7 +143,6 @@ class Connector implements \Zend\Log\LoggerAwareInterface
         if (isset($params)) {
             $args = array_merge($args, $params);
         }
-
         // run search, deal with exceptions
         try {
             $result = $this->performSearch($institution, $terms, $args);
@@ -236,6 +235,11 @@ class Connector implements \Zend\Log\LoggerAwareInterface
                 case "ISSN":
                     $lookin = "issn";
                     break;
+                case "frbr":
+                    $lookin = "facet_frbrgroupid";
+                    // Look for exact matches only
+                    $thisTerm['op'] = "exact";
+                    break;
                 }
 
                 //set the lookfor terms to search
@@ -321,6 +325,7 @@ class Connector implements \Zend\Log\LoggerAwareInterface
             // QUERYSTRING: loc
             // all primocentral queries need this
             $qs[] = "loc=adaptor,primo_central_multiple_fe";
+
 
             if ($this->debug) {
                 print "URL: " . implode('&', $qs);
@@ -494,6 +499,11 @@ class Connector implements \Zend\Log\LoggerAwareInterface
                 $item['issn'][] = (string)$issn;
             }
 
+            $item['isbn'] = [];
+            foreach ($prefix->PrimoNMBib->record->search->isbn as $isbn) {
+                $item['isbn'][] = (string)$isbn;
+            }
+
             //Are these two needed?
             //$item['publisher'] =
             //    (string)$prefix->PrimoNMBib->record->display->publisher;
@@ -506,13 +516,30 @@ class Connector implements \Zend\Log\LoggerAwareInterface
                 ? (string)$sear->LINKS->openurl
                 : (string)$sear->GETIT->attributes()->GetIt2;
 
+            $linksdata = $prefix->PrimoNMBib->record->links;
+            $linktosrc = (string)$linksdata->linktorsrc;
+            $linktosrcField = explode('$$', $linktosrc);
+            foreach ($linktosrcField as $f) {
+                if (substr($f, 0, 1) == 'U') {
+                    $item['directurl'] = substr($f, 1);
+                }
+            }
+
+            $searchdata = $prefix->PrimoNMBib->record->search;
+            $item['publicationDate'] = (string)$searchdata->creationdate;
+
+            $facetsdata = $prefix->PrimoNMBib->record->facets;
+            $item['frbrid'] = (string)$facetsdata->frbrgroupid;
+
             // Container data
             $addata = $prefix->PrimoNMBib->record->addata;
+            $item['doi'] = (string)$addata->doi;
             $item['container_title'] = (string)$addata->jtitle;
             $item['container_volume'] = (string)$addata->volume;
             $item['container_issue'] = (string)$addata->issue;
             $item['container_start_page'] = (string)$addata->spage;
             $item['container_end_page'] = (string)$addata->epage;
+            $item['seriesTitle'] = (string)$addata->seriestitle;
             foreach ($addata->eissn as $eissn) {
                 if (!in_array((string)$eissn, $item['issn'])) {
                     $item['issn'][] = (string)$eissn;

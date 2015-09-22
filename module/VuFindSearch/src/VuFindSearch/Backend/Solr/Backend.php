@@ -86,6 +86,11 @@ class Backend extends AbstractBackend
         $this->identifier   = null;
     }
 
+    public function setConnector($connector)
+    {
+        $this->connector = $connector;
+    }
+
     /**
      * Perform a search and return record collection.
      *
@@ -214,6 +219,26 @@ class Backend extends AbstractBackend
         $this->injectResponseWriter($params);
 
         $response   = $this->connector->similar($id, $params);
+        $collection = $this->createRecordCollection($response);
+        $this->injectSourceIdentifier($collection);
+        return $collection;
+    }
+
+    /**
+     * Return similar records.
+     *
+     * @param string   $id     Id of record to compare with
+     * @param string   $altidx URL of the alternative index (without http://)
+     * @param ParamBag $params Search backend parameters
+     *
+     * @return RecordCollectionInterface
+     */
+    public function similarAltIdx($id, $altidx = null, ParamBag $params = null)
+    {
+        $params = $params ?: new ParamBag();
+        $this->injectResponseWriter($params);
+
+        $response   = $this->connector->similarAltIdx($id, $altidx, $params);
         $collection = $this->createRecordCollection($response);
         $this->injectSourceIdentifier($collection);
         return $collection;

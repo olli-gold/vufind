@@ -94,7 +94,9 @@ $config = [
             'oai' => 'VuFind\Controller\OaiController',
             'pazpar2' => 'VuFind\Controller\Pazpar2Controller',
             'primo' => 'VuFind\Controller\PrimoController',
+            'primobridge' => 'VuFind\Controller\PrimoBridgeController',
             'primorecord' => 'VuFind\Controller\PrimorecordController',
+            'primobridgerecord' => 'VuFind\Controller\PrimoBridgerecordController',
             'qrcode' => 'VuFind\Controller\QRCodeController',
             'records' => 'VuFind\Controller\RecordsController',
             'search' => 'VuFind\Controller\SearchController',
@@ -187,10 +189,9 @@ $config = [
             'VuFind\WorldCatUtils' => 'VuFind\Service\Factory::getWorldCatUtils',
         ],
         'invokables' => [
-            'VuFind\HierarchicalFacetHelper' => 'VuFind\Search\Solr\HierarchicalFacetHelper',
-            'VuFind\IpAddressUtils' => 'VuFind\Net\IpAddressUtils',
             'VuFind\Search'         => 'VuFindSearch\Service',
             'VuFind\Search\Memory'  => 'VuFind\Search\Memory',
+            'VuFind\HierarchicalFacetHelper' => 'VuFind\Search\Solr\HierarchicalFacetHelper'
         ],
         'initializers' => [
             'VuFind\ServiceManager\Initializer::initInstance',
@@ -313,6 +314,7 @@ $config = [
                     'librarything' => 'VuFind\Content\Covers\LibraryThing',
                     'openlibrary' => 'VuFind\Content\Covers\OpenLibrary',
                     'summon' => 'VuFind\Content\Covers\Summon',
+                    'gbv' => 'VuFind\Content\Covers\GBV',
                 ],
             ],
             'content_reviews' => [
@@ -450,9 +452,11 @@ $config = [
                     'missing' => 'VuFind\RecordDriver\Factory::getMissing',
                     'pazpar2' => 'VuFind\RecordDriver\Factory::getPazpar2',
                     'primo' => 'VuFind\RecordDriver\Factory::getPrimo',
+                    'PrimoBridge' => 'VuFind\RecordDriver\Factory::getPrimoBridge',
                     'solrauth' => 'VuFind\RecordDriver\Factory::getSolrAuth',
                     'solrdefault' => 'VuFind\RecordDriver\Factory::getSolrDefault',
                     'solrmarc' => 'VuFind\RecordDriver\Factory::getSolrMarc',
+                    'solrgbv' => 'VuFind\RecordDriver\Factory::getSolrGbv',
                     'solrmarcremote' => 'VuFind\RecordDriver\Factory::getSolrMarcRemote',
                     'solrreserves' => 'VuFind\RecordDriver\Factory::getSolrReserves',
                     'solrweb' => 'VuFind\RecordDriver\Factory::getSolrWeb',
@@ -492,7 +496,9 @@ $config = [
                 'abstract_factories' => ['VuFind\Related\PluginFactory'],
                 'factories' => [
                     'editions' => 'VuFind\Related\Factory::getEditions',
+                    'primofrbr' => 'VuFind\Related\Factory::getPrimoFrbr',
                     'similar' => 'VuFind\Related\Factory::getSimilar',
+                    'similarindex' => 'VuFind\Related\Factory::getSimilarIndex',
                     'worldcateditions' => 'VuFind\Related\Factory::getWorldCatEditions',
                     'worldcatsimilar' => 'VuFind\Related\Factory::getWorldCatSimilar',
                 ],
@@ -516,6 +522,7 @@ $config = [
                     'LibGuides' => 'VuFind\Search\Factory\LibGuidesBackendFactory',
                     'Pazpar2' => 'VuFind\Search\Factory\Pazpar2BackendFactory',
                     'Primo' => 'VuFind\Search\Factory\PrimoBackendFactory',
+                    'PrimoBridge' => 'VuFind\Search\Factory\PrimoBridgeBackendFactory',
                     'Solr' => 'VuFind\Search\Factory\SolrDefaultBackendFactory',
                     'SolrAuth' => 'VuFind\Search\Factory\SolrAuthBackendFactory',
                     'SolrReserves' => 'VuFind\Search\Factory\SolrReservesBackendFactory',
@@ -640,6 +647,18 @@ $config = [
                 ],
                 'defaultTab' => null,
             ],
+            'VuFind\RecordDriver\SolrGBV' => [
+                'tabs' => [
+                    'Holdings' => 'HoldingsILS', 'TomesVolumes' => 'TomesVolumes',
+//                    'Description' => 'Description',
+//                    'TOC' => 'TOC', 'UserComments' => 'UserComments',
+//                    'Reviews' => 'Reviews', 'Excerpt' => 'Excerpt',
+//                    'Preview' => 'preview',
+//                    'HierarchyTree' => 'HierarchyTree', 'Map' => 'Map',
+                    'Details' => 'StaffViewMARC',
+                ],
+                'defaultTab' => null,
+            ],
             'VuFind\RecordDriver\SolrMarc' => [
                 'tabs' => [
                     'Holdings' => 'HoldingsILS', 'Description' => 'Description',
@@ -710,6 +729,7 @@ $recordRoutes = [
     'eitrecord' => 'EITRecord',
     'missingrecord' => 'MissingRecord',
     'primorecord' => 'PrimoRecord',
+    'primobridgerecord' => 'PrimoBridgeRecord',
     'solrauthrecord' => 'Authority',
     'summonrecord' => 'SummonRecord',
     'worldcatrecord' => 'WorldcatRecord'
@@ -751,6 +771,7 @@ $staticRoutes = [
     'MyResearch/StorageRetrievalRequests', 'MyResearch/UserLogin',
     'MyResearch/Verify',
     'Primo/Advanced', 'Primo/Home', 'Primo/Search',
+    'PrimoBridge/Advanced', 'PrimoBridge/Home', 'PrimoBridge/Search',
     'QRCode/Show', 'QRCode/Unavailable',
     'OAI/Server', 'Pazpar2/Home', 'Pazpar2/Search', 'Records/Home',
     'Search/Advanced', 'Search/Email', 'Search/History', 'Search/Home',

@@ -63,6 +63,8 @@ class Results extends \VuFind\Search\Base\Results
      */
     protected $spellingQuery = '';
 
+    protected $solrRealtime = null;
+
     /**
      * Class to process spelling.
      *
@@ -129,6 +131,7 @@ class Results extends \VuFind\Search\Base\Results
 
         $this->responseFacets = $collection->getFacets();
         $this->resultTotal = $collection->getTotal();
+        $this->solrRealtime = $collection->getSolrQTime();
 
         // Process spelling suggestions
         $spellcheck = $collection->getSpellcheck();
@@ -138,6 +141,10 @@ class Results extends \VuFind\Search\Base\Results
 
         // Construct record drivers for all the items in the response:
         $this->results = $collection->getRecords();
+    }
+
+    public function getSolrRealtime() {
+        return $this->solrRealtime;
     }
 
     /**

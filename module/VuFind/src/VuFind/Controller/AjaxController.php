@@ -179,7 +179,7 @@ class AjaxController extends AbstractBase
      *
      * This is responsible for printing the holdings information for a
      * collection of records in JSON format.
-     *
+     * 
      * @return \Zend\Http\Response
      * @author Chris Delis <cedelis@uillinois.edu>
      * @author Tuan Nguyen <tuan@yorku.ca>
@@ -210,7 +210,8 @@ class AjaxController extends AbstractBase
         $messages = [
             'available' => $renderer->render('ajax/status-available.phtml'),
             'unavailable' => $renderer->render('ajax/status-unavailable.phtml'),
-            'unknown' => $renderer->render('ajax/status-unknown.phtml')
+            'unknown' => $renderer->render('ajax/status-unknown.phtml'),
+            'notforloan' => $renderer->render('ajax/status-notforloan.phtml')
         ];
 
         // Load callnumber and location settings:
@@ -244,8 +245,9 @@ class AjaxController extends AbstractBase
                     $current['full_status'] = $renderer->render(
                         'ajax/status-full.phtml', ['statusItems' => $record]
                     );
-                }
+                }              
                 $current['record_number'] = array_search($current['id'], $ids);
+// TZ: Why is it statuses - only one exists. Everything merged as best guess? This has to go awry with multiple locations (?)
                 $statuses[] = $current;
 
                 // The current ID is not missing -- remove it from the missing list.
@@ -253,10 +255,28 @@ class AjaxController extends AbstractBase
             }
         }
 
+// TZ TODO: getPrintedStatuses also calles in getItemStatus() - one could be removed?        
+        $link_printed = $this->getPrintedStatuses();
+        $linkPrintedHtml = null;
+        $parentLinkHtml = null;
+        if ($link_printed) {
+            $view = ['refId' => $link_printed];
+            $linkPrintedHtml = $this->getViewRenderer()->render('ajax/link_printed.phtml', $view);
+            $parentLinkHtml = $this->getViewRenderer()->render('ajax/parentlink.phtml', $view);
+        }
+
+$multiVol = $this->getMultiVolumes();
+
         // If any IDs were missing, send back appropriate dummy data
+        /* add?
+                'presenceOnly' => $referenceIndicator,
+                'electronic' => $electronic, */
         foreach ($missingIds as $missingId => $recordNumber) {
             $statuses[] = [
                 'id'                   => $missingId,
+                'patronBestOption'     => 'false',
+                'bestOptionHref'       => 'false',
+                'bestOptionLocation'   => 'false',
                 'availability'         => 'false',
                 'availability_message' => $messages['unavailable'],
                 'location'             => $this->translate('Unknown'),
@@ -265,12 +285,20 @@ class AjaxController extends AbstractBase
                 'reserve_message'      => $this->translate('Not On Reserve'),
                 'callnumber'           => '',
                 'missing_data'         => true,
-                'record_number'        => $recordNumber
+                'link_printed'         => $linkPrintedHtml,
+                'parentlink'           => $parentLinkHtml,
+                'record_number'        => $recordNumber,
+                'reference_location'   => 'false',
+                'reference_callnumber' => 'false',
+                'multiVols'            => $multiVol
             ];
         }
 
         // Done
         return $this->output($statuses, self::STATUS_OK);
+$x = '<pre>' . var_export($results) . '</pre>';
+//$x = '<pre>' . var_export($statuses) . '</pre>';
+return $this->output($x, self::STATUS_OK);
     }
 
     /**
@@ -325,6 +353,12 @@ class AjaxController extends AbstractBase
      * Support method for getItemStatuses() -- process a single bibliographic record
      * for location settings other than "group".
      *
+     * @note: 2015-09-13: The aim is: get only the location which serves the patron best
+     * @todo: 2015-09-19: CD-Roms might be categorized as e_only - this is nearly
+     *          ok, since no location or call number is available. But we'd want
+     *          to give the patron some clue - currently there is nothing. Example (search for)
+     *          http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/268707642
+     *
      * @param array  $record            Information on items linked to a single bib
      *                                  record
      * @param array  $messages          Custom status HTML
@@ -336,56 +370,343 @@ class AjaxController extends AbstractBase
      *
      * @return array                    Summarized availability information
      */
-    protected function getItemStatus($record, $messages, $locationSetting,
-        $callnumberSetting
-    ) {
+    protected function getItemStatus($record, $messages, $locationSetting, $callnumberSetting) {
+        // Keep track of different kinds of (physical) access to the copies of the current title
+        // Note: for completeness we could also track/calculate the total unavailable items, but _seems_ pointless
+        $totalCount      = count($record); // Most likely unecessary, might be removed later
+        $availableCount  = 0;   // Total items available (Reference only + Borrowable + Closed Stack Order); reservce collection is implicitly Ref only
+        $referenceCount  = 0;   // > Subset thereof: available but reference only
+        $lentCount       = 0;   // > Subset thereof: total of all available items being on loan (can be RESERVED aka "Recall this")
+        $borrowableCount = 0;   // > Subset thereof: items immediatly available for take-away (including $stackorderCount)
+        $stackorderCount = 0;   // (not subset; part of $availableCount calculation): total of all available items that have to be ORDERED from a closed stack (aka "Place a hold")
+        $electronicCount = 0;
+
         // Summarize call number, location and availability info across all items:
-        $callNumbers = $locations = [];
-        $use_unknown_status = $available = false;
+        $available = false;                     // Track and set to true if at least one item is available
+        $availability = false;                  // Human readable detail for the $available status
+        $availability_message = false;          // Hmm... (note: available really is more like item status)
+        $additional_availability_message = '';  // Hmm...
+        $electronic = false;
+        $referenceIndicator = '0';              // Some info about the ratio referenceOnly:borrowable
+        $use_unknown_status = false;            // Hmm...
+        $reservationLink = '';                  // If possible - either reserve or order
+
+        // Some special tracking with arrays
+        $callNumbers = array();
+        $locations = array();
+        $timestamp = array();
+        $tr = array();
+
+        // Determine the best option for the patron; order is important
+        // Note: This should give a very reasonable range of possible options for
+        // further processing. Maybe value can be added by using actual values
+        // instead of boolean indicators
+        // Note2: These options only refer to physical copies UNLESS there are ONLY electronic items
+        $patronOptions['e_only']             = false;
+        $patronOptions['shelf']              = false;
+        $patronOptions['order']              = false;
+        $patronOptions['reserve_or_local']   = false;
+        $patronOptions['reserve']            = false;
+        $patronOptions['local']              = false;
+        $patronOptions['service_desk']       = false;
+        $patronOptions['false']              = false;
+
+        // These variables should provide everything needed to create a useful html output in the result
+        $patronBestOption   = false;
+        $bestOptionHref     = false;    // Href is really a little misleading - it's more like "action url". Either 'order' or 'reserve' which is specified via $patronBestOption
+        $bestOptionLocation = false;    // Try to only show the best (not the first) location; Note: for TUBHH call numbers "should" always be correct without explicit tracking. Todo: Check with a title that is Reading room as well as special location (DA); example so far: DAC-372 & DAG-046 (everything is fine)
+        $bestLocationPriority[0] = '';  // This nearly has the same logic as $patronOptions - hmm, maybe make $patronOptions multi dimensional?
+
+        // Remember some special copies for the $patronOptions['reserve_or_local'] case
+        $referenceCallnumber = false;
+        $referenceLocation   = false;
+        
+        
+        // Analyze each item of the record (title)
         foreach ($record as $info) {
+            // Keep track of the due dates to finally return the one with the least waiting time
+            $key = $info['id'];
+            if (array_key_exists('duedate', $info)) {
+                $tr[] = $info;
+                $timestamp[$key]  = strtotime($info['duedate']);
+            }
+
             // Find an available copy
             if ($info['availability']) {
                 $available = true;
+                $availableCount++;
+                // Our best option = get it from the shelf. If it is a shelf
+                // item we can only determine implicitly. So this only sticks
+                // if this copy isn't to be ordered/reserved/reference only/e-only
+// TODO TZ 2015-09-20: Here it happens: http://lincl1.b.tu-harburg.de:81/vufind2-test/Search/Results?lookfor=537875034 - wrong location
+// DAIA bug - EVERY location is a springer ebook?!?
+//$bla[] = $info['location'];
+                $bestLocationPriority[0] = $info['location'];
+
+                // Check if this copy has a recallhref
+                // TZ 2015-09-19: Damn, this also includes lent items that can be rerserved. 
+                //      So $stackorderCount really would be $stackorderCount - $lentCount or 
+                //      $info['ilslink'] but not $info['duedate']; let's try (even though it 
+                //      should not have affected the logic as it is so far)
+                if ($info['ilslink']) {
+                    if (!$info['duedate']) $stackorderCount++;
+                    $placeaholdhref = $info['ilslink'];
+                    // Order - ok, location isn't really interesting anymore. Remember anyway (who knows?)
+                    if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
+                    $bestLocationPriority[1] = $info['location'];
+                }
+
+// TZ: if ($info['status'] == 'only copy') would work obviously, but is meant as a interlibrary loan information
+                if ($info['itemnotes'][0] == 'presence_use_only') {
+                    $referenceCount++;
+                    // Remember call number and location if $patronOptions['reserve_or_local'] finally is our best option
+                    $tmp_referenceCallnumber = $info['callnumber'];
+                    $tmp_referenceLocation   = $info['location'];
+
+                    if ($bestLocationPriority[3] == $info['location']) $bestLocationPriority[0] = '';
+                    $bestLocationPriority[1] = $info['location'];
+                }
+
+                // Is it an electronic item? If we got not ilslink, it is not a physical item (?)
+                // Hmm, no. Ahh!! Physical items always have a call number (how else to fetch them?)...
+                // Just the 'Unknown' is a little vague - set somewhere above
+                // Very special case (CD-ROM): http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/268707642 / https://katalog.b.tuhh.de/DB=1/XMLPRS=N/PPN?PPN=268707642
+                // and http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/175989125 / https://katalog.b.tuhh.de/DB=1/XMLPRS=N/PPN?PPN=175989125 (siehe Bände ist hier die Aktion!)
+                // ...really, really special...
+//                if (stripos('opac-de-830', $info['item_id']) == -1) {
+                if ($info['callnumber'] == 'Unknown') {
+                    $electronicCount++;
+                    $electronic = true;
+                    // Online - ok, location isn't really interesting anymore. Remember anyway (who knows?)
+                    if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
+                    $bestLocationPriority[4] = $info['location'];
+                }
             }
+
+//Can it exist without being set? Otherwise it's redundant with the if at the foreach start
+            if ($info['duedate']) {
+                $lentCount++;
+                // Reserve - ok, location isn't really interesting anymore. Remember anyway (who knows?)
+                if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
+                $bestLocationPriority[2] = $info['location'];
+            }
+            
+            // TODO: Find cases, see what happens
+            if      ($info['status'] === 'missing') {$availability = 'missing';}
+            elseif  ($info['status'] === 'lost')    {$availability = 'lost';}
+
             // Check for a use_unknown_message flag
-            if (isset($info['use_unknown_message'])
-                && $info['use_unknown_message'] == true
-            ) {
+            if (isset($info['use_unknown_message']) && $info['use_unknown_message'] == true) {
                 $use_unknown_status = true;
             }
+
             // Store call number/location info:
             $callNumbers[] = $info['callnumber'];
             $locations[] = $info['location'];
         }
 
+// TZ: Problem/idea: pickValue() should use a priority list; what does ILSHoldLogic do?
+// - For location it would be really the best way; @tubhh only really has 3 (!) 
+// - Multiple (different) call numbers - "should" not happen @tubhh? If it does - usually only reading room matters
         // Determine call number string based on findings:
-        $callNumber = $this->pickValue(
-            $callNumbers, $callnumberSetting, 'Multiple Call Numbers'
-        );
+        $callNumber = $this->pickValue($callNumbers, $callnumberSetting, 'Multiple Call Numbers');
 
         // Determine location string based on findings:
-        $location = $this->pickValue(
-            $locations, $locationSetting, 'Multiple Locations', 'location_'
-        );
+        $location = $this->pickValue($locations, $locationSetting, 'Multiple Locations', 'location_');
 
+        // TUBHH Extension fields
+        // Sort the records with their duedate timestamp ascending
+        $recallhref = '';
+        $duedate = '';
+        array_multisort($timestamp, SORT_ASC, $tr);
+        foreach ($tr as $rec) {
+            if ($rec['ilslink'] && $recallhref === '') {
+                $recallhref = $rec['ilslink'];
+                if ($rec['duedate']) {
+                    $duedate = $rec['duedate'];
+                }
+            }
+        }
+
+        // Check if all available items can be used reference only. Note: Maybe use more speaking values instead of numbers (like 'Only', 'Some', 'OnlyIntimeChoice' - errm...)
+        // $borrowableCount means "it can be fetched immediatly by a patron (a closed stack item we count as "very soon" = immediatly - so we don't substract $stackorderCount as well)
+        // Note: $info['itemnotes'][0] == 'presence_use_only' includes elecronic items
+        $borrowableCount = $availableCount -($referenceCount + $lentCount);
+        if ($referenceCount > 0 && $referenceCount != $electronicCount) {
+            // Case a) Yes, ALL items are reference only
+            if ($referenceCount === $availableCount && $availableCount == $totalCount) {
+                $referenceIndicator = '1';
+                $patronOptions['local'] = true;
+            }
+            // Case b) No, not all items are reference only and just SOME of the available items are loaned
+            elseif ($referenceCount !== $availableCount && $borrowableCount !== 0 && $lentCount > 0) {
+                $referenceIndicator = '2';
+            }
+            // Case c) No, not all items are reference only but ALL available items are borrowable (btw. that available != borrowable makes it really hard :))
+            // Note: For now I keep '2', because currently I don't see a point for giving different messages for b) and c)
+            elseif ($referenceCount !== $availableCount && $borrowableCount > 0 && $lentCount === 0) {
+                $referenceIndicator = '2';
+            }
+            // Case d) No, not all items are reference BUT ALL borrowable items are loaned
+            // Important case. This way you can guide patrons to copies when all items are loaned
+//            elseif ($referenceCount !== $availableCount && $borrowableCount === 0 && $lentCount > 0) {
+else              {
+                $referenceIndicator = '3';
+                $patronOptions['reserve_or_local'] = true; // If this option sticks (no better if finally available) the option to use a reference only item is an useful ADDITIONAL info for the patron
+                // Supply the location for ref only too
+                $referenceCallnumber = $tmp_referenceCallnumber;
+                $referenceLocation   = $tmp_referenceLocation;
+                $reservationLink = ' <a class="holdlink" href="'.htmlspecialchars($placeaholdhref).'" target="_blank">'.$this->translate('Place a Hold').' (ref only avail)</a>';
+                $bestOptionHref  = $placeaholdhref;
+            }
+        }
+
+        // Ok determine remaining best options + set link
+        // No reference only, but borrowable shelf items available
+        // (also) Note: $info['itemnotes'][0] == 'presence_use_only' includes elecronic items
+        if ($electronicCount > 0 && $electronicCount === $referenceCount) {
+            $patronOptions['e_only'] = true;
+        }
+        elseif ($borrowableCount > 0 && ($borrowableCount - $stackorderCount) > 0) {
+            $patronOptions['shelf'] = true;
+        }
+        // Ok, everything is in the closed stack?
+        elseif ($borrowableCount > 0 && $borrowableCount == $stackorderCount) {
+            $patronOptions['order'] = true;
+            $reservationLink = ' <a class="holdlink" href="'.htmlspecialchars($placeaholdhref).'" target="_blank">'.$this->translate('Place a Hold').'</a>';
+            $bestOptionHref  = $placeaholdhref;
+        }
+        // Hmm, can we reserve something?
+        elseif ($lentCount > 0) {
+            $patronOptions['reserve'] = true;
+            $reservationLink = ' <a class="reservationlink" href="'.htmlspecialchars($recallhref).'" target="_blank">'.$this->translate('Recall this').'</a>';
+            $bestOptionHref  = $recallhref;
+        }
+        // Ok, so we should for sure have a false status for availability
+        elseif ($available == false) {
+            $patronOptions['service_desk'] = true;
+        }
+        else {
+            $patronOptions['false'] = true;
+        }
+        
+        // Finally, ignore all but the perfect option (=first option that is true)
+        foreach ($patronOptions AS $option => $isSet) {
+            if ($isSet) {
+                $patronBestOption = $option;
+                break;
+            }
+        }
+
+        // Also get the best location
+        foreach ($bestLocationPriority AS $priority => $location) {
+           if ($location) {
+                $bestOptionLocation = $location;
+                break;
+            }
+        }
+
+        // Collect details about links to show in result list
+        // TZ: Gosh, this is really hard to read
         $availability_message = $use_unknown_status
             ? $messages['unknown']
             : $messages[$available ? 'available' : 'unavailable'];
 
+        if ($available) {
+            // TZ: It's unimportant what is set, as long as something is set (see json return)
+            $availability = 'available';
+        }
+        else if ($duedate === '') {
+// TZ: I think a better message might be "not available", since reference only books are not for loan too, but their status via DAIA is available...
+            $availability_message = $messages['notforloan'];
+        }
+        else {
+            // (TZ: Here availability is "missing" or "lost" as seen above?)
+            $additional_availability_message = $availability;
+        }
+        
+//TZ: This block could be removed - we don't need the location as html; see also json comment below      
+        $loc = $rec['locationhref'];
+        if ($loc) {
+            $location = '<a href="'.$loc.'" target="_blank">'.htmlentities($location, ENT_COMPAT, 'UTF-8').'</a>';
+        }
+        else {
+            $location = htmlentities($location, ENT_COMPAT, 'UTF-8');
+        }
+
+        
+//TZ TODO: Check if it is necessary here - already/also  called in getItemStatusesAjax() ?!?
+        $link_printed = $this->getPrintedStatuses();
+
+        // if we got no location, the best guess is, that it is a special location
+        // ("Sonderstandort") that DAIA doesn't get correctly.
+        // TUB-Note: Possibilities are: DA or SEM (or are there more?). If so,
+        // at the current state of vufind we determine it this way
+        if (!$bestOptionLocation && $patronBestOption != 'e_only') {
+            $bestOptionLocation = 'Sonderstandort: Dienstapparat';
+            // Example: http://lincl1.b.tu-harburg.de:81/vufind2-test/Search/Results?lookfor=+%09DCF-134&type=AllFields&limit=20&sort=relevance
+        }
+        elseif ($bestOptionLocation === 'Unknown' && $patronBestOption !== 'e_only') {
+            $bestOptionLocation = 'Sonderstandort: Semesterapparat';
+            // Example: http://lincl1.b.tu-harburg.de:81/vufind2-test/Search/Results?lookfor=BWB-182&type=AllFields&filter[]=%23%3A%22%28collection_details%3A%22GBV_ILN_23%22+OR+collection%3A%22Catalog%22+OR+collection%3A%22Weblog%22+OR+collection%3A%22Website%22+OR+collection%3A%22TUBdok%22+OR+collection%3A%22TUHH+Website%22+OR+collection%3A%22NL%22+OR+collection%3A%22DOAJ%22%29%22&filter[]=%28collection_details%3A%22GBV_ILN_23%22+OR+collection%3A%22Catalog%22+OR+collection%3A%22Weblog%22+OR+collection%3A%22Website%22+OR+collection%3A%22TUBdok%22+OR+collection%3A%22TUHH+Website%22+OR+collection%3A%22NL%22+OR+collection%3A%22DOAJ%22%29&dfApplied=1&limit=20&sort=relevance
+        }
+
+        $multiVol = $this->getMultiVolumes();
+
         // Send back the collected details:
+//TZ: Todo: take advantage of patronBestOption in check_item_statuses.js
+// Note: reference_location and reference_callnumber are false unless $patronOptions['reserve_or_local'] is true
+// TODO: These can be removed, since the best options imply their information: 
+// - 'availability', 'location', 'reserve', 'reserve_message', 'reservationUrl'      
+// TODO: For these I don't know what they ever where good for
+// - 'locationList', 'availability_message' (might be important)       
+// TODO: Finlly chose better naming (instead of "best") 
         return [
             'id' => $record[0]['id'],
+            'patronBestOption' => $patronBestOption,
+            'bestOptionHref' => $bestOptionHref,
+            'bestOptionLocation' => $bestOptionLocation,
             'availability' => ($available ? 'true' : 'false'),
             'availability_message' => $availability_message,
-            'location' => htmlentities($location, ENT_COMPAT, 'UTF-8'),
+            'additional_availability_message' => $additional_availability_message,
+            'callnumber' => htmlentities($callNumber, ENT_COMPAT, 'UTF-8'),
+            'duedate' => $duedate,
+            'presenceOnly' => $referenceIndicator,
+            'electronic' => $electronic,
+            'link_printed' => $link_printed,
+            'reference_location' => $referenceLocation,
+            'reference_callnumber' => $referenceCallnumber,
+            'multiVols' => $multiVol,
+            'tmp' => implode('  --  ', $bla)
+        ];
+
+/* Original
+        return [
+            'id' => $record[0]['id'],
+            'patronBestOption' => $patronBestOption,
+            'bestOptionHref' => $bestOptionHref,
+            'bestOptionLocation' => $bestOptionLocation,
+            'availability' => ($available ? 'true' : 'false'),
+            'availability_message' => $availability_message,
+            'additional_availability_message' => $additional_availability_message,
+            'location' => $location,
             'locationList' => false,
-            'reserve' =>
-                ($record[0]['reserve'] == 'Y' ? 'true' : 'false'),
+            'reserve' => ($record[0]['reserve'] == 'Y' ? 'true' : 'false'),
             'reserve_message' => $record[0]['reserve'] == 'Y'
                 ? $this->translate('on_reserve')
                 : $this->translate('Not On Reserve'),
-            'callnumber' => htmlentities($callNumber, ENT_COMPAT, 'UTF-8')
-        ];
+            'callnumber' => htmlentities($callNumber, ENT_COMPAT, 'UTF-8'),
+            'reservationUrl' => $reservationLink,
+            'duedate' => $duedate,
+            'presenceOnly' => $referenceIndicator,
+            'electronic' => $electronic,
+            'link_printed' => $link_printed,
+            'reference_location' => $referenceLocation,
+            'reference_callnumber' => $referenceCallnumber,
+            'tmp_test' => $tmp,
+            'multiVols' => $multiVol
+        ];   
+*/             
     }
 
     /**
@@ -460,6 +781,129 @@ class AjaxController extends AbstractBase
                 : $this->translate('Not On Reserve'),
             'callnumber' => false
         ];
+    }
+
+    /**
+     * Get additional item information
+     *
+     * This is responsible for printing any additional information for a
+     * collection of records in JSON format.
+     *
+     * @return \Zend\Http\Response
+     * @author Oliver Goldschmidt <o.goldschmidt@tuhh.de>
+     */
+    protected function getAdditionalItemInformationAjax()
+    {
+        $this->writeSession();  // avoid session write timing bug
+        $catalog = $this->getILS();
+        $ids = $this->params()->fromQuery('id');
+        $results = $catalog->getStatuses($ids);
+
+        if (!is_array($results)) {
+            // If getStatuses returned garbage, let's turn it into an empty array
+            // to avoid triggering a notice in the foreach loop below.
+            $results = [];
+        }
+
+        // In order to detect IDs missing from the status response, create an
+        // array with a key for every requested ID.  We will clear keys as we
+        // encounter IDs in the response -- anything left will be problems that
+        // need special handling.
+        $missingIds = array_flip($ids);
+
+        // Get access to PHP template renderer for partials:
+        $renderer = $this->getViewRenderer();
+
+        // Load messages for response:
+        $messages = [
+            'available' => $renderer->render('ajax/status-available.phtml'),
+            'unavailable' => $renderer->render('ajax/status-unavailable.phtml'),
+            'unknown' => $renderer->render('ajax/status-unknown.phtml'),
+            'notforloan' => $renderer->render('ajax/status-notforloan.phtml')
+        ];
+
+        // Load callnumber and location settings:
+        $config = $this->getConfig();
+        $callnumberSetting = isset($config->Item_Status->multiple_call_nos)
+            ? $config->Item_Status->multiple_call_nos : 'msg';
+        $locationSetting = isset($config->Item_Status->multiple_locations)
+            ? $config->Item_Status->multiple_locations : 'msg';
+        $showFullStatus = isset($config->Item_Status->show_full_status)
+            ? $config->Item_Status->show_full_status : false;
+
+        // Loop through all the status information that came back
+        $statuses = [];
+        foreach ($results as $recordNumber => $record) {
+            // Filter out suppressed locations:
+            $record = $this->filterSuppressedLocations($record);
+
+            // Skip empty records:
+            if (count($record)) {
+                if ($locationSetting == "group") {
+                    $current = $this->getItemStatusGroup(
+                        $record, $messages, $callnumberSetting
+                    );
+                } else {
+                    $current = $this->getItemStatus(
+                        $record, $messages, $locationSetting, $callnumberSetting
+                    );
+                }
+                // If a full status display has been requested, append the HTML:
+                if ($showFullStatus) {
+                    $current['full_status'] = $renderer->render(
+                        'ajax/status-full.phtml', ['statusItems' => $record]
+                    );
+                }              
+                $current['record_number'] = array_search($current['id'], $ids);
+// TZ: Why is it statuses - only one exists. Everything merged as best guess? This has to go awry with multiple locations (?)
+                $statuses[] = $current;
+
+                // The current ID is not missing -- remove it from the missing list.
+                unset($missingIds[$current['id']]);
+            }
+        }
+
+// TZ TODO: getPrintedStatuses also calles in getItemStatus() - one could be removed?        
+        $link_printed = $this->getPrintedStatuses();
+        $linkPrintedHtml = null;
+        $parentLinkHtml = null;
+        if ($link_printed) {
+            $view = ['refId' => $link_printed];
+            $linkPrintedHtml = $this->getViewRenderer()->render('ajax/link_printed.phtml', $view);
+            $parentLinkHtml = $this->getViewRenderer()->render('ajax/parentlink.phtml', $view);
+        }
+
+        // If any IDs were missing, send back appropriate dummy data
+        /* add?
+                'presenceOnly' => $referenceIndicator,
+                'electronic' => $electronic, */
+        foreach ($missingIds as $missingId => $recordNumber) {
+            $statuses[] = [
+                'id'                   => $missingId,
+                'patronBestOption'     => 'false',
+                'bestOptionHref'       => 'false',
+                'bestOptionLocation'   => 'false',
+                'availability'         => 'false',
+                'availability_message' => $messages['unavailable'],
+                'location'             => $this->translate('Unknown'),
+                'locationList'         => false,
+                'reserve'              => 'false',
+                'reserve_message'      => $this->translate('Not On Reserve'),
+                'callnumber'           => '',
+                'missing_data'         => true,
+                'link_printed'         => $linkPrintedHtml,
+                'parentlink'           => $parentLinkHtml,
+                'record_number'        => $recordNumber,
+                'reference_location'   => 'false',
+                'reference_callnumber' => 'false'                
+            ];
+        }
+
+        // Done
+        return $this->output($statuses, self::STATUS_OK);
+$x = '<pre>' . var_export($results) . '</pre>';
+//$x = '<pre>' . var_export($statuses) . '</pre>';
+return $this->output($x, self::STATUS_OK);
     }
 
     /**
@@ -1296,6 +1740,194 @@ class AjaxController extends AbstractBase
     }
 
     /**
+     * Get number of matches for a certain tab
+     *
+     * @return \Zend\Http\Response
+     */
+    public function getNumberOfMatchesAjax() {
+        if ($_REQUEST['idx'] == 'gbv') {
+            $results = $this->getResultsManager()->get('Solr');
+            $params = $results->getParams();
+            $params->initFromRequest($this->getRequest()->getQuery());
+            $recordCount = $results->getResultTotal();
+        }
+        if ($_REQUEST['idx'] == 'primo') {
+            $results = $this->getResultsManager()->get('Primo');
+            $params = $results->getParams();
+            $params->initFromRequest($this->getRequest()->getQuery());
+            $recordCount = $results->getResultTotal();
+        }
+
+        return $this->output(array('matches' => $recordCount), self::STATUS_OK);
+    }
+
+
+    /**
+     * Load information about multivolumes for this item
+     *
+     * @return \Zend\Http\Response
+     */
+    protected function getMultiVolumes()
+    {
+        try {
+            $driver = $this->getRecordLoader()->load(
+                $_REQUEST['id'][0]
+            );
+            return $driver->isMultipartChildren();
+        } catch (\Exception $e) {
+            // Do nothing -- just return null
+            return null;
+        }
+    }
+
+    /**
+     * Load information about printed copies for this item
+     *
+     * @return \Zend\Http\Response
+     */
+    protected function getPrintedStatuses()
+    {
+        try {
+            $driver = $this->getRecordLoader()->load(
+                $_REQUEST['id'][0],
+                $this->params()->fromPost('source', 'Primo')
+            );
+            $containerID = $driver->getContainerRecordID();
+            $ebookLink = $driver->getPrintedEbookRecordID();
+        } catch (\Exception $e) {
+            // Do nothing -- just return null
+            return null;
+        }
+
+
+        $refId = null;
+        if(!empty($containerID)) {
+            $refId = $containerID;
+        }
+        else if (!empty($ebookLink)) {
+            $refId = $ebookLink;
+        }
+
+        return $refId;
+
+/*
+        require_once 'sys/EZB.php';
+        require_once 'RecordDrivers/PCRecord.php';
+        global $interface;
+        global $configArray;
+
+        $url = null;
+        $core = null;
+        $printedSample = array();
+        if (array_key_exists('id', $_REQUEST)) {
+            if (substr($_REQUEST['id'], 0, 2) == 'PC') {
+                $url = isset($configArray['IndexShards']['Primo Central']) ? 'http://'.$configArray['IndexShards']['Primo Central'] : null;
+                $url = str_replace('/biblio', '', $url);
+                $core = 'biblio';
+            }
+
+            // Setup Search Engine Connection
+            $db = ConnectionManager::connectToIndex(null, $core, $url);
+
+            // Retrieve the record from the index
+            if (!($record = $db->getRecord($_REQUEST['id']))) {
+                PEAR::raiseError(new PEAR_Error('Record Does Not Exist'));
+            }
+            $originalId = array('originalId' => $_REQUEST['id']);
+            $recordDriver = RecordDriverFactory::initRecordDriver($record);
+            $artFieldedRef = $recordDriver->getArticleFieldedReference();
+            $bookFieldedRef = $recordDriver->getEbookFieldedReference();
+
+            $printedSample = $recordDriver->getPrintedSample();
+
+            // Find printed articles
+            $articleVol = $recordDriver->searchArticleVolume($artFieldedRef);
+            // Find printed ebook
+            $printedEbook = $recordDriver->searchPrintedEbook($bookFieldedRef);
+        }
+        else {
+            $originalId = array('originalId' => null);
+            $artFieldedRef = array();
+            $bookFieldedRef = array();
+*/
+            /* Parameterverarbeitung */
+/*
+            $artFieldedRef['title'] = $_REQUEST['rft_jtitle'];
+            $bookFieldedRef['title'] = $_REQUEST['rft_btitle'];
+            $bookFieldedRef['isbn'] = array();
+            $bookFieldedRef['isbn'][] = $_REQUEST['rft_isbn'];
+            if ($_REQUEST['rft_eisbn']) $bookFieldedRef['isbn'][] = $_REQUEST['rft_eisbn'];
+            $artFieldedRef['issn'] = array();
+            $artFieldedRef['issn'][] = $_REQUEST['rft_issn'];
+            if ($_REQUEST['rft_eissn']) $artFieldedRef['issn'][] = $_REQUEST['rft_eissn'];
+            $artFieldedRef['volume'] = $_REQUEST['rft_volume'];
+            $artFieldedRef['issue'] = $_REQUEST['rft_issue'];
+            $artFieldedRef['date'] = $_REQUEST['rft_date'];
+            $artFieldedRef['service'] = 'external';
+            $bookFieldedRef['service'] = 'external';
+            
+            $p = array();
+            $p['issn'] = $_REQUEST['rft_issn'];
+            $p['eissn'] = $_REQUEST['rft_eissn'];
+            $p['format'] = $_REQUEST['rft_genre'];
+            $p['date'] = $_REQUEST['rft_date'];
+            $p['jtitle'] = $_REQUEST['rft_jtitle'];
+            $p['atitle'] = $_REQUEST['rft_atitle'];
+            $p['volume'] = $_REQUEST['rft_volume'];
+            $p['issue'] = $_REQUEST['rft_issue'];
+            $p['spage'] = $_REQUEST['rft_spage'];
+            $p['epage'] = $_REQUEST['rft_epage'];
+            
+            $ezb = new EZB($p);
+            $printedSample = $ezb->getPrintedInformation();
+            
+            $recordDriver = new PCRecord();
+            
+            // Find printed articles
+            $articleVol = $recordDriver->searchArticleVolume($artFieldedRef);
+            // Find printed ebook
+            $printedEbook = $recordDriver->searchPrintedEbook($bookFieldedRef);
+        }
+            
+        if ($articleVol) {
+            $gbvid = array('id' => $articleVol['docs'][0]['id']);
+            // if getPrintedInformation() returns null, array_merge will fail (never merge arrays with null!)
+            // so if its not set, build an empty array now.
+            if (!$printedSample) $printedSample = array();
+            $articleVolRef = array_merge($gbvid, $originalId, $printedSample, $artFieldedRef);
+            return $this->output(array($articleVolRef), JSON::STATUS_OK);
+        }
+        if ($printedEbook) {
+            $gbvid = array('id' => $printedEbook['docs'][0]['id']);
+            if ($printedEbook['docs'][0]['id']) {
+                $gbvid['status'] = "5";
+                $gbvid['gbvtitle'] = $printedEbook['docs'][0]['title'][0];
+                $gbvid['gbvdate'] = $printedEbook['docs'][0]['publishDate'][0];
+            }
+            $printedEbookRef = array_merge($gbvid, $originalId, $bookFieldedRef);
+            //print_r($printedEbookRef);
+            return $this->output(array($printedEbookRef), JSON::STATUS_OK);
+        }
+        if ($printedSample) {
+            $gbvid = array('id' => null);
+            // if getPrintedInformation() returns null, array_merge will fail (never merge arrays with null!)
+            // so if its not set, build an empty array now.
+            $printedRef = array_merge($gbvid, $originalId, $printedSample, $artFieldedRef);
+            return $this->output(array($printedRef), JSON::STATUS_OK);
+        }
+        
+        return $this->output(
+                translate("No results found!"), JSON::STATUS_ERROR
+            );
+*/
+    }
+
+
+
+
+
+
+    /**
      * Check status and return a status message for e.g. a load balancer.
      *
      * A simple OK as text/plain is returned if everything works properly.
@@ -1354,3 +1986,189 @@ class AjaxController extends AbstractBase
         return $this->getServiceLocator()->get('VuFind\SearchResultsPluginManager');
     }
 }
+
+
+/* SAMPLE-TMP
+ *
+ * BWB-342
+ *
+array (
+  0 =>
+  array (
+    0 =>
+    array (
+      'status' => '',
+      'availability' => false,
+      'duedate' => '22.09.2015',
+      'requests_placed' => '0',
+      'id' => '640170307',
+      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:1196604088',
+      'ilslink' => 'http://katalog.b.tuhh.de:9090/LBS_WEB/volumes/show.htm?BES=1&LAN=DE&USR=1000&PPN
+=64017030&EPN=119660408&VOLUME=709927',
+      'number' => 1,
+      'barcode' => '1',
+      'reserve' => 'N',
+      'callnumber' => 'BWB-342',
+      'location' => 'Lesesaal 2: BW - Betriebswirtschaft',
+      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/lesesaal/#LS2',
+      'itemnotes' =>
+      array (
+        0 => '',
+      ),
+    ),
+    1 =>
+    array (
+      'status' => 'only copy',
+      'availability' => true,
+      'duedate' => NULL,
+      'requests_placed' => '',
+      'id' => '640170307',
+      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:1297547195',
+      'ilslink' => NULL,
+      'number' => 2,
+      'barcode' => '1',
+      'reserve' => 'N',
+      'callnumber' => 'BWB-342',
+      'location' => 'Lesesaal 2: BW - Betriebswirtschaft',
+      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/lesesaal/#LS2',
+      'itemnotes' =>
+      array (
+        0 => 'presence_use_only',
+        1 => '',
+      ),
+    ),
+  ),
+)
+ *
+ *
+ * http://lincl1.b.tu-harburg.de:81/vufind2/Search/Results?lookfor=156865416&type=AllFields&limit=20&sort=relevance
+ * (Multiple locations, loan possible, presence only too...
+ *
+RESULT array (
+  0 =>
+RECORDS  array (
+    0 =>
+    array (
+      'status' => 'only copy',
+      'availability' => true,
+      'duedate' => NULL,
+      'requests_placed' => '',
+      'id' => '156865416',
+      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:0264625684',
+      'ilslink' => NULL,
+      'number' => 1,
+      'barcode' => '1',
+      'reserve' => 'N',
+      'callnumber' => 'MSB-100',
+      'location' => 'Lesesaal 1: MS - Maschinenbau',
+      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/lesesaal/#LS1',
+      'itemnotes' =>
+      array (
+        0 => 'presence_use_only',
+        1 => '',
+      ),
+    ),
+    1 =>
+    array (
+      'status' => 'only copy',
+      'availability' => true,
+      'duedate' => NULL,
+      'requests_placed' => '',
+      'id' => '156865416',
+      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:0307820971',
+      'ilslink' => NULL,
+      'number' => 2,
+      'barcode' => '1',
+      'reserve' => 'N',
+      'callnumber' => 'MSB-100',
+      'location' => 'Lesesaal 1: MS - Maschinenbau',
+      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/lesesaal/#LS1',
+      'itemnotes' =>
+      array (
+        0 => 'presence_use_only',
+        1 => '',
+      ),
+    ),
+    2 =>
+    array (
+      'status' => '',
+      'availability' => true,
+      'duedate' => NULL,
+      'requests_placed' => '',
+      'id' => '156865416',
+      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:0312522835',
+      'ilslink' => NULL,
+      'number' => 3,
+      'barcode' => '1',
+      'reserve' => 'N',
+      'callnumber' => 'MSB-100',
+      'location' => 'Lehrbuchsammlung',
+      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/#LBS',
+      'itemnotes' =>
+      array (
+        0 => '',
+      ),
+    ),
+    3 =>
+    array (
+      'status' => '',
+      'availability' => true,
+      'duedate' => NULL,
+      'requests_placed' => '',
+      'id' => '156865416',
+      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:0312522835',
+      'ilslink' => NULL,
+      'number' => 4,
+      'barcode' => '1',
+      'reserve' => 'N',
+      'callnumber' => 'MSB-100',
+      'location' => 'Lehrbuchsammlung',
+      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/#LBS',
+      'itemnotes' =>
+      array (
+        0 => '',
+      ),
+    ),
+    4 =>
+    array (
+      'status' => '',
+      'availability' => true,
+      'duedate' => NULL,
+      'requests_placed' => '',
+      'id' => '156865416',
+      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:0312522835',
+      'ilslink' => NULL,
+      'number' => 5,
+      'barcode' => '1',
+      'reserve' => 'N',
+      'callnumber' => 'MSB-100',
+      'location' => 'Lehrbuchsammlung',
+      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/#LBS',
+      'itemnotes' =>
+      array (
+        0 => '',
+      ),
+    ),
+    5 =>
+    array (
+      'status' => '',
+      'availability' => true,
+      'duedate' => NULL,
+      'requests_placed' => '',
+      'id' => '156865416',
+      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:0312522835',
+      'ilslink' => NULL,
+      'number' => 6,
+      'barcode' => '1',
+      'reserve' => 'N',
+      'callnumber' => 'MSB-100',
+      'location' => 'Lehrbuchsammlung',
+      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/#LBS',
+      'itemnotes' =>
+      array (
+        0 => '',
+      ),
+    ),
+  ),
+)
+ */

@@ -34,6 +34,9 @@ use VuFindSearch\Backend\Primo\Response\RecordCollectionFactory;
 use VuFindSearch\Backend\Primo\QueryBuilder;
 use VuFindSearch\Backend\Primo\Backend;
 
+use VuFind\Search\Primo\InjectOnCampusListener;
+use VuFind\Search\Primo\PrimoPermissionHandler;
+
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
 
@@ -70,6 +73,13 @@ class PrimoBackendFactory implements FactoryInterface
     protected $primoConfig;
 
     /**
+     * Primo Permission Handler
+     *
+     * @var PrimoPermissionHandler
+     */
+    protected $primoPermissionHandler = null;
+
+    /**
      * Create the backend.
      *
      * @param ServiceLocatorInterface $serviceLocator Superior service manager
@@ -84,8 +94,21 @@ class PrimoBackendFactory implements FactoryInterface
         if ($this->serviceLocator->has('VuFind\Logger')) {
             $this->logger = $this->serviceLocator->get('VuFind\Logger');
         }
+
+        if (isset($this->primoConfig->InstitutionPermission)) {
+            $permHandler = new PrimoPermissionHandler(
+                $this->primoConfig->InstitutionPermission
+            );
+            $permHandler->setAuthorizationService(
+                $this->serviceLocator->get('ZfcRbac\Service\AuthorizationService')
+            );
+            $this->primoPermissionHandler = $permHandler;
+        }
+
         $connector = $this->createConnector();
         $backend   = $this->createBackend($connector);
+
+        $this->createListeners($backend);
         return $backend;
     }
 
@@ -105,6 +128,20 @@ class PrimoBackendFactory implements FactoryInterface
     }
 
     /**
+     * Create listeners.
+     *
+     * @param Backend $backend Backend
+     *
+     * @return void
+     */
+    protected function createListeners(Backend $backend)
+    {
+        $events = $this->serviceLocator->get('SharedEventManager');
+
+        $this->getInjectOnCampusListener()->attach($events);
+    }
+
+    /**
      * Create the Primo Central connector.
      *
      * @return Connector
@@ -116,6 +153,9 @@ class PrimoBackendFactory implements FactoryInterface
             ? $this->primoConfig->General->apiId : null;
         $port = isset($this->primoConfig->General->port)
             ? $this->primoConfig->General->port : 1701;
+        $instCode = isset($this->primoPermissionHandler)
+            ? $this->primoPermissionHandler->getInstCode()
+            : $this->getInstCode();
 
         // Build HTTP client:
         $client = $this->serviceLocator->get('VuFind\Http')->createClient();
@@ -123,7 +163,7 @@ class PrimoBackendFactory implements FactoryInterface
             ? $this->primoConfig->General->timeout : 30;
         $client->setOptions(['timeout' => $timeout]);
 
-        $connector = new Connector($id, $this->getInstCode(), $client, $port);
+        $connector = new Connector($id, $instCode, $client, $port);
         $connector->setLogger($this->logger);
         return $connector;
     }
@@ -132,6 +172,7 @@ class PrimoBackendFactory implements FactoryInterface
      * Determine the institution code
      *
      * @return string
+     * @depracated Use PrimoPermissionHandler instead!
      */
     protected function getInstCode()
     {
@@ -183,5 +224,16 @@ class PrimoBackendFactory implements FactoryInterface
             return $driver;
         };
         return new RecordCollectionFactory($callback);
+    }
+
+    /**
+     * Get a OnCampus Listener
+     *
+     * @return InjectOnCampusListener
+     */
+    protected function getInjectOnCampusListener()
+    {
+        $listener = new InjectOnCampusListener($this->primoPermissionHandler);
+        return $listener;
     }
 }

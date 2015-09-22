@@ -89,7 +89,15 @@ class PluginManager extends \VuFind\ServiceManager\AbstractPluginManager
      */
     public function getSolrRecord($data)
     {
-        if (isset($data['recordtype'])) {
+        // Use GBV Record Driver if the record comes from GBV
+        if ($data['recordtype'] === 'marc' && (array_search('GBV Zentral', $data['institution']) !== false || $data['institution'] === 'GBV Zentral' || 
+                                               array_search('findex.gbv.de', $data['institution']) !== false || $data['institution'] === 'findex.gbv.de')) {
+            $recordType = 'SolrGBV';
+        }
+        //else if (array_search('Catalog', $record['data']) !== false || $data['collection'] === 'Catalog') {
+        //    $recordType = 'SolrLocal';
+        //}
+        else if (isset($data['recordtype'])) {
             $key = 'Solr' . ucwords($data['recordtype']);
             $recordType = $this->has($key) ? $key : 'SolrDefault';
         } else {

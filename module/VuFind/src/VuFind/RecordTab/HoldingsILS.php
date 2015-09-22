@@ -99,4 +99,18 @@ class HoldingsILS extends AbstractBase
         }
         return true;
     }
+
+    /**
+     * Has this record any children to be displayed in Volumes/Tomes tab?
+     *
+     * @return bool
+     */
+    public function hasVolumes()
+    {
+        $multipart = $this->getRecordDriver()->tryMethod('isMultipartChildren');
+        if (empty($multipart)) {
+            return false;
+        }
+        return $this->getRecordDriver()->isMultipartChildren();
+    }
 }

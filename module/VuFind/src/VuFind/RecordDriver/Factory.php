@@ -114,6 +114,24 @@ class Factory
             $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
             $primo, $primo
         );
+        $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
+        return $driver;
+    }
+
+    /**
+     * Factory for Primo record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return Primo
+     */
+    public static function getPrimoBridge(ServiceManager $sm)
+    {
+        $primo = $sm->getServiceLocator()->get('VuFind\Config')->get('PrimoBridge');
+        $driver = new PrimoBridge(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $primo, $primo
+        );
         return $driver;
     }
 
@@ -175,6 +193,29 @@ class Factory
     }
 
     /**
+     * Factory for SolrGBV record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrGBV
+     */
+    public static function getSolrGBV(ServiceManager $sm)
+    {
+        $driver = new SolrGBV(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('SolrGBV'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
+        );
+        $driver->attachILS(
+            $sm->getServiceLocator()->get('VuFind\ILSConnection'),
+            $sm->getServiceLocator()->get('VuFind\ILSHoldLogic'),
+            $sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
+        );
+        $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
+        return $driver;
+    }
+
+    /**
      * Factory for SolrMarcRemote record driver.
      *
      * @param ServiceManager $sm Service manager.
@@ -196,7 +237,6 @@ class Factory
         $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
         return $driver;
     }
-
     /**
      * Factory for SolrReserves record driver.
      *

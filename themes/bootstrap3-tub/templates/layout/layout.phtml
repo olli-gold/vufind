@@ -1,0 +1,239 @@
+<?=$this->doctype('HTML5')?>
+<html lang="<?=$this->layout()->userLang?>">
+  <head>
+    <?$this->headThemeResources()?>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <?=$this->headMeta()?>
+    <?=$this->headTitle()?>
+    <?
+      // Set up OpenSearch link:
+      $this->headLink(
+        array(
+          'href' => $this->url('search-opensearch') . '?method=describe',
+          'type' => 'application/opensearchdescription+xml',
+          'title' => $this->transEsc('Library Catalog Search'),
+          'rel' => 'search'
+        )
+      );
+    ?>
+    <?=$this->headLink()?>
+    <?=$this->headStyle()?>
+    <?
+      // Set global path for Javascript code:
+      $this->headScript()->prependScript("path = '" . rtrim($this->url('home'), '/') . "';");
+
+      // Deal with cart stuff:
+      if (!isset($this->renderingError)) {
+        $cart = $this->cart();
+        $this->jsTranslations()->addStrings(
+          array(
+            'bulk_email_success' => 'bulk_email_success',
+            'bulk_save_success' => 'bulk_save_success',
+            'close' => 'close',
+            'loading' => 'Loading',
+            'sms_success' => 'sms_success',
+            'number_thousands_separator' => ['number_thousands_separator', null, ',']
+          )
+        );
+        if ($cart->isActive()) {
+          $this->headScript()->appendFile("vendor/cookies.js");
+          $this->headScript()->appendFile("cart.js");
+          $domain = $cart->getCookieDomain();
+          $this->headScript()->appendScript(
+            'var cartCookieDomain = ' . (!empty($domain) ? "'$domain'" : 'false') . ';'
+          );
+          $this->jsTranslations()->addStrings(
+            array(
+              'bulk_noitems_advice' => 'bulk_noitems_advice',
+              'confirmDelete' => 'confirm_delete',
+              'confirmEmpty' => 'bookbag_confirm_empty',
+              'viewBookBag' => 'View Book Bag',
+              'addBookBag' => 'Add to Book Bag',
+              'removeBookBag' => 'Remove from Book Bag',
+              'itemsAddBag' => 'items_added_to_bookbag',
+              'itemsInBag' => 'items_already_in_bookbag',
+              'bookbagMax' => $cart->getMaxSize(),
+              'bookbagFull' => 'bookbag_full_msg',
+              'bookbagStatusFull' => 'bookbag_full',
+              'no_tags' => 'No Tags'
+            )
+          );
+        }
+        // TZ:  Maybe add an additional custom language ini like de_tub (https://vufind.org/wiki/vufind2:language_localization_support)
+        //         And: could put these strings somewhere "closer". Best would be in checks_item_statused.js itself. 
+        //              Or maybe in AjaxController via loading a special template (like for the status messages).
+        $this->jsTranslations()->addStrings(
+          array(
+            'notforloan' => $this->transEsc('status_notforloan'),
+            'missing' => $this->transEsc('status_missing'),
+            'lost' => $this->transEsc('status_lost'),
+            'hold_place' => $this->transEsc('hold_place'),
+            'recall_this'  => $this->transEsc('Recall this')
+          )
+        );
+        $this->headScript()->appendScript($this->jsTranslations()->getScript());
+        
+/*
+            // TODO: Add all other infos. Should find out how variables in the 
+            //      language ini's work (example hold_place_success_html)
+            // Prepare schema:
+            // THIS IS NOT THE FINAL WORD - I know the title's looks like they are useless twice ;)
+            'loc-info_inline-XXX' => "",
+            'loc-modal_title-XXX' => "",
+            'loc-modal_body-XXX' => "",
+            'loc-modal_foot-XXX' => "",
+            //SHELVES + Available
+                'loc-info_inline-shelf_lbs' => "'Sie finden das Medium in der Lehrbuchsammlung (LBS) im Regal '+loc_shelf+'. Die Lehrbuchsammlung ist im Lesesaal 1 auf der Seite des Eingangs.'",
+                'loc-modal_title-shelf_lbs' => "Signatur: ' + result.callnumber + ' (' + result.bestOptionLocation + ')",
+                'loc-modal_body-shelf_lbs'  => "'Sie finden das Medium in der Lehrbuchsammlung (LBS) im Regal '+loc_shelf+'. Die Lehrbuchsammlung ist im Lesesaal 1 auf der Seite des Eingangs.'",
+                'loc-modal_foot-shelf_lbs'  => "JUST MAYBE (Imagelink)",
+                'loc-info_inline-shelf_ls1' => "'Sie finden das Medium im Lesesaal 1 (LS1) im Regal '+loc_shelf+'.'",
+                'loc-modal_title-shelf_ls1' => "Signatur: ' + result.callnumber + ' (' + result.bestOptionLocation + ')",
+                'loc-modal_body-shelf_ls1'  => "'Sie finden das Medium im Lesesaal 1 (LS1) im Regal '+loc_shelf+'.'",
+                'loc-modal_foot-shelf_ls1'  => "JUST MAYBE (Imagelink)",
+                'loc-info_inline-shelf_ls2' => "'Sie finden das Medium im Lesesaal 2 (LS2) im Regal '+loc_shelf+'.'",
+                'loc-modal_title-shelf_ls2' => "Signatur: ' + result.callnumber + ' (' + result.bestOptionLocation + ')",
+                'loc-modal_body-shelf_ls2'  => "'Sie finden das Medium im Lesesaal 2 (LS2) im Regal '+loc_shelf+'.'",
+                'loc-modal_foot-shelf_ls2'  => "JUST MAYBE (Imagelink)",
+            // Shelves & Reference only
+                'loc-info_inline-sem'   => "'Semsterapparat im Lesesaal 2 '+loc_shelf+'.'\nBitte beachten Sie, dass dieses Exemplar nur innerhalb der Bibliothek nutzbar ist.'",
+                'loc-modal_title-sem'   => "Signatur: ' + result.callnumber + ' (' + result.bestOptionLocation + ')",
+                'loc-modal_body-sem'    => "'Semsterapparat im Lesesaal 2 '+loc_shelf+'.'\nBitte beachten Sie, dass dieses Exemplar nur innerhalb der Bibliothek nutzbar ist.'",
+                'loc-modal_foot-sem'    => "JUST MAYBE (Imagelink)",
+                'loc-info_inline-ref'   => "HMM",
+                'loc-modal_title-ref'   => "Signatur: ' + result.callnumber + ' (' + result.bestOptionLocation + ')",
+                'loc-modal_body-ref'    => "HMM",
+                'loc-modal_foot-ref'    => "JUST MAYBE (Imagelink)",
+            // Special locations (more under Service Desk and Local)
+                'loc-info_inline-so'    => "'Dienstapparat. Bitte bei Personal erkundigen.'",
+            // E-Only
+                'loc-info_inline-eonly' => "'Elektronische Ausgabe. Evtl. nur im TUHH-Intranet verfügbar.'",
+                'loc-modal_title-eonly' => "' + result.bestOptionLocation + '",
+                'loc-modal_body-eonly'  => "'Elektronische Ausgabe. Evtl. nur im TUHH-Intranet verfügbar.'",
+                'loc-modal_foot-eonly'  => "'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.'",
+            // Order from closed stack
+                'loc-info_inline-order' => "'Magazinbestellung (Medium innerhalb von 30 Minuten an der Ausleihtheke erhalten)'",
+                'loc-modal_title-order' => "'Magazinbestellung'",
+                'loc-modal_body-order'  => "'Das Medium befindet sich im Magazin. Nach dem Bestellen können Sie es in 30 Minuten an den Serviceplätzen abholen'",
+                'loc-modal_foot-order'  => "JUST MAYBE (enable/disable iframe)",
+            // Reserve
+                'loc-info_inline-reserve'   => "'Medium vormerken (verfügbar ab '+result.duedate+')'",
+                'loc-modal_title-reserve'   => ""'Medium vormerken (verfügbar ab '+result.duedate+')'",",
+                'loc-modal_body-reserve'    => "'Das Medium ist derzeit entliehen. Sie können es vormerken. Beachten Sie, dass Gebühren von 0,80 EUR entstehen.'",
+                'loc-modal_foot-reserve'    => "JUST MAYBE (enable/disable iframe)",
+            // Service desk (DA)
+                'loc-info_inline-service_da'   => "Dienstapparat-Exemplar: Nicht entleihbar",
+                'loc-modal_title-service_da'   => "Dienstapparat-Exemplar: Nicht entleihbar",
+                'loc-modal_body-service_da'    => "'Das Medium befindet sich im Dienstapparat eines Instituts und ist nicht entleihbar. Sollten Sie dennoch dringenden Bedarf an genau diesem Buch haben: <ul><li>Wenden Sie sich an den Serviceplatz</li><li>Oder schreiben Sie uns eine Mail mit dem Betreff \"DA '+result.callnumber+'\" an bibliothek@tuhh.de [HIER GLEICH FORMULAR REIN]</li><li>Oder rufen Sie uns an xyz</li></ul>Ganz eilig?<ul><li>Prüfen Sie selber, ob evtl. eine andere Ausgabe verfügbar ist (wenn wir geRDAt sind, sagen wir Ihnen das hier direkt)</li><li>Erstellen Sie einen <x href="#">Buchwunsch</x></li></ul>'",
+                'loc-modal_foot-service_da'    => "",
+            // Service desk (other cases)
+                'loc-info_inline-service_else'   => "Exemplarstatus unbekannt",
+                'loc-modal_title-service_else'   => "Exemplarstatus unbekannt",
+                'loc-modal_body-service_else'    => "'Das Medium befindet sich im Dienstapparat eines Instituts und ist nicht entleihbar. Sollten Sie dennoch dringenden Bedarf an genau diesem Buch haben: <ul><li>Wenden Sie sich an den Serviceplatz</li><li>Oder schreiben Sie uns eine Mail mit dem Betreff \"DA '+result.callnumber+'\" an bibliothek@tuhh.de [HIER GLEICH FORMULAR REIN]</li><li>Oder rufen Sie uns an xyz</li></ul>Ganz eilig?<ul><li>Prüfen Sie selber, ob evtl. eine andere Ausgabe verfügbar ist (wenn wir geRDAt sind, sagen wir Ihnen das hier direkt)</li><li>Erstellen Sie einen <x href="#">Buchwunsch</x></li></ul>'",
+                'loc-modal_foot-service_else'    => "'Der Status des Mediums ist unklar. Bitte<ul><li>Wenden Sie sich an den Serviceplatz</li><li>Oder schreiben Sie uns eine Mail mit dem Betreff \"DA '+result.callnumber+'\" an bibliothek@tuhh.de [HIER GLEICH FORMULAR REIN]</li><li>Oder rufen Sie uns an xyz</li></ul>Ganz eilig?<ul><li>Prüfen Sie selber, ob evtl. eine andere Ausgabe verfügbar ist (wenn wir geRDAt sind, sagen wir Ihnen das hier direkt)</li><li>Erstellen Sie einen <x href=#>Buchwunsch</x></li></ul>'"
+*/        
+      }
+
+      // Session keep-alive
+      if ($this->KeepAlive()) {
+          $this->headScript()->appendScript('var keepAliveInterval = '
+            . $this->KeepAlive());
+          $this->headScript()->appendFile("keep_alive.js");
+      }
+    ?>
+    <?=$this->headScript()?>
+
+    <?
+    // Get Wordpress-Theme head
+    echo file_get_contents('https://www.tub.tuhh.de/ext/wp-frame/index.php?blog_element=head&mylang='.$this->layout()->userLang);
+    ?>
+  </head>
+<!--
+  body
+  Use Wordpress-Theme body instead; add missing "content" div (style="background-color: transparent" ...) -->
+<!--    span id="wp-head" role="banner" class="hidden-print">-->
+      <? echo file_get_contents('https://www.tub.tuhh.de/ext/wp-frame/index.php?blog_element=body&mylang='.$this->layout()->userLang); ?>
+<!--    /span>-->
+  <div id="primary">
+<!-- End Wordpress -->
+
+    <? // Set up the search box -- there are three possible cases:
+      // 1. No search box was set; we should default to the normal box
+      // 2. It was set to false; we should display nothing
+      // 3. It is set to a custom string; we should display the provided version
+      // Set up default search box if no data was provided from the template;
+      // this covers case 1.  Cases 2 and 3 are then covered by logic below.
+      if (!isset($this->layout()->searchbox)) {
+        $this->layout()->searchbox = $this->render('search/searchbox.phtml');
+      }
+    ?>
+    
+    <header role="banner" class="hidden-print">
+      <div class="container navbar">
+        <a class="sr-only" href="#content"><?=$this->transEsc('Skip to content') ?></a>
+        <?=$this->render('header.phtml')?>
+      </div>
+      <div class="container">
+        <nav class="nav searchbox hidden-lg hidden-print">
+          <?=$this->layout()->searchbox ?>
+        </nav>
+        <? if((!isset($this->layout()->showBreadcrumbs) || $this->layout()->showBreadcrumbs == true)
+          && !empty($this->layout()->breadcrumbs)
+          && $this->layout()->breadcrumbs !== false
+        ): ?>
+          <ul class="breadcrumb hidden-print">
+          <? if(is_array($this->layout()->breadcrumbs)): ?>
+            <? if(count($this->layout()->breadcrumbs) > 1): ?>
+              <?=$this->render('breadcrumbs/multi.phtml', array(
+                  'parents' => $this->layout()->breadcrumbs,
+                  'title'   => $this->layout()->title,
+                  'end'     => $this->layout()->breadcrumbEnd,
+                  'from'    => $this->layout()->from
+                )) ?>
+            <? else: ?>
+              <?=$this->render('breadcrumbs/default.phtml', array(
+                  'parents' => $this->layout()->breadcrumbs,
+                  'title'   => $this->layout()->title
+                )) ?>
+            <? endif; ?>
+          <? else: ?>
+            <?=$this->layout()->breadcrumbs ?>
+          <? endif; ?>
+          </ul>
+        <? endif; ?>
+      </div>
+    </header>
+    <div role="main" class="main template-dir-<?=$this->templateDir?> template-name-<?=$this->templateName?>">
+      <div class="container">
+        <?=$this->layout()->content ?>
+      </div>
+    </div>
+    <footer role="contentinfo" class="hidden-print">
+      <div class="container">
+        <?=$this->render('footer.phtml')?>
+        <?=$this->layout()->poweredBy ?>
+      </div>
+    </footer>
+
+    <!-- MODAL IN CASE WE NEED ONE -->
+    <div id="modal" class="modal fade hidden-print" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 id="modalTitle" class="modal-title"></h4>
+          </div>
+          <div class="modal-body"><?=$this->transEsc('Loading') ?>...</div>
+        </div>
+      </div>
+    </div>
+    <?=$this->googleanalytics()?>
+    <?=$this->piwik()?>
+  <!-- START close Wordpress (?) -->
+    </div>
+    <? echo '</div></div>' ?>
+  <!-- END close Wordpress (?) -->
+  </body>
+</html>

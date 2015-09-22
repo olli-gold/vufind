@@ -96,6 +96,7 @@ abstract class AbstractCover
             ($this->supportsIsbn && isset($ids['isbn']))
             || ($this->supportsIssn && isset($ids['issn']))
             || ($this->supportsOclc && isset($ids['oclc']))
+            || ($this->supportsPpn && isset($ids['ppn']))
             || ($this->supportsUpc && isset($ids['upc']));
     }
 

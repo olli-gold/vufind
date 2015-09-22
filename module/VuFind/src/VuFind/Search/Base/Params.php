@@ -734,11 +734,15 @@ class Params implements ServiceLocatorAwareInterface
     }
 
     /**
+<<<<<<< HEAD
+     * Detects if a filter is advanced (true) or simple (false)
+=======
      * Detects if a filter is advanced (true) or simple (false). An advanced
      * filter is currently defined as one surrounded by parentheses, while a
      * simple filter is of the form field:value. Advanced filters are used to
      * express more complex queries, such as combining multiple values from
      * multiple fields using boolean operators.
+>>>>>>> master
      *
      * @param string $filter A filter string
      *

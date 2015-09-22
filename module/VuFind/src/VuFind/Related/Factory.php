@@ -69,6 +69,30 @@ class Factory
     }
 
     /**
+     * Factory for Similar module.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return Similar
+     */
+    public static function getSimilarIndex(ServiceManager $sm)
+    {
+        return new SimilarIndex($sm->getServiceLocator()->get('VuFind\Search'));
+    }
+
+    /**
+     * Factory for Primo's FRBR module.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return PrimoFrbr
+     */
+    public static function getPrimoFrbr(ServiceManager $sm)
+    {
+        return new PrimoFrbr($sm->getServiceLocator()->get('VuFind\Search'));
+    }
+
+    /**
      * Factory for WorldCatEditions module.
      *
      * @param ServiceManager $sm Service manager.

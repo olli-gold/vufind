@@ -355,7 +355,7 @@ abstract class AbstractBase implements \VuFind\Db\Table\DbTableAwareInterface,
      * @param \VuFind\Related\PluginManager $factory Related module plugin factory
      * @param array                         $types   Array of relationship types to
      * load; each entry should be a service name (i.e. 'Similar' or 'Editions')
-     * optionally followed by a colon-separated list of parameters to pass to the
+     * optionally followed by a comma-separated list of parameters to pass to the
      * constructor.  If the parameter is set to null instead of an array, default
      * settings will be loaded from config.ini.
      *
@@ -369,7 +369,7 @@ abstract class AbstractBase implements \VuFind\Db\Table\DbTableAwareInterface,
         }
         $retVal = [];
         foreach ($types as $current) {
-            $parts = explode(':', $current);
+            $parts = explode(',', $current);
             $type = $parts[0];
             $params = isset($parts[1]) ? $parts[1] : null;
             if ($factory->has($type)) {
@@ -402,6 +402,35 @@ abstract class AbstractBase implements \VuFind\Db\Table\DbTableAwareInterface,
     {
         return true;
     }
+
+    public function openURLActive($area)
+    {
+        // Doesn't matter the target area if no OpenURL resolver is specified:
+        if (!isset($this->mainConfig->OpenURL->url)) {
+            return false;
+        }
+
+        // If a setting exists, return that:
+        $key = 'show_in_' . $area;
+        if (isset($this->mainConfig->OpenURL->$key)) {
+            return $this->mainConfig->OpenURL->$key;
+        }
+
+        // If we got this far, use the defaults -- true for results, false for
+        // everywhere else.
+        return ($area == 'results');
+    }
+
+     /**
+      * Should we display regular URLs when an OpenURL is present?
+      *
+      * @return bool
+      */
+     public function replaceURLsWithOpenURL()
+     {
+        return isset($this->mainConfig->OpenURL->replace_other_urls)
+            ? $this->mainConfig->OpenURL->replace_other_urls : false;
+     }
 
     /**
      * Checks the current record if it's supported for generating COinS-OpenURLs.

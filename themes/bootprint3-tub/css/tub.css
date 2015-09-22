@@ -1,0 +1,227 @@
+.clear {
+    clear: both;
+}
+
+/* START Modding stuff so sorting button is smoothly aligned */
+.main > div:nth-child(1) > div:nth-child(1)   {padding: 0px;}    
+.search-controls  {padding: 0px !important; margin-left: -6px !important;}    
+.col-sm-6         {width: 100%; padding: 0; margin: 0; background-image: linear-gradient(to top, #FFF, #EEE);}
+.search-query     {width: 350px !important;}
+.search-submit    {padding: 3px; vertical-align: middle;}
+#searchFormKeepFilters {margin-left: 175px;}
+.breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
+.btn-primary {
+    background-color: #A8DDF0;
+    border-color: #fff;
+    color: #fff;
+    min-width: 165px;
+}
+/* END Modding stuff so sorting button is smoothly aligned */
+
+.searchbox, .breadcrumbs, .footer {
+    background-color: #fff;
+}
+
+#result0, #result2, #result4, #result6, #result8, #result10, #result12, #result14, #result16, #result18 {
+    background-color: #eff3dc;
+}
+
+.record {
+    background: none repeat scroll 0 0 #ffffff !important;
+}
+
+[name="searchForm"] .nav-tabs li.active a, [name="searchForm"] .nav-tabs li.active a:hover {
+    background: #fff none repeat scroll 0 0;
+    border-bottom: 0 none;
+    border-color: #eff3dc #eff3dc -moz-use-text-color;
+    text-decoration: none;
+    z-index: 5;
+}
+
+#searchForm_lookfor, #searchForm_type {
+    border-color: #eff3dc;
+}
+
+header .navbar .navbar-brand {
+    background-image: url("../../../themes/bootprint3-tub/images/tubfind_logo.jpg");
+    background-repeat: no-repeat;
+    color: transparent;
+    height: 53px;
+    margin-top: 5px;
+    width: 195px;
+}
+
+tbody tr:nth-child(2n) td, tbody tr.even td {
+    background: #e5ecf9 none repeat scroll 0 0;
+}
+
+table.datagrid td {
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #ffffff;
+    padding: 5px 10px;
+}
+
+table.datagrid td a {
+    color: #003366;
+}
+
+.powered-by {
+    background-image: url("../../../themes/bootprint3-tub/images/vufind_logo.png");
+    background-size: 100px;
+    background-position: right;
+    background-repeat: no-repeat;
+    height: 40px;
+}
+
+.tub_holdingguide {
+  /* customize Position of buttons span */
+}
+
+.holdlink, .holdlink:active, .holdlink:hover, .holdlink:visited {
+    background-color: #a8ddf0;
+    color: #000000;
+    border: thin solid #aaaaaa;
+    border-radius: 3px;
+    opacity: 1;
+    display: inline-block;
+    margin: 10px 0 0 2px;
+    padding: 2px;
+    width: 118px;
+    font-weight: normal;
+    text-align: center;
+    text-decoration: none;
+}
+.holdlink:active  {}
+.holdlink:visited {}
+.holdlink:hover   {text-decoration: none !important; cursor: pointer; }
+
+/* Customize button for single option */
+.holdshelf     {}
+.holdorder     {}
+.holdreserve   {}
+.holdrefonly   {}
+.holdil        {}
+.holdwish      {}
+
+.tub_fa-info_p {
+    margin-top: 14px;
+    margin-bottom: 0;
+    padding-left: 2px;  
+    cursor: pointer !important; 
+}
+.tub_fa-info_e {
+    margin-top: 4px;
+    padding-left: 2px;   
+    cursor: pointer !important;
+}
+
+.printedicon {
+    background-image: url("../../../themes/bootprint3-tub/images/icons/book.png");
+    background-position: left top;
+    background-repeat: no-repeat;
+    margin-right: 1em;
+    padding: 0 0.5em 0.5em 20px;
+}
+
+.callnumAndLocation {
+    margin-top: 5px;
+}
+
+/* TZ: z-index: Vufind */
+.modal-dialog{z-index:1050;}
+
+.tubbadge {
+    float: right;
+    font-size: 85%;
+    margin-top: 1px;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+    min-width: 10px;
+    padding: 3px 7px;
+    text-align: center;
+    vertical-align: baseline;
+    white-space: nowrap;
+}
+
+.tublabel-success {
+    color: #028302;
+}
+
+.tublabel-danger {
+    color: #a41915;
+}
+
+.tublabel-info {
+    color: #1c5f74;
+}
+
+.tub_info_topright {width: 118px; margin: 0 0 0 2px; padding: 0;} /* Same length as Volltext-Image and order buttons */
+.tub_resYear { float: right;}
+#bookbag-menu {position: absolute; bottom: 0;}
+
+/* Cover & cols layout - letztlich muss es anders gemacht werden, aber fuers zeigen... */
+div .left   {width: 17%; position: relative; min-height: 150px;}
+div .middle {width: 59%; position: relative; min-height: 150px;}
+div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15px;}
+.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 17px; text-align: center;} /* 21px/11px trifft genau bildecke */
+.recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
+
+/* remove star: http://redmine.tub.tuhh.de/issues/612
+.tub_bbplus {
+    background-image: url("../../../themes/bootprint3-tub/images/icons/star_faded.png");
+    background-position: left top;
+    background-repeat: no-repeat;
+    padding-right: 30px;
+}
+
+.tub_bbminus {
+    background-image: url("../../../themes/bootprint3-tub/images/icons/star.png");
+    background-position: left top;
+    background-repeat: no-repeat;
+    padding-right: 30px;
+}
+*/
+
+.tub_label {
+  /* Just renamed vufind class "label" to tub_label- no formatting needed */
+}
+
+.col-xs-11 {width: 99% !important;}
+
+.tub_lielement {
+    background: rgba(0, 0, 0, 0) url("../../../themes/bootprint3-tub/images/small/sprite-1.png") no-repeat scroll 10px -596px;
+    padding-left: 20px;
+}
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background: #A8DDF0 none repeat scroll 0 0;
+    border-color: #A8DDF0;
+}
+
+/* START Fix WP-Template Bugs */
+  /* Menu width */
+  #access ul ul a   {width: 188px !important;} 
+  /* TZ: z-index: spezifisches Wordpress-Theme (weit über 1000 scheint zmdst. FF zu ignorieren*/
+  .sub-menu {z-index: 1000 !important}
+  #branding {z-index: 1000 !important}
+  /* social images - strange */
+  .social img {width: 33px !important;}
+/* END FIX WP-Template Bugs */
+
+
+/* VEERY nasty hack - rethink layout with proper usage of css bootstrap http://getbootstrap.com/css/ */
+@media (max-width: 530px) {
+    .right {
+        min-height: auto !important;
+        width: 140px !important;
+        display: block !important;
+        margin-left: 130px;
+    }
+
+    #bookbag-menu {
+        position: relative;
+        bottom: auto;
+    }
+}

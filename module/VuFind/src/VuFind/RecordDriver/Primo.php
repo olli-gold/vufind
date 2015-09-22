@@ -27,6 +27,13 @@
  */
 namespace VuFind\RecordDriver;
 
+use VuFindSearch\Backend\Solr\Backend;
+use VuFindSearch\Query\Query;
+use VuFindSearch\ParamBag;
+
+use VuFind\Search\Factory\PrimoBackendFactory;
+use VuFind\Search\Factory\SolrDefaultBackendFactory;
+
 /**
  * Model for Primo Central records.
  *
@@ -75,6 +82,17 @@ class Primo extends SolrDefault
     {
         return isset($this->fields['creator'][0]) ?
             $this->fields['creator'][0] : '';
+    }
+
+    /**
+     * Get the date of publication of the record.
+     *
+     * @return string
+     */
+    public function getPublicationDate()
+    {
+        return isset($this->fields['publicationDate']) ?
+            $this->fields['publicationDate'] : '';
     }
 
     /**
@@ -216,6 +234,28 @@ class Primo extends SolrDefault
     }
 
     /**
+     * Get the series title associated with the record.
+     *
+     * @return String
+     */
+    public function getSeriesTitle()
+    {
+        return isset($this->fields['seriesTitle'])
+            ? (string)$this->fields['seriesTitle'] : '';
+    }
+
+    /**
+     * Get the FRBR id for with the record to get related items.
+     *
+     * @return String
+     */
+    public function getFrbrId()
+    {
+        return isset($this->fields['frbrid'])
+            ? (string)$this->fields['frbrid'] : '';
+    }
+
+    /**
      * Returns one of three things: a full URL to a thumbnail preview of the record
      * if an image is available in an external system; an array of parameters to
      * send to VuFind's internal cover generator if no fixed URL exists; or false
@@ -266,6 +306,17 @@ class Primo extends SolrDefault
     }
 
     /**
+     * Get the direct url to the record fulltext (if available).
+     *
+     * @return String
+     */
+    public function getDirectUrl()
+    {
+        return isset($this->fields['directurl'])
+            ? (string)$this->fields['directurl'] : '';
+    }
+
+    /**
      * Return the unique identifier of this record within the Solr index;
      * useful for retrieving additional information (like tags and user
      * comments) from the external MySQL database.
@@ -304,4 +355,346 @@ class Primo extends SolrDefault
         // Support export for EndNote and RefWorks
         return !in_array($format, ['EndNote', 'RefWorks']);
     }
+
+
+
+    public function getFrbrRecords($id, $frbrid) {
+        // cannot work without frbr-ID
+        if ($frbrid === null) return null;
+
+        $oncampus = true;
+/*        if (isset($searchSettings['AuthorizedMode']['enabled'])) {
+            if (substr($_SERVER['REMOTE_ADDR'], 0, strlen($this->authorizedIPRange)) == $this->authorizedIPRange && $searchSettings['AuthorizedMode']['enabled'] != false) {
+                $oncampus = 'true';
+            }
+        }
+*/
+
+        $params = new ParamBag();
+        $params->set('onCampus', $oncampus);
+
+        $query = new \VuFindSearch\Query\Query($frbrid);
+        $query->setHandler('frbr');
+        $q1 = $this->searchService->search('Primo', $query, 0, 0, $params);
+        $all = $q1->getTotal();
+        if ($all > 0) {
+            $results = $this->searchService->search('Primo', $query, 0, $all, $params);
+        }
+
+        $resArr = $results->getRecords();
+        foreach ($resArr as $rec) {
+            if ($rec->getUniqueId() != $id) {
+                $return[] = $rec;
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * Search for the journal, which is containing this item
+     * and check if it is available printed in local stock.
+     *
+     * @return mixed (SolrRecords or false if nothing has been found)
+     * @access public
+     */
+    public function searchArticleVolume($fieldref)
+    {
+        if (in_array('Article', $this->getFormats()) === true) {
+            $f1info = false;
+            $f2info = false;
+            $results = null;
+
+            $queryparts = array();
+
+            if (count($fieldref['issn']) > 0) {
+                $queryparts[] = 'issn:('.implode(' OR ', str_replace(' ', '', $fieldref['issn'])).')';
+            }
+            else {
+                $queryparts[] = $fieldref['title'];
+            }
+            $fieldsToSearch = '';
+            if ($fieldref['volume']) {
+                $f1info = true;
+                $fieldsToSearch .= $fieldref['volume'].'.';
+            }
+            if ($fieldref['date']) {
+                $f2info = true;
+                $fieldsToSearch .= $fieldref['date'];
+                // the given year should always match in publishDate
+                $queryparts[] = 'publishDate:'.$fieldref['date'];
+            }
+            if ($fieldsToSearch) {
+                $queryparts[] = $fieldsToSearch;
+            }
+            if ($f1info && $f2info) {
+                $queryparts[] = 'format:(Book OR "Serial Volume")';
+            }
+            else {
+                // not sure what to search since the volume and year reference are missing, so just search the main journal record
+                $queryparts[] = 'format:Journal';
+            }
+            // Assemble the query parts and filter out current record:
+            $query = implode(" AND ", $queryparts);
+             $searchQ = '('.$query.')';
+
+            $hiddenFilters = null;
+            // Get filters from config file
+            if (isset($this->recordConfig->Printed->local_filters)) {
+                $hiddenFilters = $this->recordConfig->Printed->local_filters->toArray();
+            }
+
+            $params = new ParamBag();
+            if ($hiddenFilters) {
+                $params->set('fq', $hiddenFilters);
+            }
+
+            $query = new \VuFindSearch\Query\Query($searchQ);
+            $q1 = $this->searchService->search('Solr', $query, 0, 0, $params);
+            $all = $q1->getTotal();
+            if ($all > 0) {
+                $results = $this->searchService->search('Solr', $query, 0, $all, $params);
+            }
+
+            // If we got no results, do another query with the title instead of ISSN - but only if we have volume information
+            if ($all == 0 && $f2info == true && $f1info == true) {
+                $altqueryparts = array();
+                $altqueryparts[] = $fieldref['title'];
+                // the given year should always match in publishDate
+                $altqueryparts[] = 'publishDate:'.$fieldref['date'];
+                $altqueryparts[] = $fieldsToSearch;
+                $altqueryparts[] = 'format:(Book OR "Serial Volume")';
+                // Assemble the query parts and filter out current record:
+                $altquery = implode(" AND ", $altqueryparts);
+                $altquery = '('.$altquery.')';
+
+                // We need new ParamBags for each query! If we use the old ParamBag, the result is taken from Cache
+                $p2 = new ParamBag();
+                if ($hiddenFilters) {
+                    $p2->set('fq', $hiddenFilters);
+                }
+
+                $aquery = new \VuFindSearch\Query\Query($altquery);
+                $q2 = $this->searchService->search('Solr', $aquery, 0, 0, $p2);
+                $all2 = $q2->getTotal();
+                if ($all2 > 0) {
+                    $results = $this->searchService->search('Solr', $aquery, 0, $all2, $p2);
+                }
+            }
+
+            // If we STILL got no results, do another query with the ISSN and format:Journal, just to show, that we have the Journal
+            if ($all == 0) {
+                $naltqueryparts = array();
+                if (count($fieldref['issn']) > 0) {
+                    $naltqueryparts[] = 'issn:('.implode(' OR ', str_replace(' ', '', $fieldref['issn'])).')';
+                    $naltqueryparts[] = 'format:Journal';
+                    // Assemble the query parts and filter out current record:
+                    $naltquery = implode(" AND ", $naltqueryparts);
+                    $naltquery = '('.$naltquery.')';
+
+                    $p3 = new ParamBag();
+                    if ($hiddenFilters) {
+                        $p3->set('fq', $hiddenFilters);
+                    }
+
+                    $naquery = new \VuFindSearch\Query\Query($naltquery);
+                    $q3 = $this->searchService->search('Solr', $naquery, 0, 0, $p3);
+                    $all3 = $q3->getTotal();
+                    if ($all3 > 0) {
+                        $results = $this->searchService->search('Solr', $naquery, 0, $all3, $p3);
+                    }
+                }
+            }
+
+            // And now try to narrow it down again: if we have found the journal's PPN, try to find it as ppnlink in connection with the volume information
+            // This is necessary if the journal volume has no ISSN in catalog
+            if ($all3 > 0) {
+                $parentID = $results->getRecords()[0]->getUniqueID();
+
+                $nnaltqueryparts = array();
+                $nnaltqueryparts[] = 'ppnlink:'.$parentID;
+                if ($fieldsToSearch) {
+                    $nnaltqueryparts[] = $fieldsToSearch;
+                }
+                $nnaltqueryparts[] = 'format:(Book OR "Serial Volume")';
+                // Assemble the query parts and filter out current record:
+                $nnaltquery = implode(" AND ", $nnaltqueryparts);
+                $nnaltquery = '('.$nnaltquery.')';
+
+                $p4 = new ParamBag();
+                if ($hiddenFilters) {
+                    $p4->set('fq', $hiddenFilters);
+                }
+
+                $nnaquery = new \VuFindSearch\Query\Query($nnaltquery);
+                $q4 = $this->searchService->search('Solr', $nnaquery, 0, 0, $p4);
+                $all4 = $q4->getTotal();
+                if ($all4 > 0) {
+                    $results = $this->searchService->search('Solr', $nnaquery, 0, $all4, $p4);
+                    return $results->getRecords();
+                }
+            }
+
+            return ($results) ? $results->getRecords() : false;
+
+        }
+        return false;
+    }
+
+    /**
+     * Check if the ebook is available printed in local stock.
+     *
+     * @return bool
+     * @access protected
+     */
+    public function searchPrintedEbook($fieldref)
+    {
+        if (in_array('Book', $this->getFormats()) === true || in_array('book_chapter', $this->getFormats()) === true) {
+            $isbnsearch = false;
+            $results = null;
+
+            $queryparts = array();
+            $queryparts[] = trim(addslashes($fieldref['title']));
+            if (count($fieldref['isbn']) > 0) {
+                $isbnsearch = true;
+                $queryparts[] = 'isbn:('.implode(' OR ', $fieldref['isbn']).')';
+            }
+            if ($isbnsearch === false) {
+                $queryparts[] = 'title:("'.trim(addslashes($fieldref['title'])).'")';
+
+                if ($fieldref['date']) {
+                    $queryparts[] = 'publishDate:'.$fieldref['date'];
+                }
+                if ($fieldref['author']) {
+                    $queryparts[] = 'author:"'.addslashes($fieldref['author']).'"';
+                }
+            }
+            $queryparts[] = '(format:Book OR format:"Serial Volume")';
+            // Assemble the query parts and filter out current record:
+            $query = implode(" AND ", $queryparts);
+            $searchQ = '('.$query.')';
+            //$query = '(ppnlink:'.$rid.' AND '.$fieldref.')';
+
+            $hiddenFilters = null;
+            // Get filters from config file
+            if (isset($this->recordConfig->Printed->local_filters)) {
+                $hiddenFilters = $this->recordConfig->Printed->local_filters->toArray();
+            }
+
+            $params = new ParamBag();
+            if ($hiddenFilters) {
+                $params->set('fq', $hiddenFilters);
+            }
+
+            $query = new \VuFindSearch\Query\Query($searchQ);
+            $q1 = $this->searchService->search('Solr', $query, 0, 0, $params);
+            $all = $q1->getTotal();
+            if ($all > 0) {
+                $results = $this->searchService->search('Solr', $query, 0, $all, $params);
+            }
+
+            return ($results) ? $results->getRecords() : false;
+        }
+        return false;
+    }
+
+    /**
+     * Check if at least one article for this item exists.
+     * Method to keep performance lean in core.tpl.
+     *
+     * @return bool
+     * @access protected
+     */
+    public function searchGBVPPN($ppn)
+    {
+        $index = $this->getIndexEngine();
+
+        $query = 'id:'.$ppn;
+
+        $result = $index->search($query, null, null, 0, 1, null, '', null, null, '',  HTTP_REQUEST_METHOD_POST, false, false, false);
+
+        return ($result['response'] > 0) ? $result['response'] : false;
+    }
+
+    /**
+     * Get the container record id.
+     *
+     * @return string Container record id (empty string if none)
+     */
+    public function getContainerRecordID() {
+        $articleFieldedRef = $this->getArticleFieldedReference();
+        $vol = $this->searchArticleVolume($articleFieldedRef);
+        $containerID = null;
+        if ($vol && count($vol) >= 1) {
+            $containerID = $vol[0]->getUniqueID();
+        }
+        return $containerID;
+    }
+
+    /**
+     * Get the container record id.
+     *
+     * @return string Container record id (empty string if none)
+     */
+    public function getPrintedEbookRecordID() {
+        $fieldedRef = $this->getEbookFieldedReference();
+        $ref = $this->searchPrintedEbook($fieldedRef);
+        $ebookID = null;
+        if ($ref && count($ref) >= 1) {
+            $ebookID = $ref[0]->getUniqueID();
+        }
+        return $ebookID;
+    }
+
+    /**
+     * TUBHH Enhancement for GBV Discovery
+     * Return the reference of one article
+     * An array will be returned with keys=volume, issue, startpage [spage], endpage [epage] and publication year [date].
+     *
+     * @access  public
+     * @return  array
+     */
+    public function getArticleFieldedReference()
+    {
+        $retVal = array();
+        $retVal['volume'] = $this->getContainerVolume();
+        $retVal['issue'] = $this->getContainerIssue();
+        $retVal['spage'] = $this->getContainerStartPage();
+        $retVal['epage'] = $this->getContainerEndPage();
+        $retVal['date'] = $this->getPublicationDate();
+        $retVal['title'] = $this->getContainerTitle();
+        $retVal['issn'] = $this->getISSNs();
+#        $retVal['edition'] = $this->fields['edition'];
+        return $retVal;
+    }
+
+    /** 
+     * TUBHH Enhancement for GBV Discovery
+     * Return the reference of an eBook
+     * An array will be returned with keys=title, publication year [date], isbn and author.
+     *
+     * @access  public
+     * @return  array
+     */
+    public function getEbookFieldedReference()
+    {
+        $retVal = array();
+        $retVal['title'] = $this->getTitle();
+        $retVal['date'] = $this->getPublicationDate();
+        $retVal['isbn'] = $this->getISBNs();
+        $retVal['author'] = $this->getPrimaryAuthor();
+        return $retVal;
+    }
+
+    /**
+     * Returns true if the record supports real-time AJAX status lookups.
+     *
+     * @return bool
+     */
+    public function supportsAjaxStatus()
+    {
+        return true;
+    }
+
+
 }

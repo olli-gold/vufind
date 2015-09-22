@@ -1,0 +1,57 @@
+<?
+    // Set page title.
+    $this->headTitle($this->translate('Tomes/Volumes') . ': ' . $this->driver->getBreadcrumb());
+
+    // Grab review data:
+    $vols = $this->tab->getContent();
+
+/*
+    foreach ($vols as $c) {
+        echo $c->getTitle()[0]."<br/>";
+    }
+*/
+?>
+<? if (count($vols) > 0): ?>
+  <table class="datagrid extended">
+    <colgroup>
+      <col style="width: 10%;">
+      <col style="width: 60%;">
+      <col style="width: 30%;">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Band</th>
+        <th>Titel</th>
+        <th>Jahr</th>
+      </tr>
+    </thead>
+    <tbody>
+  <? foreach ($vols as $data): ?>
+    <tr>
+    <td><a href="<?=$this->recordLink()->getUrl($data)?>"><?=$data->getVolumeInformation()?></a></td>
+    <td>
+    <?
+        $t = $data->getTitle();
+        $s = $t;
+        if (is_array($t) === true) {
+            $s = $t[0];
+        }
+    ?>
+    <a href="<?=$this->recordLink()->getUrl($data)?>">
+    <?=$this->escapeHtml($s)?>
+    <?
+        $ed = $data->getEditionsFromMarc();
+        if (count($ed) > 0) {
+            echo $ed[0];
+        }
+    ?>
+    </a>
+    </td>
+    <td><a href="<?=$this->recordLink()->getUrl($data)?>"><?=$data->getPublicationDates()[0]?></a></td>
+    </tr>
+  <? endforeach; ?>
+  </tbody>
+  </table>
+<? else: ?>
+  <?=$this->transEsc('No volumes were found for this record')?>.
+<? endif; ?>

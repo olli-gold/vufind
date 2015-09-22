@@ -1,0 +1,14 @@
+<? $searchTabs = $this->searchtabs($this->searchClassId, $this->lookfor, $this->searchIndex, $this->searchType); ?>
+<? if (count($searchTabs) > 0): ?>
+  <ul class="nav nav-tabs">
+  <? foreach ($searchTabs as $tab): ?>
+    <li<?=$tab['label']=="tab_articles" ? ' class="articles' : ' class="books'?> 
+      <?=$tab['selected'] ? ' active"' : '"'?>>
+      <a href="<?=$tab['selected'] ? '' : $this->escapeHtmlAttr($tab['url'])?>">
+      <?=$this->transEsc($tab['label']); ?>
+      <span id="<?=$tab['label']=="tab_articles" ? 'hitsprimo' : 'hitsgbv'?>" class="matches <?=$tab['selected'] ? 'active"' : '"'?>><?=$tab['selected'] ? '('.$this->localizedNumber($this->results->getResultTotal()).')' : ''?></span>
+      </a>
+    </li>
+  <? endforeach; ?>
+  </ul>
+<? endif; ?>

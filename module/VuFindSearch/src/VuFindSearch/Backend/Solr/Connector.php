@@ -143,6 +143,16 @@ class Connector implements \Zend\Log\LoggerAwareInterface
     }
 
     /**
+     * (Re)Set the Solr URL.
+     *
+     * @return void
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+    }
+
+    /**
      * Return handler map.
      *
      * @return HandlerMap
@@ -188,6 +198,7 @@ class Connector implements \Zend\Log\LoggerAwareInterface
      * Uses MoreLikeThis Request Handler
      *
      * @param string   $id     Id of given record
+     * @param string   $altidx URL of the alternative index (without http://)
      * @param ParamBag $params Parameters
      *
      * @return string
@@ -202,7 +213,45 @@ class Connector implements \Zend\Log\LoggerAwareInterface
         $handler = $this->map->getHandler(__FUNCTION__);
         $this->map->prepare(__FUNCTION__, $params);
 
-        return $this->query($handler, $params);
+        $return = $this->query($handler, $params);
+
+        return $return;
+    }
+
+    /**
+     * Return records similar to a given record specified by id.
+     *
+     * Uses MoreLikeThis Request Handler
+     *
+     * @param string   $id     Id of given record
+     * @param string   $altidx URL of the alternative index (without http://)
+     * @param ParamBag $params Parameters
+     *
+     * @return string
+     */
+    public function similarAltIdx($id, $altidx = null, ParamBag $params = null)
+    {
+        $params = $params ?: new ParamBag();
+        $params
+            ->set('q', sprintf('%s:"%s"', $this->uniqueKey, addcslashes($id, '"')));
+        $params->set('qt', 'morelikethis');
+
+        $handler = $this->map->getHandler(__FUNCTION__);
+        $this->map->prepare(__FUNCTION__, $params);
+
+        $originalUrl = $this->url;
+
+        // Set the URL to query to a temporary one (for the special similar index)
+        if ($altidx !== null) {
+            $this->url = $altidx;
+        }
+
+        $return = $this->query($handler, $params);
+
+        // Reset the URL to the original one
+        $this->url = $originalUrl;
+
+        return $return;
     }
 
     /**
@@ -252,26 +301,25 @@ class Connector implements \Zend\Log\LoggerAwareInterface
         if (count($params) > 0) {
             $urlSuffix .= '?' . implode('&', $params->request());
         }
-        $callback = function ($client) use ($document, $format) {
-            switch ($format) {
-            case 'xml':
-                $client->setEncType('text/xml; charset=UTF-8');
-                $body = $document->asXML();
-                break;
-            case 'json':
-                $client->setEncType('application/json');
-                $body = $document->asJSON();
-                break;
-            default:
-                throw new InvalidArgumentException(
-                    "Unable to serialize to selected format: {$format}"
-                );
-            }
-            $client->setRawBody($body);
-            $client->getRequest()->getHeaders()
-                ->addHeaderLine('Content-Length', strlen($body));
-        };
-        return $this->trySolrUrls('POST', $urlSuffix, $callback);
+        $client = $this->createClient(null, 'POST');
+        switch ($format) {
+        case 'xml':
+            $client->setEncType('text/xml; charset=UTF-8');
+            $body = $document->asXML();
+            break;
+        case 'json':
+            $client->setEncType('application/json');
+            $body = $document->asJSON();
+            break;
+        default:
+            throw new InvalidArgumentException(
+                "Unable to serialize to selected format: {$format}"
+            );
+        }
+        $client->setRawBody($body);
+        $client->getRequest()->getHeaders()
+            ->addHeaderLine('Content-Length', strlen($body));
+        return $this->trySolrUrls($client, $urlSuffix);
     }
 
     /**
@@ -349,34 +397,36 @@ class Connector implements \Zend\Log\LoggerAwareInterface
         $paramString = implode('&', $params->request());
         if (strlen($paramString) > self::MAX_GET_URL_LENGTH) {
             $method = Request::METHOD_POST;
-            $callback = function ($client) use ($paramString) {
-                $client->setRawBody($paramString);
-                $client->setEncType(HttpClient::ENC_URLENCODED);
-                $client->setHeaders(['Content-Length' => strlen($paramString)]);
-            };
         } else {
             $method = Request::METHOD_GET;
+        }
+
+        if ($method === Request::METHOD_POST) {
+            $client = $this->createClient(null, $method);
+            $client->setRawBody($paramString);
+            $client->setEncType(HttpClient::ENC_URLENCODED);
+            $client->setHeaders(['Content-Length' => strlen($paramString)]);
+        } else {
             $urlSuffix .= '?' . $paramString;
-            $callback = null;
+            $client = $this->createClient(null, $method);
         }
 
         $this->debug(sprintf('Query %s', $paramString));
-        return $this->trySolrUrls($method, $urlSuffix, $callback);
+        return $this->trySolrUrls($client, $urlSuffix);
     }
 
     /**
      * Try all Solr URLs until we find one that works (or throw an exception).
      *
-     * @param string   $method    HTTP method to use
-     * @param string   $urlSuffix Suffix to append to all URLs tried
-     * @param Callable $callback  Callback to configure client (null for none)
+     * @param HttpClient $client    Prepared HTTP client
+     * @param string     $urlSuffix Suffix to append to all URLs tried.
      *
      * @return string Response body
      *
      * @throws RemoteErrorException  SOLR signaled a server error (HTTP 5xx)
      * @throws RequestErrorException SOLR signaled a client error (HTTP 4xx)
      */
-    protected function trySolrUrls($method, $urlSuffix, $callback = null)
+    protected function trySolrUrls($client, $urlSuffix)
     {
         // This exception should never get thrown; it's just a safety in case
         // something unanticipated occurs.
@@ -384,10 +434,7 @@ class Connector implements \Zend\Log\LoggerAwareInterface
 
         // Loop through all base URLs and try them in turn until one works.
         foreach ((array)$this->url as $base) {
-            $client = $this->createClient($base . $urlSuffix, $method);
-            if (is_callable($callback)) {
-                $callback($client);
-            }
+            $client->setUri($base . $urlSuffix);
             try {
                 return $this->send($client);
             } catch (\Exception $ex) {
@@ -436,7 +483,7 @@ class Connector implements \Zend\Log\LoggerAwareInterface
     /**
      * Create the HTTP client.
      *
-     * @param string $url    Target URL
+     * @param string $url    Target URL (null to leave unset)
      * @param string $method Request method
      *
      * @return HttpClient
@@ -446,7 +493,9 @@ class Connector implements \Zend\Log\LoggerAwareInterface
         $client = new HttpClient();
         $client->setAdapter($this->adapter);
         $client->setOptions(['timeout' => $this->timeout]);
-        $client->setUri($url);
+        if (null !== $url) {
+            $client->setUri($url);
+        }
         $client->setMethod($method);
         if ($this->proxy) {
             $this->proxy->proxify($client);
