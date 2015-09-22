@@ -33,8 +33,6 @@ use VuFindSearch\Feature\RetrieveBatchInterface;
 use VuFindSearch\Feature\RandomInterface;
 use VuFindSearch\Backend\Exception\BackendException;
 use VuFindSearch\Response\RecordCollectionInterface;
-use VuFindSearch\Backend\Solr\Connector;
-use VuFindSearch\Backend\Solr\Backend;
 
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventManager;
@@ -299,38 +297,6 @@ class Service
                 throw new BackendException("$backend does not support similar()");
             }
             $response = $backendInstance->similar($id, $params);
-        } catch (BackendException $e) {
-            $this->triggerError($e, $args);
-            throw $e;
-        }
-        $this->triggerPost($response, $args);
-        return $response;
-    }
-
-    /**
-     * Return similar records from an alternative index.
-     *
-     * @param string   $backend Search backend identifier
-     * @param string   $id      Id of record to compare with
-     * @param string   $altidx  URL to a different index to use for similar operation
-     * @param ParamBag $params  Search backend parameters
-     *
-     * @return RecordCollectionInterface
-     */
-    public function similarAltIdx($backend, $id, $altidx = null, ParamBag $params = null)
-    {
-        $params  = $params ?: new ParamBag();
-        $context = __FUNCTION__;
-        $args = compact('backend', 'id', 'params', 'context');
-        $backendInstance = $this->resolve($backend, $args);
-        $args['backend_instance'] = $backendInstance;
-
-        $this->triggerPre($backendInstance, $args);
-        try {
-            if (!($backendInstance instanceof Feature\SimilarInterface)) {
-                throw new BackendException("$backend does not support similar()");
-            }
-            $response = $backendInstance->similarAltIdx($id, $altidx, $params);
         } catch (BackendException $e) {
             $this->triggerError($e, $args);
             throw $e;

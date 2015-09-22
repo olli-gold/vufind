@@ -162,6 +162,17 @@ class RecordCollection extends AbstractRecordCollection
     }
 
     /**
+     * Get raw Solr Query Time from the response.
+     *
+     * @return string
+     */
+    public function getSolrQTime()
+    {
+        return isset($this->response['responseHeader']['QTime'])
+            ? $this->response['responseHeader']['QTime'] : '';
+    }
+
+    /**
      * Extract the best matching Spellcheck query from the raw Solr input parameters.
      *
      * @return string
