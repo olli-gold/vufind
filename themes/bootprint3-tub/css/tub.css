@@ -22,6 +22,8 @@
     background-color: #fff;
 }
 
+.sort_order_hint {color: #A8DDF0;}
+
 #result0, #result2, #result4, #result6, #result8, #result10, #result12, #result14, #result16, #result18 {
     background-color: #eff3dc;
 }
