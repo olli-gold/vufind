@@ -171,7 +171,7 @@
 
 <? if ($this->driver->checkInterlibraryLoan() == '1'): ?>
     <span><a href="https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>" target="_blank"><?=$this->transEsc('interlibrary loan')?></a></span>
-    <span> | <a href="<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$openUrl?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>" target="_blank"><?=$this->transEsc('Erwerbungsvorschlag')?></a></span>
+    <span> | <a href="<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>" target="_blank"><?=$this->transEsc('Erwerbungsvorschlag')?></a></span>
 <? else: ?>
     <? if ($hasVols === true): ?>
       <a href="<?=$this->recordLink()->getTabUrl($this->driver, 'TomesVolumes')?>#tabnav"><?=$this->transEsc("See Tomes/Volumes")?></a>
