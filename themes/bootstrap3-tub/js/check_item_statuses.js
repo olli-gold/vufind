@@ -77,18 +77,37 @@ function displayHoldingGuide() {
             case 'e_only':
               // No button to show. Show only if it is no broken record
               if (result.missing_data !== true && result.bestOptionLocation != 'Unknown') {
-                loc_modal_link = '<a href="#" id="info-'+result.id+'" title="' + vufindString.loc_modal_Title_eonly+ '" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_e"></i><span data-title="' + result.bestOptionLocation + '" data-location="' + loc_abbr +'" class="modal-dialog hidden">'+loc_modal_body+'</span></a>';
+                loc_modal_link = create_modal(id          = result.id, 
+                                              loc_code    = loc_abbr,
+                                              link_title  = vufindString.loc_modal_Title_eonly,
+                                              modal_title = result.bestOptionLocation,
+                                              modal_body  = loc_modal_body,
+                                              iframe_src  = '',
+                                              modal_foot  = '',
+                                              icon_class  = 'tub_fa-info_e');
                 bestOption = loc_modal_link;
               }
               break;
             case 'shelf': //fa-hand-lizard-o is nice too (but only newest FA)
               loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="' + loc_modal_body + '" class="fa fa-map-marker holdlink holdshelf"> ' + loc_abbr + ' ' + result.callnumber + '</a>';
-              loc_modal_link = '<a href="#" id="info-'+result.id+'" title="' + loc_modal_body+ '" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="' + loc_modal_title + '" data-location="' + loc_abbr +'" class="modal-dialog hidden">'+loc_modal_body+'</span></a>';
+              loc_modal_link = create_modal(id          = result.id, 
+                                            loc_code    = loc_abbr,
+                                            link_title  = loc_modal_body,
+                                            modal_title = loc_modal_title,
+                                            modal_body  = loc_modal_body,
+                                            iframe_src  = '',
+                                            modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
               break;
             case 'order':
               loc_button    = '<a href="'+result.bestOptionHref+'" target="_blank" title="'+vufindString.loc_btn_Hover_order+'" class="fa fa-upload holdlink holdorder"> '+vufindString.hold_place+'</a>';
-              loc_modal_link = '<a href="#" id="info-'+result.id+'" title="'+vufindString.loc_btn_Hover_order+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="'+vufindString.loc_modal_Title_order+'" data-location="Magazin" data-iframe="'+result.bestOptionHref+'" class="modal-dialog hidden">'+vufindString.loc_modal_Body_order+'</span></a>';
+              loc_modal_link = create_modal(id          = result.id, 
+                                            loc_code    = 'Magazin',
+                                            link_title  = vufindString.loc_btn_Hover_order,
+                                            modal_title = vufindString.loc_modal_Title_order,
+                                            modal_body  = vufindString.loc_modal_Body_order,
+                                            iframe_src  = result.bestOptionHref,
+                                            modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
               break;
             case 'reserve_or_local':
@@ -96,28 +115,51 @@ function displayHoldingGuide() {
             case 'reserve':
               title = vufindString.loc_modal_Title_reserve + result.duedate;
               loc_button    = '<a href="'+result.bestOptionHref+'" target="_blank" title="'+title+'" class="fa fa-clock-o holdlink holdreserve"> '+vufindString.recall_this+'</a>';
-              loc_modal_link = '<a href="#" id="info-'+result.id+'-r" title="'+title+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="'+title+'" data-location="Loaned" data-iframe="'+result.bestOptionHref+'" class="modal-dialog hidden">'+vufindString.loc_modal_Body_reserve+'</span></a>';
+              loc_modal_link = create_modal(id          = result.id, 
+                                            loc_code    = 'Loaned',
+                                            link_title  = title,
+                                            modal_title = title,
+                                            modal_body  = vufindString.loc_modal_Body_reserve,
+                                            iframe_src  = result.bestOptionHref,
+                                            modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
               if (result.patronBestOption !== 'reserve_or_local') break;
             case 'local':
               // Todo: is it necessary to use result.reference_callnumber and result.reference_location. It might be...?
               title = loc_modal_body+ '\n' + vufindString.loc_modal_Title_refonly_generic;
               loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="'+title+'" class="fa fa-home holdlink holdrefonly"> ' + loc_abbr + ' ' + result.callnumber + '</a>';
-              loc_modal_link = '<a href="#" id="info-'+result.id+'-l" title="'+title+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="' + loc_modal_title + '" data-location="' + loc_abbr +'" class="modal-dialog hidden">'+loc_modal_body+' ' + vufindString.loc_modal_Title_refonly_generic + '</span></a>';
+              loc_modal_link = create_modal(id          = result.id, 
+                                            loc_code    = loc_abbr,
+                                            link_title  = title,
+                                            modal_title = loc_modal_title,
+                                            modal_body  = loc_modal_body+' ' + vufindString.loc_modal_Title_refonly_generic,
+                                            iframe_src  = '',
+                                            modal_foot  = '');
               bestOption = bestOption + loc_button + ' ' + loc_modal_link;
               break;
             case 'service_desk':
               loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="'+vufindString.loc_modal_Title_service_da+'" class="fa fa-frown-o holdlink"> SO ' + result.callnumber + '</a>';
-              loc_modal_link = '<a href="#" id="info-'+result.id+'" title="'+vufindString.loc_modal_Title_service_da+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="'+vufindString.loc_modal_Title_service_da+'" data-location="DA" class="modal-dialog hidden">'+ vufindString.loc_modal_Body_service_da +'</span></a>';
+              loc_modal_link = create_modal(id          = result.id, 
+                                            loc_code    = loc_abbr,
+                                            link_title  = vufindString.loc_modal_Title_service_da,
+                                            modal_title = vufindString.loc_modal_Title_service_da,
+                                            modal_body  = vufindString.loc_modal_Body_service_da,
+                                            iframe_src  = '',
+                                            modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
               break;
             case 'false':
               // Remove the "Loading..." - bestoption is and stays empty
               break;
             default:
-              title = 'Exemplarstatus unbekannt';
               loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="'+vufindString.loc_modal_Title_service_else+'" class="fa fa-frown-o holdlink"> '+vufindString.loc_modal_Title_service_else+'</a>';
-              loc_modal_link = '<a href="#" id="info-'+result.id+'" title="'+vufindString.loc_modal_Title_service_else+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="'+title+'" data-location="Unknown" class="modal-dialog hidden">'+vufindString.loc_modal_Body_service_else+'</span></a>';
+              loc_modal_link = create_modal(id          = result.id, 
+                                            loc_code    = 'Unknown',
+                                            link_title  = vufindString.loc_modal_Title_service_else,
+                                            modal_title = vufindString.loc_modal_Title_service_else,
+                                            modal_body  = vufindString.loc_modal_Body_service_da,
+                                            iframe_src  = '',
+                                            modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;              
           } 
 
@@ -178,6 +220,19 @@ function displayHoldingGuide() {
   }
 }
 
+
+function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_src = '', modal_foot = '', icon_class='tub_fa-info_p') {
+  var modal;
+  var iframe = '';
+  
+  if (iframe_src != '') {
+    iframe = ' data-iframe="'+iframe_src+'" ';
+  }
+  
+  modal = '<a href="#" id="info-'+id+'" title="' + link_title + '" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle '+icon_class+'"></i><span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
+  
+  return modal;
+}
 
 
 $(document).ready(function() {
