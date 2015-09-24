@@ -42,30 +42,30 @@ function displayHoldingGuide() {
           }
 
           // Some helper variables
-          var loc_plain   = 'Signatur: ' + result.callnumber + ' (' + result.bestOptionLocation + ')';
-          var loc_shelf   = result.callnumber.substring(0, 2);
           var loc_abbr;
-          var loc_info;
           var loc_button;
+          var loc_modal_title = vufindString.loc_modal_Title_shelf_generic + result.callnumber + ' (' + result.bestOptionLocation + ')';
+          var loc_modal_body;
+          var loc_shelf   = result.callnumber.substring(0, 2);
 
           // Add some additional infos for TUBHH holdings
           if (result.bestOptionLocation.indexOf('Lehr') > -1) {
-            loc_abbr = 'LBS';   loc_info = 'Sie finden das Medium in der Lehrbuchsammlung (LBS) im Regal '+loc_shelf+'. Die Lehrbuchsammlung ist im Lesesaal 1 auf der Seite des Eingangs.';
+            loc_abbr = 'LBS';   loc_modal_body = vufindString.loc_modal_Body_shelf_lbs + loc_shelf + '.';
           }
           else if (result.bestOptionLocation.indexOf('1') > -1) {
-            loc_abbr = 'LS1';   loc_info = 'Sie finden das Medium im Lesesaal 1 (LS1) im Regal '+loc_shelf+'.';
+            loc_abbr = 'LS1';   loc_modal_body = vufindString.loc_modal_Body_shelf_ls1 + loc_shelf + '.';
           }
           else if (result.bestOptionLocation.indexOf('2') > -1) {
-            loc_abbr = 'LS2';   loc_info = 'Sie finden das Medium im Lesesaal 2 (LS2) im Regal '+loc_shelf+'.';
+            loc_abbr = 'LS2';   loc_modal_body = vufindString.loc_modal_Body_shelf_ls2 + loc_shelf + '.';
           }
           else if (result.bestOptionLocation.indexOf('Sonderstandort') > -1) {
-            loc_abbr = 'SO';    loc_info = 'Dienstapparat. Bitte bei Personal erkundigen.';
+            loc_abbr = 'SO';    loc_modal_body = vufindString.loc_modal_Title_service_da;
           }
           else if (result.bestOptionLocation.indexOf('Semesterapparat') > -1) {
-            loc_abbr = 'SEM';   loc_info = 'Semsterapparat im Lesesaal 2 '+loc_shelf+'.';
+            loc_abbr = 'SEM';   loc_modal_body = vufindString.loc_modal_Body_sem + '.';
           }
           else if (result.electronic == '1') {
-            loc_abbr = 'DIG';   loc_info = 'Elektronische Ausgabe. Evtl. nur im TUHH-Intranet verfügbar.';
+            loc_abbr = 'DIG';   loc_modal_body = vufindString.loc_modal_Body_eonly;
           }
           else {
             loc_abbr = 'Umm?';
@@ -77,50 +77,48 @@ function displayHoldingGuide() {
             case 'e_only':
               // No button to show. Show only if it is no broken record
               if (result.missing_data !== true && result.bestOptionLocation != 'Unknown') {
-                loc_info_link = '<a href="#" id="info-'+result.id+'" title="' + loc_info + '" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_e"></i><span data-title="' + result.bestOptionLocation + '" data-location="' + loc_abbr +'" class="modal-dialog hidden">'+loc_info+'</span></a>';
-                bestOption = loc_info_link;
+                loc_modal_link = '<a href="#" id="info-'+result.id+'" title="' + vufindString.loc_modal_Title_eonly+ '" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_e"></i><span data-title="' + result.bestOptionLocation + '" data-location="' + loc_abbr +'" class="modal-dialog hidden">'+loc_modal_body+'</span></a>';
+                bestOption = loc_modal_link;
               }
               break;
             case 'shelf': //fa-hand-lizard-o is nice too (but only newest FA)
-              loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="' + loc_info + '" class="fa fa-map-marker holdlink holdshelf"> ' + loc_abbr + ' ' + result.callnumber + '</a>';
-              loc_info_link = '<a href="#" id="info-'+result.id+'" title="' + loc_info + '" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="' + loc_plain + '" data-location="' + loc_abbr +'" class="modal-dialog hidden">'+loc_info+'</span></a>';
-              bestOption = loc_button + ' ' + loc_info_link;
+              loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="' + loc_modal_body + '" class="fa fa-map-marker holdlink holdshelf"> ' + loc_abbr + ' ' + result.callnumber + '</a>';
+              loc_modal_link = '<a href="#" id="info-'+result.id+'" title="' + loc_modal_body+ '" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="' + loc_modal_title + '" data-location="' + loc_abbr +'" class="modal-dialog hidden">'+loc_modal_body+'</span></a>';
+              bestOption = loc_button + ' ' + loc_modal_link;
               break;
             case 'order':
-              title = 'Magazinbestellung (Medium innerhalb von 30 Minuten an der Ausleihtheke erhalten)';
-              loc_button    = '<a href="'+result.bestOptionHref+'" target="_blank" title="'+title+'" class="fa fa-upload holdlink holdorder"> '+vufindString.hold_place+'</a>';
-              loc_info_link = '<a href="#" id="info-'+result.id+'" title="'+title+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="Magazinbestellung" data-location="Magazin" data-iframe="'+result.bestOptionHref+'" class="modal-dialog hidden">Das Medium befindet sich im Magazin. Nach dem Bestellen können Sie es in 30 Minuten an den Serviceplätzen abholen</span></a>';
-              bestOption = loc_button + ' ' + loc_info_link;
+              loc_button    = '<a href="'+result.bestOptionHref+'" target="_blank" title="'+vufindString.loc_btn_Hover_order+'" class="fa fa-upload holdlink holdorder"> '+vufindString.hold_place+'</a>';
+              loc_modal_link = '<a href="#" id="info-'+result.id+'" title="'+vufindString.loc_btn_Hover_order+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="'+vufindString.loc_modal_Title_order+'" data-location="Magazin" data-iframe="'+result.bestOptionHref+'" class="modal-dialog hidden">'+vufindString.loc_modal_Body_order+'</span></a>';
+              bestOption = loc_button + ' ' + loc_modal_link;
               break;
             case 'reserve_or_local':
               // just continue, don't break;
             case 'reserve':
-              title = 'Medium vormerken (verfügbar ab '+result.duedate+')';
+              title = vufindString.loc_modal_Title_reserve + result.duedate;
               loc_button    = '<a href="'+result.bestOptionHref+'" target="_blank" title="'+title+'" class="fa fa-clock-o holdlink holdreserve"> '+vufindString.recall_this+'</a>';
-              loc_info_link = '<a href="#" id="info-'+result.id+'-r" title="'+title+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="'+title+'" data-location="Loaned" data-iframe="'+result.bestOptionHref+'" class="modal-dialog hidden">Das Medium ist derzeit entliehen. Sie können es vormerken. Beachten Sie, dass Gebühren von 0,80 EUR entstehen.</span></a>';
-              bestOption = loc_button + ' ' + loc_info_link;
+              loc_modal_link = '<a href="#" id="info-'+result.id+'-r" title="'+title+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="'+title+'" data-location="Loaned" data-iframe="'+result.bestOptionHref+'" class="modal-dialog hidden">'+vufindString.loc_modal_Body_reserve+'</span></a>';
+              bestOption = loc_button + ' ' + loc_modal_link;
               if (result.patronBestOption !== 'reserve_or_local') break;
             case 'local':
               // Todo: is it necessary to use result.reference_callnumber and result.reference_location. It might be...?
-              title = loc_info + '\nBitte beachten Sie, dass dieses Exemplar nur innerhalb der Bibliothek nutzbar ist.';
+              title = loc_modal_body+ '\n' + vufindString.loc_modal_Title_refonly_generic;
               loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="'+title+'" class="fa fa-home holdlink holdrefonly"> ' + loc_abbr + ' ' + result.callnumber + '</a>';
-              loc_info_link = '<a href="#" id="info-'+result.id+'-l" title="'+title+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="' + loc_plain + '" data-location="' + loc_abbr +'" class="modal-dialog hidden">'+loc_info+' Bitte beachten Sie, dass dieses Exemplar nur innerhalb der Bibliothek nutzbar ist.</span></a>';
-              bestOption = bestOption + loc_button + ' ' + loc_info_link;
+              loc_modal_link = '<a href="#" id="info-'+result.id+'-l" title="'+title+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="' + loc_modal_title + '" data-location="' + loc_abbr +'" class="modal-dialog hidden">'+loc_modal_body+' ' + vufindString.loc_modal_Title_refonly_generic + '</span></a>';
+              bestOption = bestOption + loc_button + ' ' + loc_modal_link;
               break;
             case 'service_desk':
-              title = 'Dienstapparat-Exemplar: Nicht entleihbar';
-              loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="'+title+'" class="fa fa-frown-o holdlink"> SO ' + result.callnumber + '</a>';
-              loc_info_link = '<a href="#" id="info-'+result.id+'" title="'+title+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="'+title+'" data-location="DA" class="modal-dialog hidden">Das Medium befindet sich im Dienstapparat eines Instituts und ist nicht entleihbar. Sollten Sie dennoch dringenden Bedarf an genau diesem Buch haben: <ul><li>Wenden Sie sich an den Serviceplatz</li><li>Oder schreiben Sie uns eine Mail mit dem Betreff \"DA '+result.callnumber+'\" an bibliothek@tuhh.de [HIER GLEICH FORMULAR REIN]</li><li>Oder rufen Sie uns an xyz</li></ul>Ganz eilig?<ul><li>Prüfen Sie selber, ob evtl. eine andere Ausgabe verfügbar ist (wenn wir geRDAt sind, sagen wir Ihnen das hier direkt)</li><li>Erstellen Sie einen <x href="#">Buchwunsch</x></li></ul></span></a>';
-              bestOption = loc_button + ' ' + loc_info_link;
+              loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="'+vufindString.loc_modal_Title_service_da+'" class="fa fa-frown-o holdlink"> SO ' + result.callnumber + '</a>';
+              loc_modal_link = '<a href="#" id="info-'+result.id+'" title="'+vufindString.loc_modal_Title_service_da+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="'+vufindString.loc_modal_Title_service_da+'" data-location="DA" class="modal-dialog hidden">'+ vufindString.loc_modal_Body_service_da +'</span></a>';
+              bestOption = loc_button + ' ' + loc_modal_link;
               break;
             case 'false':
               // Remove the "Loading..." - bestoption is and stays empty
               break;
             default:
               title = 'Exemplarstatus unbekannt';
-              loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="'+title+'" class="fa fa-frown-o holdlink"> Unklar</a>';
-              loc_info_link = '<a href="#" id="info-'+result.id+'" title="'+title+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="'+title+'" data-location="DA" class="modal-dialog hidden">Der Status des Mediums ist unklar. Bitte<ul><li>Wenden Sie sich an den Serviceplatz</li><li>Oder schreiben Sie uns eine Mail mit dem Betreff \"DA '+result.callnumber+'\" an bibliothek@tuhh.de [HIER GLEICH FORMULAR REIN]</li><li>Oder rufen Sie uns an xyz</li></ul>Ganz eilig?<ul><li>Prüfen Sie selber, ob evtl. eine andere Ausgabe verfügbar ist (wenn wir geRDAt sind, sagen wir Ihnen das hier direkt)</li><li>Erstellen Sie einen <x href="#">Buchwunsch</x></li></ul></span></a>';
-              bestOption = loc_button + ' ' + loc_info_link;              
+              loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="'+vufindString.loc_modal_Title_service_else+'" class="fa fa-frown-o holdlink"> '+vufindString.loc_modal_Title_service_else+'</a>';
+              loc_modal_link = '<a href="#" id="info-'+result.id+'" title="'+vufindString.loc_modal_Title_service_else+'" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="'+title+'" data-location="Unknown" class="modal-dialog hidden">'+vufindString.loc_modal_Body_service_else+'</span></a>';
+              bestOption = loc_button + ' ' + loc_modal_link;              
           } 
 
           // Show link to printed edition for electronic edition (if available)
@@ -208,7 +206,7 @@ $(document).ready(function() {
       additional_content = 'DAS IST NUR EIN TEST ERSTMAL (eigentlich steht hier nur der vorangegangene Text)<br /><iframe id="loan4" src="' + loan4_url + '" width="100%" min-height="465px" height="'+frameMaxHeight+'px"/>';
     }
     else if (loc == 'DIG') {
-      additional_content = 'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.';
+//      additional_content = 'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.';
     }
     else {
       // Got shelf location
@@ -222,11 +220,12 @@ $(document).ready(function() {
 
     // TODO: Lightbox has methods to do this?
     $('#modalTitle').html($(this).children('span').attr('data-title'));
-    $('.modal-body').html('<p>'+ $(this).children('span').html() + '</p>' + additional_content);
+    $('.modal-body').html('<p>'+ $(this).children('span').text() + '</p>' + additional_content);
 
 
     // TEST: Force loan4 logoff, delay it a little so the iframe can be reloaded with the logoff url
     // Argh, with something like alert after the src change it works, timeout etc. does not. Ok, fix this later, already solved this some time ago somewhere else...
+    // NOTE - JUST REMOVE ID 'loan4' - should be the way
     function closeLoan4() {
       $('#loan4').attr("src", 'https://katalog.b.tuhh.de/LBS_WEB/j_spring_security_logout');
       //.delay(2500);
@@ -360,8 +359,8 @@ function checkItemStatuses() {
               item.find('.order a').prepend(' '); // why is reservationUrl the complete html?
 // TODO b: This should not be put in the same position as the stack order button - logically bad              
 if (result.availability == 'true') {
-var loc_info_href = item.find('.order a').attr('href');
-$(' <a href="#" id="info-'+result.id+'" title="Magazinbestellung" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info"></i><span data-title="Magazinbestellung" data-location="Magazin" data-iframe="'+loc_info_href+'" class="modal-dialog hidden">Das Medium befindet sich im Magazin. Nach dem Bestellen können Sie es in 30 Minuten an den Serviceplätzen abholen</span></a>').insertAfter(item.find('.order'));
+var loc_modal_href = item.find('.order a').attr('href');
+$(' <a href="#" id="info-'+result.id+'" title="Magazinbestellung" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info"></i><span data-title="Magazinbestellung" data-location="Magazin" data-iframe="'+loc_modal_href+'" class="modal-dialog hidden">Das Medium befindet sich im Magazin. Nach dem Bestellen können Sie es in 30 Minuten an den Serviceplätzen abholen</span></a>').insertAfter(item.find('.order'));
 }          
           }
           else {
@@ -373,8 +372,8 @@ $(' <a href="#" id="info-'+result.id+'" title="Magazinbestellung" style="float: 
               item.find('.status').append(' bis '+result.duedate);
               //item.find('.order').empty().append(' <a href="https://katalog.b.tu-harburg.de/LBS_WEB/titleReservation.htm?BES=1&LAN=DU&USR=1000&PPN='+result.id+'">Titel vormerken</a>');
 // TODO a: This should not be put in the same position as the stack order button - logically bad              
-var loc_info_href = item.find('.order a').attr('href');
-$(' <a href="#" id="info-'+result.id+'" title="Medium vormerken (verfügbar ab '+result.duedate+')" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info"></i><span data-title="Medium vormerken (verfügbar ab '+result.duedate+')" data-location="Loaned" data-iframe="'+loc_info_href+'" class="modal-dialog hidden">Das Medium ist derzeit entliehen. Sie können es vormerken. Beachten Sie, dass Gebühren von 0,80 EUR entstehen.</span></a>').insertAfter(item.find('.order'));
+var loc_modal_href = item.find('.order a').attr('href');
+$(' <a href="#" id="info-'+result.id+'" title="Medium vormerken (verfügbar ab '+result.duedate+')" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info"></i><span data-title="Medium vormerken (verfügbar ab '+result.duedate+')" data-location="Loaned" data-iframe="'+loc_modal_href+'" class="modal-dialog hidden">Das Medium ist derzeit entliehen. Sie können es vormerken. Beachten Sie, dass Gebühren von 0,80 EUR entstehen.</span></a>').insertAfter(item.find('.order'));
           }
           
           // Add clarifying text for some availability information
@@ -400,23 +399,23 @@ $(' <a href="#" id="info-'+result.id+'" title="Medium vormerken (verfügbar ab '
           //          hmmm, we got no translations, so it's only three checks for now...
           //          (btw: https://coderwall.com/p/6uxw7w/simple-multilanguage-with-jquery - might even nearly use the language inis)
           //          2015-09-04: Vufind already has a JS way to translate; example in \themes\bootstrap3-tub\templates\layout\layout.phtml
-          // > TODO2: A loc_info should be added to all buttons (Hold, Inter library Loan etc...)
+          // > TODO2: A loc_modal_bodyshould be added to all buttons (Hold, Inter library Loan etc...)
           // > TODO3: Institute (call )
           if (result.callnumber != 'Unknown' && result.callnumber.length == 7 && !result.duedate && result.availability == 'true' && result.reserve != 'true') {
             var loc_abbr;
-            var loc_info;
+            var loc_modal_;
 
             var loc_plain = 'Signatur: ' + result.callnumber + ' (' + $(result.location).text() + ')';
             var loc_shelf = result.callnumber.substring(0, 2); 
             
             if (result.location.indexOf('Lehr') > -1) {
-              loc_abbr = 'LBS';   loc_info = 'Sie finden das Medium in der Lehrbuchsammlung (LBS) im Regal '+loc_shelf+'. Die Lehrbuchsammlung ist im Lesesaal 1 auf der Seite des Eingangs.';
+              loc_abbr = 'LBS';   loc_modal_body= 'Sie finden das Medium in der Lehrbuchsammlung (LBS) im Regal '+loc_shelf+'. Die Lehrbuchsammlung ist im Lesesaal 1 auf der Seite des Eingangs.';
             }
             else if (result.location.indexOf('1') > -1) {
-              loc_abbr = 'LS1';   loc_info = 'Sie finden das Medium im Lesesaal 1 (LS1) im Regal '+loc_shelf+'.';
+              loc_abbr = 'LS1';   loc_modal_body= 'Sie finden das Medium im Lesesaal 1 (LS1) im Regal '+loc_shelf+'.';
             }
             else if (result.location.indexOf('2') > -1) {
-              loc_abbr = 'LS2';   loc_info = 'Sie finden das Medium im Lesesaal 2 (LS2) im Regal '+loc_shelf+'.';
+              loc_abbr = 'LS2';   loc_modal_body= 'Sie finden das Medium im Lesesaal 2 (LS2) im Regal '+loc_shelf+'.';
             }
             else {
               loc_abbr = 'Umm? Sem-App?';
@@ -427,8 +426,8 @@ $(' <a href="#" id="info-'+result.id+'" title="Medium vormerken (verfügbar ab '
             item.find('.holdlocation').empty().append('<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" class="fa fa-map-marker holdlink"> ' + loc_abbr + ' ' + result.callnumber + '</a>').removeClass('hidden');
 
             // Info link; yeah dumb positioning - proof of concept... :)
-            var loc_info_href = item.find('.location a').attr('href'); // DUMB, just proof of concept - where to get the link in the first place?
-            $(' <a href="#" id="info-'+result.id+'" title="' + loc_info + '" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info"></i><span data-title="' + loc_plain + '" data-location="' + loc_abbr +'" class="modal-dialog hidden">'+loc_info+'</span></a>').insertAfter(item.find('.holdlocation'));
+            var loc_modal_href = item.find('.location a').attr('href'); // DUMB, just proof of concept - where to get the link in the first place?
+            $(' <a href="#" id="info-'+result.id+'" title="' + loc_modal_body+ '" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info"></i><span data-title="' + loc_plain + '" data-location="' + loc_abbr +'" class="modal-dialog hidden">'+loc_modal_+'</span></a>').insertAfter(item.find('.holdlocation'));
 
             // Showing the table is useless now - the buttons cover it all. To verfy it, don't hide everything yet 
             // TODO (Finally)

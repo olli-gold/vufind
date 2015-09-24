@@ -70,70 +70,58 @@
             'missing' => $this->transEsc('status_missing'),
             'lost' => $this->transEsc('status_lost'),
             'hold_place' => $this->transEsc('hold_place'),
-            'recall_this'  => $this->transEsc('Recall this')
+            'recall_this' => $this->transEsc('Recall this'),
+
+            'loc_modal_Title_shelf_generic' => $this->translate('loc_modal_Title_shelf_generic'),
+            'loc_modal_Title_refonly_generic' => $this->translate('loc_modal_Title_refonly_generic'),
+
+            'loc_btn_Hover_shelf_lbs' => $this->transEsc('loc_btn_Hover_shelf_lbs'),
+            'loc_modal_Title_shelf_lbs' => $this->translate('loc_modal_Title_shelf_lbs'),
+            'loc_modal_Body_shelf_lbs' => $this->translate('loc_modal_Body_shelf_lbs'),
+            'loc_modal_Foot_shelf_lbs' => $this->translate('loc_modal_Foot_shelf_lbs'),
+
+            'loc_btn_Hover_shelf_ls1' => $this->transEsc('loc_btn_Hover_shelf_ls1'),
+            'loc_modal_Title_shelf_ls1' => $this->translate('loc_modal_Title_shelf_ls1'),
+            'loc_modal_Body_shelf_ls1' => $this->translate('loc_modal_Body_shelf_ls1'),
+            'loc_modal_Foot_shelf_ls1' => $this->translate('loc_modal_Foot_shelf_ls1'),
+
+            'loc_btn_Hover_shelf_ls2' => $this->transEsc('loc_btn_Hover_shelf_ls2'),
+            'loc_modal_Title_shelf_ls2' => $this->translate('loc_modal_Title_shelf_ls2'),
+            'loc_modal_Body_shelf_ls2' => $this->translate('loc_modal_Body_shelf_ls2'),
+            'loc_modal_Foot_shelf_ls2' => $this->translate('loc_modal_Foot_shelf_ls2'),
+
+            'loc_btn_Hover_sem' => $this->transEsc('loc_btn_Hover_sem'),
+            'loc_modal_Title_sem' => $this->translate('loc_modal_Title_sem'),
+            'loc_modal_Body_sem' => $this->translate('loc_modal_Body_sem'),
+            'loc_modal_Foot_sem' => $this->translate('loc_modal_Foot_sem'),
+
+            'loc_btn_Hover_eonly' => $this->translate('loc_btn_Hover_eonly'),
+            'loc_modal_Title_eonly' => $this->translate('loc_modal_Title_eonly'),
+            'loc_modal_Body_eonly' => $this->translate('loc_modal_Body_eonly'),
+            'loc_modal_Foot_eonly' => $this->translate('loc_modal_Foot_eonly'),
+
+            'loc_btn_Hover_order' => $this->transEsc('loc_btn_Hover_order'),
+            'loc_modal_Title_order' => $this->translate('loc_modal_Title_order'),
+            'loc_modal_Body_order' => $this->translate('loc_modal_Body_order'),
+            'loc_modal_Foot_order' => $this->translate('loc_modal_Foot_order'),
+
+            'loc_btn_Hover_reserve' => $this->transEsc('loc_btn_Hover_reserve'),
+            'loc_modal_Title_reserve' => $this->translate('loc_modal_Title_reserve'),
+            'loc_modal_Body_reserve' => $this->translate('loc_modal_Body_reserve'),
+            'loc_modal_Foot_reserve' => $this->translate('loc_modal_Foot_reserve'),
+
+            'loc_btn_Hover_service_da' => $this->transEsc('loc_btn_Hover_service_da'),
+            'loc_modal_Title_service_da' => $this->translate('loc_modal_Title_service_da'),
+            'loc_modal_Body_service_da' => $this->translate('loc_modal_Body_service_da'),
+            'loc_modal_Foot_service_da' => $this->translate('loc_modal_Foot_service_da'),
+
+            'loc_btn_Hover_service_else' => $this->transEsc('loc_btn_Hover_service_da'),
+            'loc_modal_Title_service_else' => $this->translate('loc_modal_Title_service_da'),
+            'loc_modal_Body_service_else' => $this->translate('loc_modal_Body_service_da'),
+            'loc_modal_Foot_service_else' => $this->translate('loc_modal_Foot_service_da')
           )
         );
         $this->headScript()->appendScript($this->jsTranslations()->getScript());
-        
-/*
-            // TODO: Add all other infos. Should find out how variables in the 
-            //      language ini's work (example hold_place_success_html)
-            // Prepare schema:
-            // THIS IS NOT THE FINAL WORD - I know the title's looks like they are useless twice ;)
-            'loc-info_inline-XXX' => "",
-            'loc-modal_title-XXX' => "",
-            'loc-modal_body-XXX' => "",
-            'loc-modal_foot-XXX' => "",
-            //SHELVES + Available
-                'loc-info_inline-shelf_lbs' => "'Sie finden das Medium in der Lehrbuchsammlung (LBS) im Regal '+loc_shelf+'. Die Lehrbuchsammlung ist im Lesesaal 1 auf der Seite des Eingangs.'",
-                'loc-modal_title-shelf_lbs' => "Signatur: ' + result.callnumber + ' (' + result.bestOptionLocation + ')",
-                'loc-modal_body-shelf_lbs'  => "'Sie finden das Medium in der Lehrbuchsammlung (LBS) im Regal '+loc_shelf+'. Die Lehrbuchsammlung ist im Lesesaal 1 auf der Seite des Eingangs.'",
-                'loc-modal_foot-shelf_lbs'  => "JUST MAYBE (Imagelink)",
-                'loc-info_inline-shelf_ls1' => "'Sie finden das Medium im Lesesaal 1 (LS1) im Regal '+loc_shelf+'.'",
-                'loc-modal_title-shelf_ls1' => "Signatur: ' + result.callnumber + ' (' + result.bestOptionLocation + ')",
-                'loc-modal_body-shelf_ls1'  => "'Sie finden das Medium im Lesesaal 1 (LS1) im Regal '+loc_shelf+'.'",
-                'loc-modal_foot-shelf_ls1'  => "JUST MAYBE (Imagelink)",
-                'loc-info_inline-shelf_ls2' => "'Sie finden das Medium im Lesesaal 2 (LS2) im Regal '+loc_shelf+'.'",
-                'loc-modal_title-shelf_ls2' => "Signatur: ' + result.callnumber + ' (' + result.bestOptionLocation + ')",
-                'loc-modal_body-shelf_ls2'  => "'Sie finden das Medium im Lesesaal 2 (LS2) im Regal '+loc_shelf+'.'",
-                'loc-modal_foot-shelf_ls2'  => "JUST MAYBE (Imagelink)",
-            // Shelves & Reference only
-                'loc-info_inline-sem'   => "'Semsterapparat im Lesesaal 2 '+loc_shelf+'.'\nBitte beachten Sie, dass dieses Exemplar nur innerhalb der Bibliothek nutzbar ist.'",
-                'loc-modal_title-sem'   => "Signatur: ' + result.callnumber + ' (' + result.bestOptionLocation + ')",
-                'loc-modal_body-sem'    => "'Semsterapparat im Lesesaal 2 '+loc_shelf+'.'\nBitte beachten Sie, dass dieses Exemplar nur innerhalb der Bibliothek nutzbar ist.'",
-                'loc-modal_foot-sem'    => "JUST MAYBE (Imagelink)",
-                'loc-info_inline-ref'   => "HMM",
-                'loc-modal_title-ref'   => "Signatur: ' + result.callnumber + ' (' + result.bestOptionLocation + ')",
-                'loc-modal_body-ref'    => "HMM",
-                'loc-modal_foot-ref'    => "JUST MAYBE (Imagelink)",
-            // Special locations (more under Service Desk and Local)
-                'loc-info_inline-so'    => "'Dienstapparat. Bitte bei Personal erkundigen.'",
-            // E-Only
-                'loc-info_inline-eonly' => "'Elektronische Ausgabe. Evtl. nur im TUHH-Intranet verfügbar.'",
-                'loc-modal_title-eonly' => "' + result.bestOptionLocation + '",
-                'loc-modal_body-eonly'  => "'Elektronische Ausgabe. Evtl. nur im TUHH-Intranet verfügbar.'",
-                'loc-modal_foot-eonly'  => "'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.'",
-            // Order from closed stack
-                'loc-info_inline-order' => "'Magazinbestellung (Medium innerhalb von 30 Minuten an der Ausleihtheke erhalten)'",
-                'loc-modal_title-order' => "'Magazinbestellung'",
-                'loc-modal_body-order'  => "'Das Medium befindet sich im Magazin. Nach dem Bestellen können Sie es in 30 Minuten an den Serviceplätzen abholen'",
-                'loc-modal_foot-order'  => "JUST MAYBE (enable/disable iframe)",
-            // Reserve
-                'loc-info_inline-reserve'   => "'Medium vormerken (verfügbar ab '+result.duedate+')'",
-                'loc-modal_title-reserve'   => ""'Medium vormerken (verfügbar ab '+result.duedate+')'",",
-                'loc-modal_body-reserve'    => "'Das Medium ist derzeit entliehen. Sie können es vormerken. Beachten Sie, dass Gebühren von 0,80 EUR entstehen.'",
-                'loc-modal_foot-reserve'    => "JUST MAYBE (enable/disable iframe)",
-            // Service desk (DA)
-                'loc-info_inline-service_da'   => "Dienstapparat-Exemplar: Nicht entleihbar",
-                'loc-modal_title-service_da'   => "Dienstapparat-Exemplar: Nicht entleihbar",
-                'loc-modal_body-service_da'    => "'Das Medium befindet sich im Dienstapparat eines Instituts und ist nicht entleihbar. Sollten Sie dennoch dringenden Bedarf an genau diesem Buch haben: <ul><li>Wenden Sie sich an den Serviceplatz</li><li>Oder schreiben Sie uns eine Mail mit dem Betreff \"DA '+result.callnumber+'\" an bibliothek@tuhh.de [HIER GLEICH FORMULAR REIN]</li><li>Oder rufen Sie uns an xyz</li></ul>Ganz eilig?<ul><li>Prüfen Sie selber, ob evtl. eine andere Ausgabe verfügbar ist (wenn wir geRDAt sind, sagen wir Ihnen das hier direkt)</li><li>Erstellen Sie einen <x href="#">Buchwunsch</x></li></ul>'",
-                'loc-modal_foot-service_da'    => "",
-            // Service desk (other cases)
-                'loc-info_inline-service_else'   => "Exemplarstatus unbekannt",
-                'loc-modal_title-service_else'   => "Exemplarstatus unbekannt",
-                'loc-modal_body-service_else'    => "'Das Medium befindet sich im Dienstapparat eines Instituts und ist nicht entleihbar. Sollten Sie dennoch dringenden Bedarf an genau diesem Buch haben: <ul><li>Wenden Sie sich an den Serviceplatz</li><li>Oder schreiben Sie uns eine Mail mit dem Betreff \"DA '+result.callnumber+'\" an bibliothek@tuhh.de [HIER GLEICH FORMULAR REIN]</li><li>Oder rufen Sie uns an xyz</li></ul>Ganz eilig?<ul><li>Prüfen Sie selber, ob evtl. eine andere Ausgabe verfügbar ist (wenn wir geRDAt sind, sagen wir Ihnen das hier direkt)</li><li>Erstellen Sie einen <x href="#">Buchwunsch</x></li></ul>'",
-                'loc-modal_foot-service_else'    => "'Der Status des Mediums ist unklar. Bitte<ul><li>Wenden Sie sich an den Serviceplatz</li><li>Oder schreiben Sie uns eine Mail mit dem Betreff \"DA '+result.callnumber+'\" an bibliothek@tuhh.de [HIER GLEICH FORMULAR REIN]</li><li>Oder rufen Sie uns an xyz</li></ul>Ganz eilig?<ul><li>Prüfen Sie selber, ob evtl. eine andere Ausgabe verfügbar ist (wenn wir geRDAt sind, sagen wir Ihnen das hier direkt)</li><li>Erstellen Sie einen <x href=#>Buchwunsch</x></li></ul>'"
-*/        
       }
 
       // Session keep-alive
