@@ -178,14 +178,14 @@ function displayHoldingGuide() {
           // Show link to printed edition for electronic edition (if available)
           // Todo: can we show the exact location?
           if (result.link_printed != null) {
-            loc_button = '<a href="'+ result.link_printed +'" class="fa fa-book holdlink"> Printausgabe</a>';
+            loc_button = '<a href="'+ result.link_printed_href +'" class="fa fa-book holdlink"> Printausgabe</a>';
             bestOption = bestOption + loc_button;
-            /* old code - didn't ever work in VF2 (no target resp. only for primo tab?) - what is result.parentlink good for 
+            // set printedItem in PrimoTab
             item.find('.callnumAndLocation').removeClass('hidden');
             item.find('.printedItem').removeClass('hidden');
             item.find('.printedItem').empty().append(result.link_printed);
+            // Change the link to article container into parentlink (the journal this article has been published in)
             item.find('.parentlink').attr('href', result.parentlink);
-            */
           }
 
           // Add clarifying text for some availability information

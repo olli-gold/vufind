@@ -265,7 +265,7 @@ class AjaxController extends AbstractBase
             $parentLinkHtml = $this->getViewRenderer()->render('ajax/parentlink.phtml', $view);
         }
 
-$multiVol = $this->getMultiVolumes();
+        $multiVol = $this->getMultiVolumes();
 
         // If any IDs were missing, send back appropriate dummy data
         /* add?
@@ -286,6 +286,7 @@ $multiVol = $this->getMultiVolumes();
                 'callnumber'           => '',
                 'missing_data'         => true,
                 'link_printed'         => $linkPrintedHtml,
+                'link_printed_href'    => $link_printed,
                 'parentlink'           => $parentLinkHtml,
                 'record_number'        => $recordNumber,
                 'reference_location'   => 'false',
@@ -637,6 +638,13 @@ else              {
         
 //TZ TODO: Check if it is necessary here - already/also  called in getItemStatusesAjax() ?!?
         $link_printed = $this->getPrintedStatuses();
+        $linkPrintedHtml = null;
+        $parentLinkHtml = null;
+        if ($link_printed) {
+            $view = ['refId' => $link_printed];
+            $linkPrintedHtml = $this->getViewRenderer()->render('ajax/link_printed.phtml', $view);
+            $parentLinkHtml = $this->getViewRenderer()->render('ajax/parentlink.phtml', $view);
+        }
 
         // if we got no location, the best guess is, that it is a special location
         // ("Sonderstandort") that DAIA doesn't get correctly.
@@ -673,7 +681,8 @@ else              {
             'duedate' => $duedate,
             'presenceOnly' => $referenceIndicator,
             'electronic' => $electronic,
-            'link_printed' => $link_printed,
+            'link_printed' => $linkPrintedHtml,
+            'link_printed_href'    => $link_printed,
             'reference_location' => $referenceLocation,
             'reference_callnumber' => $referenceCallnumber,
             'multiVols' => $multiVol,

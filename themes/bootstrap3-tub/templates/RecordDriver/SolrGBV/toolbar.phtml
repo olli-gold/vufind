@@ -29,14 +29,17 @@
     </li>
   <? endif; ?>
 
-  <? if ($this->userlist()->getMode() !== 'disabled'): ?>
-    <li><a id="save-record" class="modal-link <?=$controllerClass?>" href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" title="<?=$this->transEsc('Add to favorites')?>" rel="nofollow"><i class="fa fa-plus"></i> <?=$this->transEsc('Add to favorites')?></a></li>
-  <? endif; ?>
+  <? $account = $this->auth()->getManager(); ?>
+  <? if($account->isLoggedIn()): ?>
+      <? if ($this->userlist()->getMode() !== 'disabled'): ?>
+          <li><a id="save-record" class="modal-link <?=$controllerClass?>" href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" title="<?=$this->transEsc('Add to favorites')?>" rel="nofollow"><i class="fa fa-plus"></i> <?=$this->transEsc('Add to favorites')?></a></li>
+      <? endif; ?>
+  <? endif ?>
   <? if (!empty($addThis)): ?>
     <li><a class="addThis addthis_button" href="https://www.addthis.com/bookmark.php?v=250&amp;pub=<?=urlencode($addThis)?>"><i class="fa fa-bookmark"></i> <?=$this->transEsc('Bookmark')?></a></li>
   <? endif; ?>
   <? if ($cart->isActive()): ?>
-    <li id="bookbag-menu">
+    <li>
       <input id="cartId" type="hidden" name="ids[]" value="<?=$this->escapeHtmlAttr($cartId)?>" />
       <a id="cart-add" class="<? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden" href="#"><i class="fa fa-plus"></i> <?=$this->transEsc('Add to Book Bag') ?></a>
       <a id="cart-remove" class="<? if($cart->contains($cartId)): ?>correct <? endif ?>hidden" href="#"><i class="fa fa-minus-circle"></i> <?=$this->transEsc('Remove from Book Bag') ?></a>

@@ -216,7 +216,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
                 <? endif; ?>
         <? else: ?>
                 <span><a href="https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>" target="_blank" class="holdlink holdil fa"><?=$this->transEsc('interlibrary loan')?></a></span>
-                <span><a href="<?=$this->transEsc('Erwerbungsvorschlag_Url')?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>" target="_blank" class="holdlink holdwish fa"><?=$this->transEsc('Erwerbungsvorschlag')?></a></span>
+                <span><a href="<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>" target="_blank" class="holdlink holdwish fa"><?=$this->transEsc('Erwerbungsvorschlag')?></a></span>
             <? endif; ?>
         </span>
 
