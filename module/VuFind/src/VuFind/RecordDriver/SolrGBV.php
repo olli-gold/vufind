@@ -116,20 +116,23 @@ class SolrGBV extends SolrMarc
         // If we have multiple formats, Book, Journal and Article are most
         // important...
         $formats = $this->getFormats();
+        if ($this->isHSS() === true) {
+            return 'dissertation';
+        }
         if (in_array('Book', $formats) || in_array('eBook', $formats)) {
-            return 'Book';
+            return 'book';
         } else if (in_array('Article', $formats) || in_array('Aufsätze', $formats) || in_array('Elektronische Aufsätze', $formats) || in_array('electronic Article', $formats)) {
-            return 'Article';
+            return 'article';
         } else if (in_array('Journal', $formats) || in_array('eJournal', $formats)) {
-            return 'Journal';
+            return 'journal';
         } else if (in_array('Serial Volume', $formats)) {
             return 'SerialVolume';
         } else if (isset($formats[0])) {
             return $formats[0];
         } else if (strlen($this->getCleanISSN()) > 0) {
-            return 'Journal';
+            return 'journal';
         }
-        return 'Book';
+        return 'book';
     }
 
     /**
@@ -161,7 +164,8 @@ class SolrGBV extends SolrMarc
             'rfr_id' => 'info:sid/' . $this->getCoinsID() . ':generator',
             'rft.title' => $this->getShortTitle(),
             'rft.date' => $pubDate,
-            'rft_id' => $doi
+            'rft_id' => $doi,
+            'rft.genre' => $this->getOpenURLFormat()
         ];
     }
 
@@ -174,7 +178,7 @@ class SolrGBV extends SolrMarc
     {
         $params = $this->getDefaultOpenURLParams();
         $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:book';
-        $params['rft.genre'] = 'book';
+//        $params['rft.genre'] = 'book';
         $params['rft.btitle'] = $params['rft.title'];
         $series = $this->getSeries();
         if (count($series) > 0) {
@@ -205,7 +209,7 @@ class SolrGBV extends SolrMarc
          * Zotero, so it is currently commented out -- instead, we just add
          * some extra fields and to the "unknown format" case. */
         $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
-        $params['rft.genre'] = 'journal';
+//        $params['rft.genre'] = 'journal';
         $params['rft.jtitle'] = $params['rft.title'];
         $params['rft.issn'] = $this->getCleanISSN();
         $params['rft.au'] = $this->getPrimaryAuthor();
@@ -241,7 +245,7 @@ class SolrGBV extends SolrMarc
         $params = $this->getDefaultOpenURLParams();
         unset($params['rft.date']);
         $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
-        $params['rft.genre'] = 'article';
+//        $params['rft.genre'] = 'article';
         $params['rft.issn'] = (string)$this->getCleanISSN();
         // an article may have also an ISBN:
         $params['rft.isbn'] = (string)$this->getCleanISBN();
@@ -274,7 +278,7 @@ class SolrGBV extends SolrMarc
     protected function getEresOpenURLParams()
     {
         $params = $this->getDefaultOpenURLParams();
-        $params['rft.genre'] = 'book';
+//        $params['rft.genre'] = 'book';
         $params['rft.isbn'] = $this->getCleanISBN();
         $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:dc';
         $params['rft.creator'] = $this->getPrimaryAuthor();
@@ -327,7 +331,7 @@ class SolrGBV extends SolrMarc
          * Zotero, so it is currently commented out -- instead, we just add
          * some extra fields and to the "unknown format" case. */
         $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
-        $params['rft.genre'] = 'journal';
+//        $params['rft.genre'] = 'journal';
         $params['rft.jtitle'] = $params['rft.title'];
         $params['rft.issn'] = $this->getCleanISSN();
         $params['rft.au'] = $this->getPrimaryAuthor();
@@ -495,6 +499,16 @@ class SolrGBV extends SolrMarc
     public function getVolume()
     {
         return $this->getFirstFieldValue('952', array('d'));
+    }
+
+    /**
+     * Determines if this record is a scholarly paper
+     *
+     * @return boolean
+     */
+    protected function isHSS()
+    {
+        return ($this->getFirstFieldValue('502', array('a'))) ? true : false;
     }
 
     /**
