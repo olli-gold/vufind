@@ -129,6 +129,10 @@ table.datagrid td a {
     margin-top: 5px;
 }
 
+.tub_loading {
+   // Loading icon; always this way: <i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...
+}
+
 /* TZ: z-index: Vufind */
 .modal-dialog{z-index:1050;}
 

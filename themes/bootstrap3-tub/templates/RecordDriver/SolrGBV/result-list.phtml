@@ -211,7 +211,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
             <? if ($this->driver->checkInterlibraryLoan() == '0'): ?>
                 <? if ($this->driver->supportsAjaxStatus()): ?>
                     <span class="oa-fulltextes"></span>
-                    <span class="holdlocation"> <?=$this->transEsc('Loading')?>...</span>
+                    <span class="holdlocation"><i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...</span>
                     <span class="holdtomes hidden"><a href="<?=$this->recordLink()->getTabUrl($this->driver, 'TomesVolumes')?>#tabnav" class="holdlink fa fa-stack-overflow"> <?=$this->transEsc("See Tomes/Volumes")?></a></span>
                 <? endif; ?>
         <? else: ?>
