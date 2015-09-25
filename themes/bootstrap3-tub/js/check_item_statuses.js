@@ -7,6 +7,7 @@
  * @todo  
  * - What good for were variables result.full_status and locationListHTML in checkItemStatuses()
  * - Remove checkItemStatuses() finally
+ * -loan4-links (wrong url, no https etc)
  *
  * @return void
  */
@@ -38,9 +39,20 @@ function displayHoldingGuide() {
 
           // display volumes button (if this item has volumes)
           if (result.multiVols == true) {
-              item.find('.holdtomes').removeClass('hidden');
+              loc_modal_link = create_modal(id          = result.id, 
+                                            loc_code    = 'Multi',
+                                            link_title  = vufindString.loc_modal_Title_multi,
+                                            modal_title = vufindString.loc_modal_Title_multi,
+                                            modal_body  = vufindString.loc_modal_Body_multi,
+                                            iframe_src  = '',
+                                            modal_foot  = '');
+              item.find('.holdtomes').removeClass('hidden');         
+              item.find('.holdlocation').empty().append(loc_modal_link);    
+              // If something has multiple volumes, our voyage ends here already;
+              // @todo: It does, doesn't it? It happens only for print (so no E-Only info icon is needed)
+              return true;
           }
-
+          
           // Some helper variables
           var loc_abbr;
           var loc_button;
@@ -89,7 +101,7 @@ function displayHoldingGuide() {
               }
               break;
             case 'shelf': //fa-hand-lizard-o is nice too (but only newest FA)
-              loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="' + loc_modal_body + '" class="fa fa-map-marker holdlink holdshelf"> ' + loc_abbr + ' ' + result.callnumber + '</a>';
+              loc_button    = '<a href="../../Record/'+ result.id +'/Holdings#tabnav" title="' + loc_modal_body + '" class="fa fa-map-marker holdlink holdshelf"> ' + loc_abbr + ' ' + result.callnumber + '</a>';
               loc_modal_link = create_modal(id          = result.id, 
                                             loc_code    = loc_abbr,
                                             link_title  = loc_modal_body,
@@ -127,7 +139,7 @@ function displayHoldingGuide() {
             case 'local':
               // Todo: is it necessary to use result.reference_callnumber and result.reference_location. It might be...?
               title = loc_modal_body+ '\n' + vufindString.loc_modal_Title_refonly_generic;
-              loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="'+title+'" class="fa fa-home holdlink holdrefonly"> ' + loc_abbr + ' ' + result.callnumber + '</a>';
+              loc_button    = '<a href="../../Record/'+ result.id +'/Holdings#tabnav" title="'+title+'" class="fa fa-home holdlink holdrefonly"> ' + loc_abbr + ' ' + result.callnumber + '</a>';
               loc_modal_link = create_modal(id          = result.id, 
                                             loc_code    = loc_abbr,
                                             link_title  = title,
@@ -138,7 +150,7 @@ function displayHoldingGuide() {
               bestOption = bestOption + loc_button + ' ' + loc_modal_link;
               break;
             case 'service_desk':
-              loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="'+vufindString.loc_modal_Title_service_da+'" class="fa fa-frown-o holdlink"> SO ' + result.callnumber + '</a>';
+              loc_button    = '<a href="../../Record/'+ result.id +'/Holdings#tabnav" title="'+vufindString.loc_modal_Title_service_da+'" class="fa fa-frown-o holdlink"> SO ' + result.callnumber + '</a>';
               loc_modal_link = create_modal(id          = result.id, 
                                             loc_code    = loc_abbr,
                                             link_title  = vufindString.loc_modal_Title_service_da,
@@ -152,7 +164,7 @@ function displayHoldingGuide() {
               // Remove the "Loading..." - bestoption is and stays empty
               break;
             default:
-              loc_button    = '<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" title="'+vufindString.loc_modal_Title_service_else+'" class="fa fa-frown-o holdlink"> '+vufindString.loc_modal_Title_service_else+'</a>';
+              loc_button    = '<a href="../../Record/'+ result.id +'/Holdings#tabnav" title="'+vufindString.loc_modal_Title_service_else+'" class="fa fa-frown-o holdlink"> '+vufindString.loc_modal_Title_service_else+'</a>';
               loc_modal_link = create_modal(id          = result.id, 
                                             loc_code    = 'Unknown',
                                             link_title  = vufindString.loc_modal_Title_service_else,
@@ -190,7 +202,7 @@ function displayHoldingGuide() {
           sfx_fix = item.find('.openUrlControls');
           if (sfx_fix.innerWidth() < 10) sfx_fix.hide();
 
-          // Show our result!
+          // Show our final result!
           item.find('.holdlocation').empty().append(bestOption);
 
           // Fulltext-Hack
@@ -260,6 +272,9 @@ $(document).ready(function() {
       loan4_url = $(this).children('span').attr('data-iframe');
       additional_content = 'DAS IST NUR EIN TEST ERSTMAL (eigentlich steht hier nur der vorangegangene Text)<br /><iframe id="loan4" src="' + loan4_url + '" width="100%" min-height="465px" height="'+frameMaxHeight+'px"/>';
     }
+    else if (loc == 'SO' || loc == 'Multi') {
+        //
+    }
     else if (loc == 'DIG') {
 //      additional_content = 'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.';
     }
@@ -281,9 +296,13 @@ $(document).ready(function() {
     // TEST: Force loan4 logoff, delay it a little so the iframe can be reloaded with the logoff url
     // Argh, with something like alert after the src change it works, timeout etc. does not. Ok, fix this later, already solved this some time ago somewhere else...
     // NOTE - JUST REMOVE ID 'loan4' - should be the way
+    // NOTE: it's default to stay logged in unless the close link is clicked OR 
+    //  the session times out in loan4 (the forced log off would be new, albeit 
+    //  could be a hassle for patrons that want to request multiple items in sucession)
     function closeLoan4() {
       $('#loan4').attr("src", 'https://katalog.b.tuhh.de/LBS_WEB/j_spring_security_logout');
       //.delay(2500);
+      //$('#loan4').remove();
       alert('Logged off');
     }
     // Add the function as close action if loan4_url is used
@@ -478,7 +497,7 @@ $(' <a href="#" id="info-'+result.id+'" title="Medium vormerken (verfügbar ab '
             }
 
             // Location button
-            item.find('.holdlocation').empty().append('<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" class="fa fa-map-marker holdlink"> ' + loc_abbr + ' ' + result.callnumber + '</a>').removeClass('hidden');
+            item.find('.holdlocation').empty().append('<a href="../../Record/'+ result.id +'/Holdings#tabnav" class="fa fa-map-marker holdlink"> ' + loc_abbr + ' ' + result.callnumber + '</a>').removeClass('hidden');
 
             // Info link; yeah dumb positioning - proof of concept... :)
             var loc_modal_href = item.find('.location a').attr('href'); // DUMB, just proof of concept - where to get the link in the first place?
@@ -492,7 +511,7 @@ $(' <a href="#" id="info-'+result.id+'" title="Medium vormerken (verfügbar ab '
             item.find('.tub_titlestatus').hide();
           } else if (result.callnumber.indexOf('D') === 0 && result.availability == 'false') {
             //alert('DA');
-            item.find('.holdlocation').empty().append('<a href="http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/'+ result.id +'/Holdings#tabnav" class="fa fa-frown-o holdlink"> Sonderstandort DA</a>').removeClass('hidden');
+            item.find('.holdlocation').empty().append('<a href="../../Record/'+ result.id +'/Holdings#tabnav" class="fa fa-frown-o holdlink"> Sonderstandort DA</a>').removeClass('hidden');
 
 $(' <a href="#" id="info-'+result.id+'" title="Dienstapparat-Exemplar" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info"></i><span data-title="Dienstapparat-Exemplar: Nicht entleihbar" data-location="DA" class="modal-dialog hidden">Das Medium befindet sich im Dienstapparat eines Instituts und ist nicht entleihbar. Sollten Sie dennoch dringenden Bedarf an genau diesem Buch haben: <ul><li>Wenden Sie sich an den Serviceplatz</li><li>Oder schreiben Sie uns eine Mail mit dem Betreff \"DA '+result.callnumber+'\" an bibliothek@tuhh.de [HIER GLEICH FORMULAR REIN]</li><li>Oder rufen Sie uns an xyz</li></ul>Ganz eilig?<ul><li>Prüfen Sie selber, ob evtl. eine andere Ausgabe verfügbar ist (wenn wir geRDAt sind, sagen wir Ihnen das hier direkt)</li><li>Erstellen Sie einen <x href="#">Buchwunsch</x></li></ul></span></a>').insertAfter(item.find('.order'));
             item.find('.tub_titlestatus').hide();
