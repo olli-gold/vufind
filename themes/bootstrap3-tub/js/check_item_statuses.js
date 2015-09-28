@@ -297,10 +297,16 @@ $(document).ready(function() {
     else {
       // Got shelf location
       var roomMap = [];
+      /*
       roomMap['LS1'] = 'https://www.tub.tuhh.de/wp-content/uploads/2012/08/LS1web_neu1.jpg';
       roomMap['LS2'] = 'https://www.tub.tuhh.de/wp-content/uploads/2012/08/LS2web_neu1.jpg';
       roomMap['LBS'] = roomMap['LS1'];
       roomMap['SEM'] = roomMap['LS2'];
+      */
+      roomMap['LS1'] = '../themes/bootstrap3-tub/images/tub/LS1_main.jpg';
+      roomMap['LS2'] = '../themes/bootstrap3-tub/images/tub/LS2_main.jpg';
+      roomMap['LBS'] = '../themes/bootstrap3-tub/images/tub/LS1_lbs.jpg';
+      roomMap['SEM'] = '../themes/bootstrap3-tub/images/tub/LS2_sem.jpg';
       additional_content = '<img src="'+ roomMap[loc] +'" />';
     }
 
