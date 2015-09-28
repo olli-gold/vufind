@@ -9,6 +9,17 @@
  * - Remove checkItemStatuses() finally
  * -loan4-links (wrong url, no https etc)
  *
+ * @todo: Inline way to show options AND show correct record link
+ *  - <span class="holdtomes hidden"><a href="<?=$this->recordLink()->getTabUrl($this->driver, 'TomesVolumes')?>#tabnav" class="holdlink fa fa-stack-overflow"> <?=$this->transEsc("See Tomes/Volumes")?></a></span>
+ *  - For now stick to generating Buttons and infos here. Decide later to
+ *      - either use the template way
+ *      - or use stick to the current JS way
+ *      - but be consistent, one place to modify css, titles and stuff
+ *
+ * @todo ILL and Acqisition proposal should be here too
+ *  - @see templates/RecordDriver/SolrGBV/result-list.phtml
+ *  - @see templates/RecordDriver/Primo/result-list.phtml
+ *
  * @return void
  */
 function displayHoldingGuide() {
@@ -37,17 +48,19 @@ function displayHoldingGuide() {
 
           var item = $($('.ajaxItem')[xhr.rid]);
 
-          // display volumes button (if this item has volumes)
+          // Early exit: display volumes button (if this item has volumes)
           if (result.multiVols == true) {
-              loc_modal_link = create_modal(id          = result.id, 
+              loc_button    = '<a href="../../Record/'+ result.id +'/TomesVolumes#tabnav" title="'+title+'" class="fa fa-stack-overflow holdlink holdtomes"> ' + vufindString.loc_volumes + '</a>';
+              loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = 'Multi',
                                             link_title  = vufindString.loc_modal_Title_multi,
                                             modal_title = vufindString.loc_modal_Title_multi,
                                             modal_body  = vufindString.loc_modal_Body_multi,
                                             iframe_src  = '',
                                             modal_foot  = '');
-              item.find('.holdtomes').removeClass('hidden');         
-              item.find('.holdlocation').empty().append(loc_modal_link);    
+              bestOption = loc_button + ' ' + loc_modal_link;
+              item.find('.holdtomes').removeClass('hidden');
+              item.find('.holdlocation').empty().append(loc_modal_link);
               // If something has multiple volumes, our voyage ends here already;
               // @todo: It does, doesn't it? It happens only for print (so no E-Only info icon is needed)
               return true;
@@ -178,12 +191,15 @@ function displayHoldingGuide() {
           // Show link to printed edition for electronic edition (if available)
           // Todo: can we show the exact location?
           if (result.link_printed != null) {
-            loc_button = '<a href="'+ result.link_printed_href +'" class="fa fa-book holdlink"> Printausgabe</a>';
-            bestOption = bestOption + loc_button;
-            // set printedItem in PrimoTab
-            item.find('.callnumAndLocation').removeClass('hidden');
-            item.find('.printedItem').removeClass('hidden');
-            item.find('.printedItem').empty().append(result.link_printed);
+              loc_button = '<a href="'+ result.link_printed_href +'" title="'+vufindString.loc_modal_Title_printEdAvailable+'" class="fa fa-book holdlink"> '+vufindString.available_printed+'</a>';
+              loc_modal_link = create_modal(id          = result.id,
+                                            loc_code    = loc_abbr,
+                                            link_title  = vufindString.loc_modal_Title_printEdAvailable,
+                                            modal_title = vufindString.loc_modal_Title_printEdAvailable,
+                                            modal_body  = vufindString.loc_modal_Body_printEdAvailable,
+                                            iframe_src  = '',
+                                            modal_foot  = '');
+            bestOption = loc_button + loc_modal_link;
             // Change the link to article container into parentlink (the journal this article has been published in)
             item.find('.parentlink').attr('href', result.parentlink);
           }

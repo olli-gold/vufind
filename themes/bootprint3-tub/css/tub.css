@@ -84,6 +84,20 @@
 }
 /* END Modding Search Tabs */
 
+.searchbox, .breadcrumbs, .footer {
+    background-color: #fff;
+}
+
+.sort_order_hint {color: #A8DDF0;}
+
+#result0, #result2, #result4, #result6, #result8, #result10, #result12, #result14, #result16, #result18 {
+    background-color: #eff3dc;
+}
+
+.record {
+    background: none repeat scroll 0 0 #ffffff !important;
+}
+
 #searchForm_lookfor, #searchForm_type {
     border-color: #eff3dc;
 }
@@ -149,28 +163,29 @@ table.datagrid td a {
 .holdil        {}
 .holdwish      {}
 
+/* info icon print */
 .tub_fa-info_p {
     margin-top: 14px;
     margin-bottom: 0;
     padding-left: 2px;  
     cursor: pointer !important; 
 }
+/* info icon sfx-volltext (ganz oben) */
 .tub_fa-info_e {
     margin-top: 4px;
     padding-left: 2px;   
     cursor: pointer !important;
 }
-
-.printedicon {
-    background-image: url("../../../themes/bootprint3-tub/images/icons/book.png");
-    background-position: left top;
-    background-repeat: no-repeat;
-    margin-right: 1em;
-    padding: 0 0.5em 0.5em 20px;
+/* info icon other (ill & acq proposal) */
+.tub_fa-info_x {
+    margin-top: 20px;
+    padding-left: 2px;
+    cursor: pointer !important;
 }
-
-.callnumAndLocation {
-    margin-top: 5px;
+/* info icon facet */
+.tub_fa-info_f {
+    padding-left: 2px;
+    cursor: pointer !important;
 }
 
 .tub_loading {
@@ -215,7 +230,7 @@ table.datagrid td a {
 div .left   {width: 17%; position: relative; min-height: 150px;}
 div .middle {width: 59%; position: relative; min-height: 150px;}
 div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15px;}
-.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 17px; text-align: center;} /* 21px/11px trifft genau bildecke */
+.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* 21px/11px trifft genau bildecke */
 .recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
 
 /* remove star: http://redmine.tub.tuhh.de/issues/612
@@ -281,4 +296,7 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
     .searchTab {
       width: 155px;
     }
+
+    .recordcover {min-width: 50px; min-height: 25px;}
+
 }
