@@ -7,15 +7,35 @@
   $html = '';
   $shown = 0;
   foreach ($checkboxFilters as $current) {
+    $current_id = $this->escapeHtmlAttr(str_replace(' ', '', $current['desc']));
     $html .= '<label class="checkbox';
     if($results->getResultTotal() < 1 && !$current['selected'] && !$current['alwaysVisible']) {
       $html .= ' hidden';
     } else {
       $shown ++;
     }
-    $html .= '"><input type="checkbox" name="filter[]" value="'.$this->escapeHtmlAttr($current['filter']).'"
-      '. ($current['selected'] ? 'checked="checked"' : '') .' id="'.$this->escapeHtmlAttr(str_replace(' ', '', $current['desc'])).'"
-      onclick="document.location.href=\''.($current['selected'] ? $results->getUrlQuery()->removeFilter($current['filter']) : $results->getUrlQuery()->addFilter($current['filter'])).'\';" />'.$this->transEsc($current['desc']).'</label>';
+
+    // Add inline help for some filters (@see \local\config\vufind\facets.ini - TUHH)
+    switch ($current_id) {
+        case 'local_only':
+            $title = ' title="'.$this->transEsc('facet_btn_Hover_localOnly').'"';
+            $modal = '<a href="#" id="info-facet-localOnly" class="locationInfox modal-link" title="'.$this->transEsc('facet_btn_Hover_localOnly').'"><i class="fa fa-info-circle tub_fa-info_f"></i> <span data-title="'.$this->transEsc('facet_modal_Title_localOnly').' '.$this->transEsc('local_only').'" data-location="Undefined" data-iframe="" class="modal-dialog hidden">'.$this->transEsc('facet_modal_Body_localOnly').'</span></a>';
+            break;
+        case 'online_only':
+            $title = ' title="'.$this->transEsc('facet_btn_Hover_onlineOnly').'"';
+            $modal = '<a href="#" id="info-facet-localOnly" class="locationInfox modal-link" title="'.$this->transEsc('facet_btn_Hover_onlineOnly').'"><i class="fa fa-info-circle tub_fa-info_f"></i> <span data-title="'.$this->transEsc('facet_modal_Title_onlineOnly').' '.$this->transEsc('online_only').'" data-location="Undefined" data-iframe="" class="modal-dialog hidden">'.$this->transEsc('facet_modal_Body_onlineOnly').'</span></a>';
+            break;
+        case 'hss_only':
+            $title = ' title="'.$this->transEsc('facet_btn_Hover_hssOnly').'"';
+            $modal = '<a href="#" id="info-facet-localOnly" class="locationInfox modal-link" title="'.$this->transEsc('facet_btn_Hover_hssOnly').'"><i class="fa fa-info-circle tub_fa-info_f"></i> <span data-title="'.$this->transEsc('facet_modal_Title_hssOnly').' '.$this->transEsc('hss_only').'" data-location="Undefined" data-iframe="" class="modal-dialog hidden">'.$this->transEsc('facet_modal_Body_hssOnly').'</span></a>';
+            break;
+        default:
+            $title = $modal = '';
+    }
+
+    $html .= '" '.$title.'><input type="checkbox" name="filter[]" value="'.$this->escapeHtmlAttr($current['filter']).'"
+      '. ($current['selected'] ? 'checked="checked"' : '') .' id="'.$current_id.'"
+      onclick="document.location.href=\''.($current['selected'] ? $results->getUrlQuery()->removeFilter($current['filter']) : $results->getUrlQuery()->addFilter($current['filter'])).'\';" />'.$modal.' '.$this->transEsc($current['desc']).'</label>';
   }
 ?>
   <div class="checkboxFilter<?if($shown == 0):?> hidden<? endif; ?>"><?=$html ?></div>

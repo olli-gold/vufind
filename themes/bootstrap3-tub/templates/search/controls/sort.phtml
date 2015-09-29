@@ -7,16 +7,15 @@
       <!-- if there are two entries, a toggle will do -->
       <? foreach ($list as $sortType => $sortData): ?>
         <? if ($sortData['selected']): ?>
-          <!-- for future use - maybe output this before or near the switch button... -->
-          <? $cur_sort = 'Sorted by: '.$this->transEsc($sortData['desc']) ?>
+          <? $cur_sort = '<span class="sort_order_hint">Currently: '.$this->transEsc($sortData['desc']).'</span>' ?>
         <? else: ?>
-          <!-- ... but the button has to be put in a variable too -->
-          <button type="submit" name="sort" value="<?=$this->escapeHtmlAttr($sortType)?>" <?=$sortData['selected']?' style="display: none"':'class="btn btn-primary"'?>><i class="fa fa-sort-numeric-desc"></i> 
-            <?=$this->transEsc('Sort')?>
-            <?=$this->transEsc($sortData['desc'])?></button>
+          <? $selected = $sortData['selected'] ? ' style="display: none"' : 'class="btn btn-primary"'?>
+          <? $cur_button = '<button type="submit" name="sort" value="'.$this->escapeHtmlAttr($sortType).'" '.$selected.'><i class="fa fa-sort-numeric-desc"></i> '.$this->transEsc($sortData['desc']).'</button>'?>
         <? endif; ?>
       <? endforeach; ?>
       <!-- Output $cur_sort and button here -->
+      <?=$cur_sort?>
+      <?=$cur_button?>
     <? else: ?>
       <!-- Otherwise do it the old way and add a select box -->
       <select id="sort_options_1" name="sort" class="jumpMenu form-control">

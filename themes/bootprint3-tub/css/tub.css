@@ -4,11 +4,12 @@
 
 /* START Modding stuff so sorting button is smoothly aligned */
 .main > div:nth-child(1) > div:nth-child(1)   {padding: 0px;}    
-.search-controls  {padding: 0px !important; margin-left: -6px !important;}    
-.col-sm-6         {width: 100%; padding: 0; margin: 0; background-image: linear-gradient(to top, #FFF, #EEE);}
-.search-query     {width: 350px !important;}
-.search-submit    {padding: 3px; vertical-align: middle;}
-#searchFormKeepFilters {margin-left: 175px;}
+.search-controls    {padding: 0px !important; margin-left: -6px !important;}
+.col-sm-6           {width: 100%; padding: 0; margin: 0; background-image: linear-gradient(to top, #FFF, #EEE);}
+.navbar-form        {width: 100%;}
+.search-query       {width: 350px !important;}
+.search-submit      {padding: 3px; vertical-align: middle;}
+.navbar-form .checkbox {width: 25%; float: right; min-width: 175px;}
 .breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
 .btn-primary {
     background-color: #A8DDF0;
@@ -18,9 +19,79 @@
 }
 /* END Modding stuff so sorting button is smoothly aligned */
 
+/* START Modding Search Tabs */
+.searchTab_info, .searchTab_info a {margin: 0px; padding: 0px; width: 6px; left: -22px; top: 6px;} /* Very, very ugly - just for the idea */
+.searchTab {
+    font-size: 1.2em;
+    position: relative;
+    left: -24px;
+    margin: 0px 10px 0px 0px;
+    padding-left: 10px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #DDD;
+    /*background-color: #F9F9F9;*/
+    background-color: #F0D4D4;
+    position: relative;
+    top: 1px;
+    width: 166px; /*see also @media (max-width: 530px) */
+}
+
+.searchTab i          {color: red; position: absolute; z-index: 10;}
+.searchTab.active i   {color: green;}
+
+.searchTab.books      {border-top-right-radius: 35px; border-top-left-radius: 4px;}
+.searchTab.books i    {left: 2px; top: 0px;}
+.searchTab.articles   {border-top-left-radius: 35px; border-top-right-radius: 4px;}
+.searchTab.articles i {right: 2px; top: 0px;}
+.searchTab.active {
+    background-color: #EFF3DC;
+    background-position: 0px -60px;
+    position: relative;
+    top: 2px;
+    border-width: 1px 1px 0px !important;
+    border-style: solid;
+    border-color: #DDD;
+}
+
+.searchTab a {
+    background: transparent none repeat scroll 100% 0px;
+    color: #1E3287;
+    float: left;
+    line-height: 2em;
+    padding-right: 10px;
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+    border: none !important;
+}
+
+.searchTab.active a {
+    background-position: 100% -60px;
+    font-weight: bold;
+}
+
+
+[name="searchForm"] .nav-tabs li.active a, [name="searchForm"] .nav-tabs li.active a:hover {
+    background: transparent none repeat scroll 0 0;
+    border-bottom: 0 none;
+    border-color: #eff3dc #eff3dc -moz-use-text-color;
+    text-decoration: none;
+    z-index: 5;
+}
+
+.matches {
+    font-size: 14px;
+    padding-top: 12px;
+    font-weight: normal;
+}
+/* END Modding Search Tabs */
+
 .searchbox, .breadcrumbs, .footer {
     background-color: #fff;
 }
+
+.sort_order_hint {color: #A8DDF0;}
 
 #result0, #result2, #result4, #result6, #result8, #result10, #result12, #result14, #result16, #result18 {
     background-color: #eff3dc;
@@ -28,14 +99,6 @@
 
 .record {
     background: none repeat scroll 0 0 #ffffff !important;
-}
-
-[name="searchForm"] .nav-tabs li.active a, [name="searchForm"] .nav-tabs li.active a:hover {
-    background: #fff none repeat scroll 0 0;
-    border-bottom: 0 none;
-    border-color: #eff3dc #eff3dc -moz-use-text-color;
-    text-decoration: none;
-    z-index: 5;
 }
 
 #searchForm_lookfor, #searchForm_type {
@@ -103,28 +166,34 @@ table.datagrid td a {
 .holdil        {}
 .holdwish      {}
 
+/* info icon print */
 .tub_fa-info_p {
     margin-top: 14px;
     margin-bottom: 0;
-    padding-left: 2px;  
-    cursor: pointer !important; 
+    padding-left: 2px;
+    cursor: pointer !important;
 }
+/* info icon sfx-volltext (ganz oben) */
 .tub_fa-info_e {
     margin-top: 4px;
-    padding-left: 2px;   
+    padding-left: 4px;
+    vertical-align: middle;
+    cursor: pointer !important;
+}
+/* info icon other (ill & acq proposal - multiline) UNUSED */
+.tub_fa-info_x {
+    margin-top: 20px;
+    padding-left: 2px;
+    cursor: pointer !important;
+}
+/* info icon facet */
+.tub_fa-info_f {
+    padding-left: 2px;
     cursor: pointer !important;
 }
 
-.printedicon {
-    background-image: url("../../../themes/bootprint3-tub/images/icons/book.png");
-    background-position: left top;
-    background-repeat: no-repeat;
-    margin-right: 1em;
-    padding: 0 0.5em 0.5em 20px;
-}
-
-.callnumAndLocation {
-    margin-top: 5px;
+.tub_loading {
+   // Loading icon; always this way: <i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...
 }
 
 /* TZ: z-index: Vufind */
@@ -165,7 +234,7 @@ table.datagrid td a {
 div .left   {width: 17%; position: relative; min-height: 150px;}
 div .middle {width: 59%; position: relative; min-height: 150px;}
 div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15px;}
-.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 17px; text-align: center;} /* 21px/11px trifft genau bildecke */
+.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* 21px/11px trifft genau bildecke */
 .recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
 
 /* remove star: http://redmine.tub.tuhh.de/issues/612
@@ -224,4 +293,14 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
         position: relative;
         bottom: auto;
     }
+    
+    .nav-tabs ul, .search-query, .twitter-typeahead, #searchForm_type {
+      width:325px !important;
+    }
+    .searchTab {
+      width: 155px;
+    }
+
+    .recordcover {min-width: 50px; min-height: 25px;}
+
 }

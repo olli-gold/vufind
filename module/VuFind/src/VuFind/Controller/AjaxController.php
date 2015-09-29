@@ -441,7 +441,7 @@ return $this->output($x, self::STATUS_OK);
                 // if this copy isn't to be ordered/reserved/reference only/e-only
 // TODO TZ 2015-09-20: Here it happens: http://lincl1.b.tu-harburg.de:81/vufind2-test/Search/Results?lookfor=537875034 - wrong location
 // DAIA bug - EVERY location is a springer ebook?!?
-//$bla[] = $info['location'];
+// $bla[] = $info['ilslink'];
                 $bestLocationPriority[0] = $info['location'];
 
                 // Check if this copy has a recallhref
@@ -565,7 +565,7 @@ else              {
         // Ok determine remaining best options + set link
         // No reference only, but borrowable shelf items available
         // (also) Note: $info['itemnotes'][0] == 'presence_use_only' includes elecronic items
-        if ($electronicCount > 0 && $electronicCount === $referenceCount) {
+        if ($electronicCount > 0 && $electronicCount === $referenceCount && $availableCount === 1) {
             $patronOptions['e_only'] = true;
         }
         elseif ($borrowableCount > 0 && ($borrowableCount - $stackorderCount) > 0) {

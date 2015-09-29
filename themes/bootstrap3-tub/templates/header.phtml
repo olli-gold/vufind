@@ -70,8 +70,12 @@
       <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?=$this->transEsc("Password")?> <b class="caret"></b></a>
           <ul class="dropdown-menu">
+            <!-- TZ 2015-09-26: old way
               <li><a href="https://www.tub.tu-harburg.de/ext/lbspw" target="_blank"><?=$this->transEsc('Change Password')?></a></li>
               <li><a href="https://www.tub.tu-harburg.de/ext/lbspw/forgotten" target="_blank"><?=$this->transEsc('Lost Password?')?></a></li>
+            -->
+            <li><a href="#" id="info-pwchange" class="locationInfox modal-link"><?=$this->transEsc('Change Password')?><span data-title="<?=$this->transEsc('Change Password')?>" data-location="Undefined" data-iframe="https://www.tub.tu-harburg.de/ext/lbspw" class="modal-dialog hidden"><?=$this->transEsc('Blablub und so weiter')?></span></a></li>
+            <li><a href="#" id="info-pwrequest" class="locationInfox modal-link"><?=$this->transEsc('Lost Password?')?><span data-title="<?=$this->transEsc('Lost Password?')?>" data-location="Undefined" data-iframe="https://www.tub.tu-harburg.de/ext/lbspw/forgotten" class="modal-dialog hidden"><?=$this->transEsc('Blablub und so weiter')?></span></a></li>
           </ul>
       </li>
 
@@ -91,6 +95,6 @@
     </ul>
 
     <br />
-    <span class="tub_holdingguide"><a href="#" id="info-help" title="Hilfe" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-ambulance"></i> HILFE, ich finde nicht, was ich brauche!<span data-title="Wir helfen gerne" data-location="TEST" class="modal-dialog hidden">Sie finden nicht, was Sie benötigen? Fragen Sie uns: <ul><li>Wenden Sie sich an den Serviceplatz</li><li>Oder schreiben Sie uns eine Mail mit dem Betreff "Hilfe bla" an bibliothek@tuhh.de [HIER GLEICH FORMULAR REIN]</li><li>Oder rufen Sie uns an xyz</li></ul></span></a></span>    
+   <span class="tub_holdingguide"><a href="#" id="info-help" title="<?=$this->translate('help_menu_Hover_clueless')?>" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-ambulance"></i> <?=$this->translate('help_menu_Link_clueless')?><span data-title="<?=$this->translate('help_modal_Title_clueless')?>" data-location="TEST" class="modal-dialog hidden"><?=$this->translate('help_modal_Body_clueless')?></span></a></span>       
   </div>
 <? endif; ?>
