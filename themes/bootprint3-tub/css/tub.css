@@ -20,11 +20,11 @@
 /* END Modding stuff so sorting button is smoothly aligned */
 
 /* START Modding Search Tabs */
-.searchTab_info, .searchTab_info a {margin: 0px; padding: 0px; width: 6px; left: -23px; top: 6px;} /* Very, very ugly - just for the idea */
+.searchTab_info, .searchTab_info a {margin: 0px; padding: 0px; width: 6px; left: -22px; top: 6px;} /* Very, very ugly - just for the idea */
 .searchTab {
     font-size: 1.2em;
     position: relative;
-    left: -25px;
+    left: -24px;
     margin: 0px 10px 0px 0px;
     padding-left: 10px;
     border-width: 1px;
@@ -61,6 +61,9 @@
     line-height: 2em;
     padding-right: 10px;
     text-decoration: none;
+    width: 100%;
+    text-align: center;
+    border: none !important;
 }
 
 .searchTab.active a {
@@ -167,16 +170,17 @@ table.datagrid td a {
 .tub_fa-info_p {
     margin-top: 14px;
     margin-bottom: 0;
-    padding-left: 2px;  
-    cursor: pointer !important; 
+    padding-left: 2px;
+    cursor: pointer !important;
 }
 /* info icon sfx-volltext (ganz oben) */
 .tub_fa-info_e {
     margin-top: 4px;
-    padding-left: 2px;   
+    padding-left: 4px;
+    vertical-align: middle;
     cursor: pointer !important;
 }
-/* info icon other (ill & acq proposal) */
+/* info icon other (ill & acq proposal - multiline) UNUSED */
 .tub_fa-info_x {
     margin-top: 20px;
     padding-left: 2px;

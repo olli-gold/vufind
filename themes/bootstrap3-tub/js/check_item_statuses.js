@@ -50,7 +50,7 @@ function displayHoldingGuide() {
 
           // Early exit: display volumes button (if this item has volumes)
           if (result.multiVols == true) {
-              loc_button    = '<a href="../../Record/'+ result.id +'/TomesVolumes#tabnav" title="'+title+'" class="fa fa-stack-overflow holdlink holdtomes"> ' + vufindString.loc_volumes + '</a>';
+              loc_button    = '<a href="../../Record/'+ result.id +'/TomesVolumes#tabnav" title="'+vufindString.loc_modal_Title_multi+'" class="fa fa-stack-overflow holdlink holdtomes"> ' + vufindString.loc_volumes + '</a>';
               loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = 'Multi',
                                             link_title  = vufindString.loc_modal_Title_multi,
@@ -59,13 +59,18 @@ function displayHoldingGuide() {
                                             iframe_src  = '',
                                             modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
-              item.find('.holdtomes').removeClass('hidden');
-              item.find('.holdlocation').empty().append(loc_modal_link);
+              //item.find('.holdtomes').removeClass('hidden');
+              item.find('.holdlocation').empty().append(bestOption);
               // If something has multiple volumes, our voyage ends here already;
               // @todo: It does, doesn't it? It happens only for print (so no E-Only info icon is needed)
               return true;
           }
+
           
+          // Future: Here we would like another "early exit" for "e-only"
+
+
+          // Here we start figuring out what we have to show on implicit information
           // Some helper variables
           var loc_abbr;
           var loc_button;
@@ -93,7 +98,7 @@ function displayHoldingGuide() {
             loc_abbr = 'DIG';   loc_modal_body = vufindString.loc_modal_Body_eonly;
           }
           else {
-            loc_abbr = 'Umm?';
+            loc_abbr = 'Undefined';
            // alert('Hier ist ein komischer Fall bei '+result.callnumber);
           }
 
@@ -102,15 +107,14 @@ function displayHoldingGuide() {
             case 'e_only':
               // No button to show. Show only if it is no broken record
               if (result.missing_data !== true && result.bestOptionLocation != 'Unknown') {
-                loc_modal_link = create_modal(id          = result.id, 
-                                              loc_code    = loc_abbr,
-                                              link_title  = vufindString.loc_modal_Title_eonly,
-                                              modal_title = result.bestOptionLocation,
-                                              modal_body  = loc_modal_body,
-                                              iframe_src  = '',
-                                              modal_foot  = '',
-                                              icon_class  = 'tub_fa-info_e');
-                bestOption = loc_modal_link;
+                /* 2015-09-28: MOVED to sfx_fix below
+                This check should work. But we have a better way. Indirectly SFX
+                tells us if no electronic versions is found by returning a 1px
+                image. Thus we already have everything to display a hint next to
+                the button.
+                @Note: We could also add the hint in the template itself, but
+                here we don't have to do it for each driver.
+                */
               }
               break;
             case 'shelf': //fa-hand-lizard-o is nice too (but only newest FA)
@@ -216,7 +220,21 @@ function displayHoldingGuide() {
           // If so, hide the controls (or just the image), so everything else around
           // is displayed nicely (not indented etc.). Maybe better in \themes\bootstrap3-tub\js\openurl.js
           sfx_fix = item.find('.openUrlControls');
-          if (sfx_fix.innerWidth() < 10) sfx_fix.hide();
+          if (sfx_fix.innerWidth() < 10) {
+                sfx_fix.hide();
+          }
+          // Alway show help if Electronic
+          else {
+                loc_modal_link = create_modal(id          = result.id,
+                                              loc_code    = loc_abbr,
+                                              link_title  = vufindString.loc_modal_Title_eonly,
+                                              modal_title = result.bestOptionLocation,
+                                              modal_body  = loc_modal_body,
+                                              iframe_src  = '',
+                                              modal_foot  = '',
+                                              icon_class  = 'tub_fa-info_e');
+                item.find('.openUrlControls').after(loc_modal_link);
+          }
 
           // Show our final result!
           item.find('.holdlocation').empty().append(bestOption);
@@ -257,7 +275,7 @@ function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_
     iframe = ' data-iframe="'+iframe_src+'" ';
   }
   
-  modal = '<a href="#" id="info-'+id+'" title="' + link_title + '" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle '+icon_class+'"></i><span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
+  modal = '<a href="#" id="info-'+id+'" title="' + link_title + '" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle '+icon_class+'"></i><span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
   
   return modal;
 }
@@ -270,26 +288,39 @@ $(document).ready(function() {
   //https://stackoverflow.com/questions/1359018/in-jquery-how-to-attach-events-to-dynamic-html-elements
   // Todo: 
   // - Maybe don't use a (skip "(event) {event.preventDefault();...")
-  $('.tub_holdingguide').on('click', 'a.locationInfox', function(event) {
+  //$('.tub_holdingguide').on('click', 'a.locationInfox', function(event) { <--- make this better / more useful
+  $('body').on('click', 'a.locationInfox', function(event) {
     event.preventDefault();
 
     var loc = $(this).children('span').attr('data-location');
     var additional_content = '';
-    var loan4_url;
+    var modal_iframe_href;
+    var modal_frame = '';
+    var force_logoff_loan4 = false;
     
+    // @todo: Errm, if there's a lot text above, well then this matters ;)
     var frameMaxHeight = window.innerHeight - 250;
     if (frameMaxHeight > 550) frameMaxHeight = 550;
+    modal_iframe_href = $(this).children('span').attr('data-iframe');
+
+    // Create iframe if available
+    if (modal_iframe_href !== undefined && modal_iframe_href.length > 0) {
+        modal_frame = '<iframe id="modalIframe" name="modalIframe" src="' + modal_iframe_href + '" width="100%" min-height="465px" height="'+frameMaxHeight+'px"/>';
+    }
 
     if (loc == 'Loaned') {
-      loan4_url = $(this).children('span').attr('data-iframe');
-      additional_content = 'DAS IST NUR EIN TEST ERSTMAL (eigentlich steht hier nur der vorangegangene Text)<br /><iframe id="loan4" src="' + loan4_url + '" width="100%" min-height="465px" height="'+frameMaxHeight+'px"/>';
+      additional_content = 'DAS IST NUR EIN TEST ERSTMAL (eigentlich steht hier nur der vorangegangene Text)<br />';
+      force_logoff_loan4 = false;
     }
     else if (loc == 'Magazin') {
-      loan4_url = $(this).children('span').attr('data-iframe');
-      additional_content = 'DAS IST NUR EIN TEST ERSTMAL (eigentlich steht hier nur der vorangegangene Text)<br /><iframe id="loan4" src="' + loan4_url + '" width="100%" min-height="465px" height="'+frameMaxHeight+'px"/>';
+      additional_content = 'DAS IST NUR EIN TEST ERSTMAL (eigentlich steht hier nur der vorangegangene Text)<br />';
+      force_logoff_loan4 = false;
     }
     else if (loc == 'SO' || loc == 'Multi') {
         //
+    }
+    else if (loc === 'Undefined') {
+
     }
     else if (loc == 'DIG') {
 //      additional_content = 'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.';
@@ -312,23 +343,34 @@ $(document).ready(function() {
 
     // TODO: Lightbox has methods to do this?
     $('#modalTitle').html($(this).children('span').attr('data-title'));
-    $('.modal-body').html('<p>'+ $(this).children('span').text() + '</p>' + additional_content);
+    $('.modal-body').html('<p>'+ $(this).children('span').text() + '</p>' + additional_content + modal_frame);
 
 
-    // TEST: Force loan4 logoff, delay it a little so the iframe can be reloaded with the logoff url
-    // Argh, with something like alert after the src change it works, timeout etc. does not. Ok, fix this later, already solved this some time ago somewhere else...
-    // NOTE - JUST REMOVE ID 'loan4' - should be the way
-    // NOTE: it's default to stay logged in unless the close link is clicked OR 
-    //  the session times out in loan4 (the forced log off would be new, albeit 
+    // Remove iframe - prevents browser history
+    function closeModalIframe() {
+      $('#modalIframe').remove();
+    }
+
+    // NOTE: it's default to stay logged in unless the close link is clicked OR
+    //  the session times out in loan4 (the forced log off would be new, albeit
     //  could be a hassle for patrons that want to request multiple items in sucession)
     function closeLoan4() {
-      $('#loan4').attr("src", 'https://katalog.b.tuhh.de/LBS_WEB/j_spring_security_logout');
-      //.delay(2500);
-      //$('#loan4').remove();
+      // TEST: Force loan4 logoff, delay it a little so the iframe can be reloaded with the logoff url
+      $('#modalIframe').attr("src", 'https://katalog.b.tuhh.de/LBS_WEB/j_spring_security_logout');
+      // Argh, with something like alert after the src change it works, timeout
+      // etc. does not. Ok, fix this later, already solved this some time ago somewhere else...
       alert('Logged off');
     }
-    // Add the function as close action if loan4_url is used
-    if (loan4_url !== undefined) Lightbox.addCloseAction(closeLoan4);
+
+    // Add generic function as close action if modal_iframe_href is used
+    if (modal_iframe_href !== undefined) {
+        Lightbox.addCloseAction(closeModalIframe);
+    }
+
+    // Add special function as close action if loan4 is opened
+    if (force_logoff_loan4 === true) {
+        Lightbox.addCloseAction(closeLoan4);
+    }
 
     // Show everything
     return $('#modal').modal('show');
