@@ -159,6 +159,7 @@ table.datagrid td a {
 .holdlink:hover   {text-decoration: none !important; cursor: pointer; }
 
 /* Customize button for single option */
+.holdelectronic {}
 .holdshelf     {}
 .holdorder     {}
 .holdreserve   {}
@@ -295,10 +296,10 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
     }
     
     .nav-tabs ul, .search-query, .twitter-typeahead, #searchForm_type {
-      width:325px !important;
+      width:320px !important;
     }
     .searchTab {
-      width: 155px;
+      width: 145px;
     }
 
     .recordcover {min-width: 50px; min-height: 25px;}
