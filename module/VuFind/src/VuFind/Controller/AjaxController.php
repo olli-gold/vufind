@@ -627,14 +627,15 @@ else              {
         }
         
 //TZ: This block could be removed - we don't need the location as html; see also json comment below      
-        $loc = $rec['locationhref'];
-        if ($loc) {
-            $location = '<a href="'.$loc.'" target="_blank">'.htmlentities($location, ENT_COMPAT, 'UTF-8').'</a>';
+        $locHref = $rec['locationhref'];
+/*
+        if ($locHref) {
+            $location = '<a href="'.$locHref.'" title="'.$location.'" target="_blank">'.htmlentities($location, ENT_COMPAT, 'UTF-8').'</a>';
         }
         else {
             $location = htmlentities($location, ENT_COMPAT, 'UTF-8');
         }
-
+*/
         
 //TZ TODO: Check if it is necessary here - already/also  called in getItemStatusesAjax() ?!?
         $link_printed = $this->getPrintedStatuses();
@@ -677,6 +678,7 @@ else              {
             'availability' => ($available ? 'true' : 'false'),
             'availability_message' => $availability_message,
             'additional_availability_message' => $additional_availability_message,
+            'locHref' => $locHref,
             'callnumber' => htmlentities($callNumber, ENT_COMPAT, 'UTF-8'),
             'duedate' => $duedate,
             'presenceOnly' => $referenceIndicator,

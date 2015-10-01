@@ -82,10 +82,10 @@ function displayHoldingGuide() {
           if (result.bestOptionLocation.indexOf('Lehr') > -1) {
             loc_abbr = 'LBS';   loc_modal_body = vufindString.loc_modal_Body_shelf_lbs + loc_shelf + '.';
           }
-          else if (result.bestOptionLocation.indexOf('1') > -1) {
+          else if (result.bestOptionLocation.indexOf('Lesesaal 1') > -1) {
             loc_abbr = 'LS1';   loc_modal_body = vufindString.loc_modal_Body_shelf_ls1 + loc_shelf + '.';
           }
-          else if (result.bestOptionLocation.indexOf('2') > -1) {
+          else if (result.bestOptionLocation.indexOf('Lesesaal 2') > -1) {
             loc_abbr = 'LS2';   loc_modal_body = vufindString.loc_modal_Body_shelf_ls2 + loc_shelf + '.';
           }
           else if (result.bestOptionLocation.indexOf('Sonderstandort') > -1) {
@@ -93,6 +93,10 @@ function displayHoldingGuide() {
           }
           else if (result.bestOptionLocation.indexOf('Semesterapparat') > -1) {
             loc_abbr = 'SEM';   loc_modal_body = vufindString.loc_modal_Body_sem + '.';
+          }
+          /* 2015-10-01 added @see http://redmine.tub.tuhh.de/issues/624 */
+          else if (result.electronic == '1' && result.locHref !== '') {
+            loc_abbr = 'WEB';   loc_modal_body = vufindString.loc_modal_Body_eMarc21;
           }
           else if (result.electronic == '1') {
             loc_abbr = 'DIG';   loc_modal_body = vufindString.loc_modal_Body_eonly;
@@ -106,7 +110,7 @@ function displayHoldingGuide() {
           switch(result.patronBestOption) {
             case 'e_only':
               // No button to show. Show only if it is no broken record
-              if (result.missing_data !== true && result.bestOptionLocation != 'Unknown') {
+              if (result.missing_data !== true && result.bestOptionLocation != 'Unknown' && result.locHref != '') {
                 /* 2015-09-28: MOVED to sfx_fix below
                 This check should work. But we have a better way. Indirectly SFX
                 tells us if no electronic versions is found by returning a 1px
@@ -115,6 +119,24 @@ function displayHoldingGuide() {
                 @Note: We could also add the hint in the template itself, but
                 here we don't have to do it for each driver.
                 */
+
+              /* 2015-10-01 @see http://redmine.tub.tuhh.de/issues/624 */
+                  title = loc_abbr;
+                  if (result.bestOptionLocation == result.locHref) {
+                    title_modal = title;
+                  } else {
+                    title_modal = result.bestOptionLocation;
+                  }
+
+                  loc_button    = '<a href="'+ result.locHref +'" title="' + vufindString.loc_modal_Title_eMarc21+'\n'+result.locHref + '" class="fa fa-download holdlink holdelectronic"> ' + title + '</a>';
+                  loc_modal_link = create_modal(id          = result.id,
+                                                loc_code    = loc_abbr,
+                                                link_title  = vufindString.loc_modal_Title_eMarc21,
+                                                modal_title = vufindString.loc_modal_Title_eMarc21 +': '+title_modal,
+                                                modal_body  = vufindString.loc_modal_Body_eMarc21,
+                                                iframe_src  = result.locHref,
+                                                modal_foot  = '');
+                  bestOption = loc_button + ' ' + loc_modal_link;
               }
               break;
             case 'shelf': //fa-hand-lizard-o is nice too (but only newest FA)
