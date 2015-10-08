@@ -7,7 +7,10 @@
  * @todo  
  * - What good for were variables result.full_status and locationListHTML in checkItemStatuses()
  * - Remove checkItemStatuses() finally
- * -loan4-links (wrong url, no https etc)
+ *
+ * @note Stuff to remember, that might be of use even though not used (anymore)
+ * - Call number must be 7 characters long (=reading room), it must be available (else = reserve button, )
+ * - https://coderwall.com/p/6uxw7w/simple-multilanguage-with-jquery - might even nearly use the language inis)
  *
  * @todo: Inline way to show options AND show correct record link
  *  - <span class="holdtomes hidden"><a href="<?=$this->recordLink()->getTabUrl($this->driver, 'TomesVolumes')?>#tabnav" class="holdlink fa fa-stack-overflow"> <?=$this->transEsc("See Tomes/Volumes")?></a></span>
@@ -15,10 +18,13 @@
  *      - either use the template way
  *      - or use stick to the current JS way
  *      - but be consistent, one place to modify css, titles and stuff
+ * - Readd the location as part of the bibliographic information somewhere else (if it is a DOI, URN or maybe a publisher direct link)
  *
  * @todo ILL and Acqisition proposal should be here too
  *  - @see templates/RecordDriver/SolrGBV/result-list.phtml
  *  - @see templates/RecordDriver/Primo/result-list.phtml
+ *
+ * @todo: USE CORRECT BASE URL (not stuff like href="../")
  *
  * @return void
  */
@@ -50,7 +56,11 @@ function displayHoldingGuide() {
 
           // Early exit: display volumes button (if this item has volumes)
           if (result.multiVols == true) {
-              loc_button    = '<a href="../../Record/'+ result.id +'/TomesVolumes#tabnav" title="'+vufindString.loc_modal_Title_multi+'" class="fa fa-stack-overflow holdlink holdtomes"> ' + vufindString.loc_volumes + '</a>';
+              loc_button = create_button(href   = '../Record/'+ result.id +'/TomesVolumes#tabnav',
+                                         hover  = vufindString.loc_modal_Title_multi,
+                                         text   = vufindString.loc_volumes,
+                                         icon   = 'fa-stack-overflow',
+                                         css_classes = 'holdtomes');
               loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = 'Multi',
                                             link_title  = vufindString.loc_modal_Title_multi,
@@ -106,6 +116,7 @@ function displayHoldingGuide() {
            // alert('Hier ist ein komischer Fall bei '+result.callnumber);
           }
 
+          // Return the one best option as JSon - create button and info modal
           var bestOption = '';
           switch(result.patronBestOption) {
             case 'e_only':
@@ -128,7 +139,11 @@ function displayHoldingGuide() {
                     title_modal = result.bestOptionLocation;
                   }
 
-                  loc_button    = '<a href="'+ result.locHref +'" title="' + vufindString.loc_modal_Title_eMarc21+'\n'+result.locHref + '" class="fa fa-download holdlink holdelectronic"> ' + title + '</a>';
+                  loc_button = create_button(href   = result.locHref,
+                                             hover  = vufindString.loc_modal_Title_eMarc21,
+                                             text   = title,
+                                             icon   = 'fa-download',
+                                             css_classes = 'holdelectronic');
                   loc_modal_link = create_modal(id          = result.id,
                                                 loc_code    = loc_abbr,
                                                 link_title  = vufindString.loc_modal_Title_eMarc21,
@@ -140,8 +155,12 @@ function displayHoldingGuide() {
               }
               break;
             case 'shelf': //fa-hand-lizard-o is nice too (but only newest FA)
-              loc_button    = '<a href="../../Record/'+ result.id +'/Holdings#tabnav" title="' + loc_modal_body + '" class="fa fa-map-marker holdlink holdshelf"> ' + loc_abbr + ' ' + result.callnumber + '</a>';
-              loc_modal_link = create_modal(id          = result.id, 
+              loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
+                                         hover  = loc_modal_body,
+                                         text   = loc_abbr + ' ' + result.callnumber,
+                                         icon   = 'fa-map-marker',
+                                         css_classes = 'holdshelf');
+              loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = loc_modal_body,
                                             modal_title = loc_modal_title,
@@ -151,8 +170,13 @@ function displayHoldingGuide() {
               bestOption = loc_button + ' ' + loc_modal_link;
               break;
             case 'order':
-              loc_button    = '<a href="'+result.bestOptionHref+'" target="_blank" title="'+vufindString.loc_btn_Hover_order+'" class="fa fa-upload holdlink holdorder"> '+vufindString.hold_place+'</a>';
-              loc_modal_link = create_modal(id          = result.id, 
+              loc_button = create_button(href   = result.bestOptionHref,
+                                             hover  = vufindString.loc_btn_Hover_order,
+                                             text   = vufindString.hold_place,
+                                             icon   = 'fa-upload',
+                                             css_classes = 'holdorder',
+                                             target = '_blank');
+              loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = 'Magazin',
                                             link_title  = vufindString.loc_btn_Hover_order,
                                             modal_title = vufindString.loc_modal_Title_order,
@@ -165,8 +189,13 @@ function displayHoldingGuide() {
               // just continue, don't break;
             case 'reserve':
               title = vufindString.loc_modal_Title_reserve + result.duedate;
-              loc_button    = '<a href="'+result.bestOptionHref+'" target="_blank" title="'+title+'" class="fa fa-clock-o holdlink holdreserve"> '+vufindString.recall_this+'</a>';
-              loc_modal_link = create_modal(id          = result.id, 
+              loc_button = create_button(href   = result.bestOptionHref,
+                                         hover  = title,
+                                         text   = vufindString.recall_this,
+                                         icon   = 'fa-clock-o',
+                                         css_classes = 'holdreserve',
+                                         target = '_blank');
+              loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = 'Loaned',
                                             link_title  = title,
                                             modal_title = title,
@@ -178,8 +207,12 @@ function displayHoldingGuide() {
             case 'local':
               // Todo: is it necessary to use result.reference_callnumber and result.reference_location. It might be...?
               title = loc_modal_body+ '\n' + vufindString.loc_modal_Title_refonly_generic;
-              loc_button    = '<a href="../../Record/'+ result.id +'/Holdings#tabnav" title="'+title+'" class="fa fa-home holdlink holdrefonly"> ' + loc_abbr + ' ' + result.callnumber + '</a>';
-              loc_modal_link = create_modal(id          = result.id, 
+              loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
+                                         hover  = title,
+                                         text   = loc_abbr + ' ' + result.callnumber,
+                                         icon   = 'fa-home',
+                                         css_classes = 'holdrefonly');
+              loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = title,
                                             modal_title = loc_modal_title,
@@ -189,8 +222,12 @@ function displayHoldingGuide() {
               bestOption = bestOption + loc_button + ' ' + loc_modal_link;
               break;
             case 'service_desk':
-              loc_button    = '<a href="../../Record/'+ result.id +'/Holdings#tabnav" title="'+vufindString.loc_modal_Title_service_da+'" class="fa fa-frown-o holdlink"> SO ' + result.callnumber + '</a>';
-              loc_modal_link = create_modal(id          = result.id, 
+              loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
+                                         hover  = vufindString.loc_modal_Title_service_da,
+                                         text   = 'SO ' + result.callnumber,
+                                         icon   = 'fa-frown-o',
+                                         css_classes = 'x');
+              loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = vufindString.loc_modal_Title_service_da,
                                             modal_title = vufindString.loc_modal_Title_service_da,
@@ -203,8 +240,12 @@ function displayHoldingGuide() {
               // Remove the "Loading..." - bestoption is and stays empty
               break;
             default:
-              loc_button    = '<a href="../../Record/'+ result.id +'/Holdings#tabnav" title="'+vufindString.loc_modal_Title_service_else+'" class="fa fa-frown-o holdlink"> '+vufindString.loc_modal_Title_service_else+'</a>';
-              loc_modal_link = create_modal(id          = result.id, 
+              loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
+                                         hover  = vufindString.loc_modal_Title_service_else,
+                                         text   = vufindString.loc_modal_Title_service_else,
+                                         icon   = 'fa-frown-o',
+                                         css_classes = 'x');
+              loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = 'Unknown',
                                             link_title  = vufindString.loc_modal_Title_service_else,
                                             modal_title = vufindString.loc_modal_Title_service_else,
@@ -217,7 +258,11 @@ function displayHoldingGuide() {
           // Show link to printed edition for electronic edition (if available)
           // Todo: can we show the exact location?
           if (result.link_printed != null) {
-              loc_button = '<a href="'+ result.link_printed_href +'" title="'+vufindString.loc_modal_Title_printEdAvailable+'" class="fa fa-book holdlink"> '+vufindString.available_printed+'</a>';
+              loc_button = create_button(href   = result.link_printed_href,
+                                         hover  = vufindString.loc_modal_Title_printEdAvailable,
+                                         text   = vufindString.available_printed,
+                                         icon   = 'fa-book',
+                                         css_classes = 'holdprinted');
               loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = vufindString.loc_modal_Title_printEdAvailable,
@@ -266,15 +311,6 @@ function displayHoldingGuide() {
           // Next step: put it into a modal, so the full link can easily be shown - or links (I think there are such cases?)
           // Remove > append to oa-fulltextes > add button classes
           item.find('.grab-fulltext1').detach().appendTo(item.find('.oa-fulltextes')).addClass('fa holdlink');
-
-          // - Call number must be 7 characters long (=reading room), it must be available (else = reserve button, )
-          // - https://coderwall.com/p/6uxw7w/simple-multilanguage-with-jquery - might even nearly use the language inis)
-          // - 2015-09-04: Vufind already has a JS way to translate; example in \themes\bootstrap3-tub\templates\layout\layout.phtml
-          // TODO (Finally)
-          // - Readd the location as part of the bibliographic information somewhere else (if it is a DOI, URN or maybe a publisher direct link)
-//          } else if (result.callnumber.indexOf('D') === 0 && result.availability == 'false') {
-//            alert('DA');
-//          else if (result.callnumber != 'Unknown' && result.callnumber.length == 7 || result.availability == 'false') {
         });
       } else {
         // display the error message on each of the ajax status place holder
@@ -287,6 +323,7 @@ function displayHoldingGuide() {
   });
   }
 }
+
 
 
 /**
@@ -332,6 +369,64 @@ function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_
 }
 
 
+/**
+ * Create a button for an action
+ *
+ * @param href          \b STR  Link to open on click
+ * @param hover         \b STR  Title to show on hovering the link
+ * @param text          \b STR  The link text
+ * @param icon          \b STR  Some FontAwesome icon
+ * @param css_classes   \b STR  All links get the classes "fa holdlink"
+ *                              (+ the icon param); add some special class
+ * @param target        \b STR  opt: target for link; leave empty for self
+ *
+ * @return \b STR link html
+ */
+function create_button(href, hover, text, icon, css_classes, target) {
+    //target = target || '';
+    if (typeof target !== 'undefined') { target = 'target="'+target+'"'; }
+    var button;
+
+    button    = '<a href="'+href+'" title="'+hover+'" class="fa holdlink '+css_classes+'" '+target+'><i class="fa '+icon+'"></i> <span class="btn_text">' + text + '<span></a>';
+
+    return button;
+}
+
+
+
+/**
+ * Just a backup of create_button() - fiddling around to find a nicer style
+ *
+ * @param href          \b STR  Link to open on click
+ * @param hover         \b STR  Title to show on hovering the link
+ * @param text          \b STR  The link text
+ * @param icon          \b STR  Some FontAwesome icon
+ * @param css_classes   \b STR  All links get the classes "fa holdlink"
+ *                              (+ the icon param); add some special class
+ * @param target        \b STR  opt: target for link; leave empty for self
+ *
+ * @return \b STR link html
+ */
+function create_button_org(href, hover, text, icon, css_classes, target) {
+    //target = target || '';
+    if (typeof target !== 'undefined') { target = 'target="'+target+'"'; }
+    var button;
+
+    button    = '<a href="'+href+'" title="'+hover+'" class="fa holdlink '+icon+' '+css_classes+'" '+target+'> ' + text + '</a>';
+
+    return button;
+}
+
+
+
+/**
+ * JQuery ready stuff
+ *
+ * - call displayHolding
+ * - add trigger/listener for modal(s)
+ *
+ * @return void
+ */
 $(document).ready(function() {
 //  checkItemStatuses();
   displayHoldingGuide();
@@ -430,14 +525,13 @@ $(document).ready(function() {
 
 
 
-
-
-
-
-// Deprecated
-// TODO: What is - and why would we (still) ever want
-// - result.full_status
-// - locationListHTML
+/**
+ * @deprecated Check item status - replaced by displayHoldingGuide()
+ *
+ * Remove finally. Currently only for backreference and for checking if the
+ * "Full status mode" (result.full_status) and locationListHTML stuff could be
+ * of use
+ */
 function checkItemStatuses() {
   var id = $.map($('.ajaxItem'), function(i) {
     return $(i).find('.hiddenId')[0].value;
