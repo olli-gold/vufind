@@ -290,7 +290,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
         <script>
           // Cart button
           loc_button1 = create_button(href   = '#',
-                               hover  = '<?=$this->transEsc('Add to Book Bag') ?>',
+                               hover  = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
                                text   = '<?=$this->transEsc('Add to Book Bag') ?>',
                                icon   = 'fa-plus-square',
                                css_classes = 'single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?> hidden',
@@ -298,23 +298,19 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
                                id = 'single-cart-add',
                                custom = 'data-recordid="<?=$cartId ?>"');
           loc_button2 = create_button(href   = '#',
-                               hover  = '<?=$this->transEsc('Remove from Book Bag') ?>',
+                               hover  = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
                                text   = '<?=$this->transEsc('Remove from Book Bag') ?>',
                                icon   = 'fa-minus-square',
                                css_classes = 'single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?> hidden',
                                target = '',
                                id = 'single-cart-remove',
                                custom = 'data-recordid="<?=$cartId ?>"');
-          /*
           loc_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
-                                  loc_code    = 'ext_ill',
-                                  link_title  = '<?=$this->transEsc('loc_btn_Hover_ill')?>',
-                                  modal_title = '<?=$this->transEsc('loc_modal_Title_ill')?>',
-                                  modal_body  = '<?=$this->transEsc('loc_modal_Body_ill')?>',
-                                  iframe_src  = 'https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>',
-                                  modal_foot  = '');
-          */
-          document.write(loc_button1+loc_button2);
+                                  loc_code    = '',
+                                  link_title  = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
+                                  modal_title = '<?=$this->transEsc('help_modal_Title_bookBag')?>',
+                                  modal_body  = '<?=$this->transEsc('help_modal_Body_bookBag')?>');
+          document.write(loc_button1+loc_button2+loc_modal_link);
         </script>
       <noscript>
         <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
