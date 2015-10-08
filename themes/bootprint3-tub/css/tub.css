@@ -94,7 +94,8 @@
 .sort_order_hint {color: #A8DDF0;}
 
 #result0, #result2, #result4, #result6, #result8, #result10, #result12, #result14, #result16, #result18 {
-   background-color: #eff3dc;
+   /* background-color: #eff3dc;*/
+   background-color: #ffffff;
 }
 
 .record {
@@ -142,21 +143,32 @@ table.datagrid td a {
 
 .holdlink, .holdlink:active, .holdlink:hover, .holdlink:visited {
    background-color: #a8ddf0;
-   color: #000000;
+   color: #ffffff;
    border: thin solid #aaaaaa;
    border-radius: 3px;
    opacity: 1;
    display: inline-block;
    margin: 10px 0 0 2px;
-   padding: 2px;
+   padding: 0px;
    width: 118px;
-   font-weight: normal;
-   text-align: center;
+   font-weight: bold;
+   font-size: 13px;
+   text-align: left;
    text-decoration: none;
 }
 .holdlink:active  {}
 .holdlink:visited {}
 .holdlink:hover   {text-decoration: none !important; cursor: pointer; }
+
+.holdlink i {
+   padding: 3px;
+   background-color: #6BC4E5;
+   color: #ffffff;
+   font-size: 15px;
+}
+/* Reset fa-heart - TODO for less cleanup */
+i.fa-heart {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
+
 
 /* Customize button for single option */
 .holdelectronic   {}
