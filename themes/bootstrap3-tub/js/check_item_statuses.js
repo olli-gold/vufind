@@ -56,29 +56,27 @@ function displayHoldingGuide() {
 
           // Early exit: display volumes button (if this item has volumes)
           if (result.multiVols == true) {
-              loc_button = create_button(href   = '../Record/'+ result.id +'/TomesVolumes#tabnav',
-                                         hover  = vufindString.loc_modal_Title_multi,
-                                         text   = vufindString.loc_volumes,
-                                         icon   = 'fa-stack-overflow',
-                                         css_classes = 'holdtomes');
-              loc_modal_link = create_modal(id          = result.id,
-                                            loc_code    = 'Multi',
-                                            link_title  = vufindString.loc_modal_Title_multi,
-                                            modal_title = vufindString.loc_modal_Title_multi,
-                                            modal_body  = vufindString.loc_modal_Body_multi,
-                                            iframe_src  = '',
-                                            modal_foot  = '');
-              bestOption = loc_button + ' ' + loc_modal_link;
-              //item.find('.holdtomes').removeClass('hidden');
-              item.find('.holdlocation').empty().append(bestOption);
-              // If something has multiple volumes, our voyage ends here already;
-              // @todo: It does, doesn't it? It happens only for print (so no E-Only info icon is needed)
-              return true;
+            loc_button = create_button(href   = '../Record/'+ result.id +'/TomesVolumes#tabnav',
+                                       hover  = vufindString.loc_modal_Title_multi,
+                                       text   = vufindString.loc_volumes,
+                                       icon   = 'fa-stack-overflow',
+                                       css_classes = 'holdtomes');
+            loc_modal_link = create_modal(id          = result.id,
+                                          loc_code    = 'Multi',
+                                          link_title  = vufindString.loc_modal_Title_multi,
+                                          modal_title = vufindString.loc_modal_Title_multi,
+                                          modal_body  = vufindString.loc_modal_Body_multi,
+                                          iframe_src  = '',
+                                          modal_foot  = '');
+            bestOption = loc_button + ' ' + loc_modal_link;
+            //item.find('.holdtomes').removeClass('hidden');
+            item.find('.holdlocation').empty().append(bestOption);
+            // If something has multiple volumes, our voyage ends here already;
+            // @todo: It does, doesn't it? It happens only for print (so no E-Only info icon is needed)
+            return true;
           }
 
-          
           // Future: Here we would like another "early exit" for "e-only"
-
 
           // Here we start figuring out what we have to show on implicit information
           // Some helper variables
@@ -86,30 +84,30 @@ function displayHoldingGuide() {
           var loc_button;
           var loc_modal_title = vufindString.loc_modal_Title_shelf_generic + result.callnumber + ' (' + result.bestOptionLocation + ')';
           var loc_modal_body;
-          var loc_shelf   = result.callnumber.substring(0, 2);
+          var loc_shelf  = result.callnumber.substring(0, 2);
 
           // Add some additional infos for TUBHH holdings
           if (result.bestOptionLocation.indexOf('Lehr') > -1) {
-            loc_abbr = 'LBS';   loc_modal_body = vufindString.loc_modal_Body_shelf_lbs + loc_shelf + '.';
+            loc_abbr = 'LBS';  loc_modal_body = vufindString.loc_modal_Body_shelf_lbs + loc_shelf + '.';
           }
           else if (result.bestOptionLocation.indexOf('Lesesaal 1') > -1) {
-            loc_abbr = 'LS1';   loc_modal_body = vufindString.loc_modal_Body_shelf_ls1 + loc_shelf + '.';
+            loc_abbr = 'LS1';  loc_modal_body = vufindString.loc_modal_Body_shelf_ls1 + loc_shelf + '.';
           }
           else if (result.bestOptionLocation.indexOf('Lesesaal 2') > -1) {
-            loc_abbr = 'LS2';   loc_modal_body = vufindString.loc_modal_Body_shelf_ls2 + loc_shelf + '.';
+            loc_abbr = 'LS2';  loc_modal_body = vufindString.loc_modal_Body_shelf_ls2 + loc_shelf + '.';
           }
           else if (result.bestOptionLocation.indexOf('Sonderstandort') > -1) {
             loc_abbr = 'SO';    loc_modal_body = vufindString.loc_modal_Title_service_da;
           }
           else if (result.bestOptionLocation.indexOf('Semesterapparat') > -1) {
-            loc_abbr = 'SEM';   loc_modal_body = vufindString.loc_modal_Body_sem + '.';
+            loc_abbr = 'SEM';  loc_modal_body = vufindString.loc_modal_Body_sem + '.';
           }
           /* 2015-10-01 added @see http://redmine.tub.tuhh.de/issues/624 */
           else if (result.electronic == '1' && result.locHref !== '') {
-            loc_abbr = 'WEB';   loc_modal_body = vufindString.loc_modal_Body_eMarc21;
+            loc_abbr = 'WEB';  loc_modal_body = vufindString.loc_modal_Body_eMarc21;
           }
           else if (result.electronic == '1') {
-            loc_abbr = 'DIG';   loc_modal_body = vufindString.loc_modal_Body_eonly;
+            loc_abbr = 'DIG';  loc_modal_body = vufindString.loc_modal_Body_eonly;
           }
           else {
             loc_abbr = 'Undefined';
@@ -131,27 +129,27 @@ function displayHoldingGuide() {
                 here we don't have to do it for each driver.
                 */
 
-              /* 2015-10-01 @see http://redmine.tub.tuhh.de/issues/624 */
-                  title = loc_abbr;
-                  if (result.bestOptionLocation == result.locHref) {
-                    title_modal = title;
-                  } else {
-                    title_modal = result.bestOptionLocation;
-                  }
+                /* 2015-10-01 @see http://redmine.tub.tuhh.de/issues/624 */
+                title = loc_abbr;
+                if (result.bestOptionLocation == result.locHref) {
+                  title_modal = title;
+                } else {
+                  title_modal = result.bestOptionLocation;
+                }
 
-                  loc_button = create_button(href   = result.locHref,
-                                             hover  = vufindString.loc_modal_Title_eMarc21,
-                                             text   = title,
-                                             icon   = 'fa-download',
-                                             css_classes = 'holdelectronic');
-                  loc_modal_link = create_modal(id          = result.id,
-                                                loc_code    = loc_abbr,
-                                                link_title  = vufindString.loc_modal_Title_eMarc21,
-                                                modal_title = vufindString.loc_modal_Title_eMarc21 +': '+title_modal,
-                                                modal_body  = vufindString.loc_modal_Body_eMarc21,
-                                                iframe_src  = result.locHref,
-                                                modal_foot  = '');
-                  bestOption = loc_button + ' ' + loc_modal_link;
+                loc_button = create_button(href   = result.locHref,
+                                           hover  = vufindString.loc_modal_Title_eMarc21,
+                                           text   = title,
+                                           icon   = 'fa-download',
+                                           css_classes = 'holdelectronic');
+                loc_modal_link = create_modal(id          = result.id,
+                                              loc_code    = loc_abbr,
+                                              link_title  = vufindString.loc_modal_Title_eMarc21,
+                                              modal_title = vufindString.loc_modal_Title_eMarc21 +': '+title_modal,
+                                              modal_body  = vufindString.loc_modal_Body_eMarc21,
+                                              iframe_src  = result.locHref,
+                                              modal_foot  = '');
+                bestOption = loc_button + ' ' + loc_modal_link;
               }
               break;
             case 'shelf': //fa-hand-lizard-o is nice too (but only newest FA)
@@ -171,11 +169,11 @@ function displayHoldingGuide() {
               break;
             case 'order':
               loc_button = create_button(href   = result.bestOptionHref,
-                                             hover  = vufindString.loc_btn_Hover_order,
-                                             text   = vufindString.hold_place,
-                                             icon   = 'fa-upload',
-                                             css_classes = 'holdorder',
-                                             target = '_blank');
+                                         hover  = vufindString.loc_btn_Hover_order,
+                                         text   = vufindString.hold_place,
+                                         icon   = 'fa-upload',
+                                         css_classes = 'holdorder',
+                                         target = '_blank');
               loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = 'Magazin',
                                             link_title  = vufindString.loc_btn_Hover_order,
@@ -252,24 +250,24 @@ function displayHoldingGuide() {
                                             modal_body  = vufindString.loc_modal_Body_service_da,
                                             iframe_src  = '',
                                             modal_foot  = '');
-              bestOption = loc_button + ' ' + loc_modal_link;              
+              bestOption = loc_button + ' ' + loc_modal_link;             
           } 
 
           // Show link to printed edition for electronic edition (if available)
           // Todo: can we show the exact location?
           if (result.link_printed != null) {
-              loc_button = create_button(href   = result.link_printed_href,
-                                         hover  = vufindString.loc_modal_Title_printEdAvailable,
-                                         text   = vufindString.available_printed,
-                                         icon   = 'fa-book',
-                                         css_classes = 'holdprinted');
-              loc_modal_link = create_modal(id          = result.id,
-                                            loc_code    = loc_abbr,
-                                            link_title  = vufindString.loc_modal_Title_printEdAvailable,
-                                            modal_title = vufindString.loc_modal_Title_printEdAvailable,
-                                            modal_body  = vufindString.loc_modal_Body_printEdAvailable,
-                                            iframe_src  = '',
-                                            modal_foot  = '');
+            loc_button = create_button(href   = result.link_printed_href,
+                                       hover  = vufindString.loc_modal_Title_printEdAvailable,
+                                       text   = vufindString.available_printed,
+                                       icon   = 'fa-book',
+                                       css_classes = 'holdprinted');
+            loc_modal_link = create_modal(id          = result.id,
+                                          loc_code    = loc_abbr,
+                                          link_title  = vufindString.loc_modal_Title_printEdAvailable,
+                                          modal_title = vufindString.loc_modal_Title_printEdAvailable,
+                                          modal_body  = vufindString.loc_modal_Body_printEdAvailable,
+                                          iframe_src  = '',
+                                          modal_foot  = '');
             bestOption = loc_button + loc_modal_link;
             // Change the link to article container into parentlink (the journal this article has been published in)
             item.find('.parentlink').attr('href', result.parentlink);
@@ -288,19 +286,19 @@ function displayHoldingGuide() {
           // is displayed nicely (not indented etc.). Maybe better in \themes\bootstrap3-tub\js\openurl.js
           sfx_fix = item.find('.openUrlControls');
           if (sfx_fix.innerWidth() < 10) {
-                sfx_fix.hide();
+            sfx_fix.hide();
           }
           // Alway show help if Electronic
           else {
-                loc_modal_link = create_modal(id          = result.id,
-                                              loc_code    = loc_abbr,
-                                              link_title  = vufindString.loc_modal_Title_eonly,
-                                              modal_title = result.bestOptionLocation,
-                                              modal_body  = loc_modal_body,
-                                              iframe_src  = '',
-                                              modal_foot  = '',
-                                              icon_class  = 'tub_fa-info_e');
-                item.find('.openUrlControls').after(loc_modal_link);
+            loc_modal_link = create_modal(id          = result.id,
+                                          loc_code    = loc_abbr,
+                                          link_title  = vufindString.loc_modal_Title_eonly,
+                                          modal_title = result.bestOptionLocation,
+                                          modal_body  = loc_modal_body,
+                                          iframe_src  = '',
+                                          modal_foot  = '',
+                                          icon_class  = 'tub_fa-info_e');
+            item.find('.openUrlControls').after(loc_modal_link);
           }
 
           // Show our final result!
@@ -383,13 +381,13 @@ function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_
  * @return \b STR link html
  */
 function create_button(href, hover, text, icon, css_classes, target) {
-    //target = target || '';
-    if (typeof target !== 'undefined') { target = 'target="'+target+'"'; }
-    var button;
+  //target = target || '';
+  if (typeof target !== 'undefined') { target = 'target="'+target+'"'; }
+  var button;
 
-    button    = '<a href="'+href+'" title="'+hover+'" class="fa holdlink '+css_classes+'" '+target+'><i class="fa '+icon+'"></i> <span class="btn_text">' + text + '<span></a>';
+  button    = '<a href="'+href+'" title="'+hover+'" class="fa holdlink '+css_classes+'" '+target+'><i class="fa '+icon+'"></i> <span class="btn_text">' + text + '<span></a>';
 
-    return button;
+  return button;
 }
 
 
@@ -408,13 +406,13 @@ function create_button(href, hover, text, icon, css_classes, target) {
  * @return \b STR link html
  */
 function create_button_org(href, hover, text, icon, css_classes, target) {
-    //target = target || '';
-    if (typeof target !== 'undefined') { target = 'target="'+target+'"'; }
-    var button;
+  //target = target || '';
+  if (typeof target !== 'undefined') { target = 'target="'+target+'"'; }
+  var button;
 
-    button    = '<a href="'+href+'" title="'+hover+'" class="fa holdlink '+icon+' '+css_classes+'" '+target+'> ' + text + '</a>';
+  button    = '<a href="'+href+'" title="'+hover+'" class="fa holdlink '+icon+' '+css_classes+'" '+target+'> ' + text + '</a>';
 
-    return button;
+  return button;
 }
 
 
@@ -451,7 +449,7 @@ $(document).ready(function() {
 
     // Create iframe if available
     if (modal_iframe_href !== undefined && modal_iframe_href.length > 0) {
-        modal_frame = '<iframe id="modalIframe" name="modalIframe" src="' + modal_iframe_href + '" width="100%" min-height="465px" height="'+frameMaxHeight+'px"/>';
+      modal_frame = '<iframe id="modalIframe" name="modalIframe" src="' + modal_iframe_href + '" width="100%" min-height="465px" height="'+frameMaxHeight+'px"/>';
     }
 
     if (loc == 'Loaned') {
@@ -463,13 +461,13 @@ $(document).ready(function() {
       force_logoff_loan4 = false;
     }
     else if (loc == 'SO' || loc == 'Multi') {
-        //
+      //
     }
     else if (loc === 'Undefined') {
-
+      //
     }
     else if (loc == 'DIG') {
-//      additional_content = 'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.';
+      // additional_content = 'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.';
     }
     else {
       // Got shelf location
@@ -510,12 +508,12 @@ $(document).ready(function() {
 
     // Add generic function as close action if modal_iframe_href is used
     if (modal_iframe_href !== undefined) {
-        Lightbox.addCloseAction(closeModalIframe);
+      Lightbox.addCloseAction(closeModalIframe);
     }
 
     // Add special function as close action if loan4 is opened
     if (force_logoff_loan4 === true) {
-        Lightbox.addCloseAction(closeLoan4);
+      Lightbox.addCloseAction(closeLoan4);
     }
 
     // Show everything
@@ -644,7 +642,7 @@ function checkItemStatuses() {
 if (result.availability == 'true') {
 var loc_modal_href = item.find('.order a').attr('href');
 $(' <a href="#" id="info-'+result.id+'" title="Magazinbestellung" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info"></i><span data-title="Magazinbestellung" data-location="Magazin" data-iframe="'+loc_modal_href+'" class="modal-dialog hidden">Das Medium befindet sich im Magazin. Nach dem Bestellen können Sie es in 30 Minuten an den Serviceplätzen abholen</span></a>').insertAfter(item.find('.order'));
-}          
+}         
           }
           else {
               item.find('.order').empty();
@@ -692,13 +690,13 @@ $(' <a href="#" id="info-'+result.id+'" title="Medium vormerken (verfügbar ab '
             var loc_shelf = result.callnumber.substring(0, 2); 
             
             if (result.location.indexOf('Lehr') > -1) {
-              loc_abbr = 'LBS';   loc_modal_body= 'Sie finden das Medium in der Lehrbuchsammlung (LBS) im Regal '+loc_shelf+'. Die Lehrbuchsammlung ist im Lesesaal 1 auf der Seite des Eingangs.';
+              loc_abbr = 'LBS';  loc_modal_body= 'Sie finden das Medium in der Lehrbuchsammlung (LBS) im Regal '+loc_shelf+'. Die Lehrbuchsammlung ist im Lesesaal 1 auf der Seite des Eingangs.';
             }
             else if (result.location.indexOf('1') > -1) {
-              loc_abbr = 'LS1';   loc_modal_body= 'Sie finden das Medium im Lesesaal 1 (LS1) im Regal '+loc_shelf+'.';
+              loc_abbr = 'LS1';  loc_modal_body= 'Sie finden das Medium im Lesesaal 1 (LS1) im Regal '+loc_shelf+'.';
             }
             else if (result.location.indexOf('2') > -1) {
-              loc_abbr = 'LS2';   loc_modal_body= 'Sie finden das Medium im Lesesaal 2 (LS2) im Regal '+loc_shelf+'.';
+              loc_abbr = 'LS2';  loc_modal_body= 'Sie finden das Medium im Lesesaal 2 (LS2) im Regal '+loc_shelf+'.';
             }
             else {
               loc_abbr = 'Umm? Sem-App?';

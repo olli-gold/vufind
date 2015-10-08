@@ -1,139 +1,139 @@
 .clear {
-    clear: both;
+   clear: both;
 }
 
 /* START Modding stuff so sorting button is smoothly aligned */
-.main > div:nth-child(1) > div:nth-child(1)   {padding: 0px;}    
-.search-controls    {padding: 0px !important; margin-left: -6px !important;}
-.col-sm-6           {width: 100%; padding: 0; margin: 0; background-image: linear-gradient(to top, #FFF, #EEE);}
-.navbar-form        {width: 100%;}
-.search-query       {width: 350px !important;}
-.search-submit      {padding: 3px; vertical-align: middle;}
+.main > div:nth-child(1) > div:nth-child(1)   {padding: 0px;}  
+.search-controls  {padding: 0px !important; margin-left: -6px !important;}
+.col-sm-6         {width: 100%; padding: 0; margin: 0; background-image: linear-gradient(to top, #FFF, #EEE);}
+.navbar-form      {width: 100%;}
+.search-query     {width: 350px !important;}
+.search-submit   {padding: 3px; vertical-align: middle;}
 .navbar-form .checkbox {width: 25%; float: right; min-width: 175px;}
 .breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
 .btn-primary {
-    background-color: #A8DDF0;
-    border-color: #fff;
-    color: #fff;
-    min-width: 165px;
+   background-color: #A8DDF0;
+   border-color: #fff;
+   color: #fff;
+   min-width: 165px;
 }
 /* END Modding stuff so sorting button is smoothly aligned */
 
 /* START Modding Search Tabs */
 .searchTab_info, .searchTab_info a {margin: 0px; padding: 0px; width: 6px; left: -22px; top: 6px;} /* Very, very ugly - just for the idea */
 .searchTab {
-    font-size: 1.2em;
-    position: relative;
-    left: -24px;
-    margin: 0px 10px 0px 0px;
-    padding-left: 10px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: #DDD;
-    /*background-color: #F9F9F9;*/
-    background-color: #F0D4D4;
-    position: relative;
-    top: 1px;
-    width: 166px; /*see also @media (max-width: 530px) */
+   font-size: 1.2em;
+   position: relative;
+   left: -24px;
+   margin: 0px 10px 0px 0px;
+   padding-left: 10px;
+   border-width: 1px;
+   border-style: solid;
+   border-color: #DDD;
+   /*background-color: #F9F9F9;*/
+   background-color: #F0D4D4;
+   position: relative;
+   top: 1px;
+   width: 166px; /*see also @media (max-width: 530px) */
 }
 
-.searchTab i          {color: red; position: absolute; z-index: 10;}
+.searchTab i        {color: red; position: absolute; z-index: 10;}
 .searchTab.active i   {color: green;}
 
-.searchTab.books      {border-top-right-radius: 35px; border-top-left-radius: 4px;}
-.searchTab.books i    {left: 2px; top: 0px;}
+.searchTab.books    {border-top-right-radius: 35px; border-top-left-radius: 4px;}
+.searchTab.books i   {left: 2px; top: 0px;}
 .searchTab.articles   {border-top-left-radius: 35px; border-top-right-radius: 4px;}
 .searchTab.articles i {right: 2px; top: 0px;}
 .searchTab.active {
-    background-color: #EFF3DC;
-    background-position: 0px -60px;
-    position: relative;
-    top: 2px;
-    border-width: 1px 1px 0px !important;
-    border-style: solid;
-    border-color: #DDD;
+   background-color: #EFF3DC;
+   background-position: 0px -60px;
+   position: relative;
+   top: 2px;
+   border-width: 1px 1px 0px !important;
+   border-style: solid;
+   border-color: #DDD;
 }
 
 .searchTab a {
-    background: transparent none repeat scroll 100% 0px;
-    color: #1E3287;
-    float: left;
-    line-height: 2em;
-    padding-right: 10px;
-    text-decoration: none;
-    width: 100%;
-    text-align: center;
-    border: none !important;
+   background: transparent none repeat scroll 100% 0px;
+   color: #1E3287;
+   float: left;
+   line-height: 2em;
+   padding-right: 10px;
+   text-decoration: none;
+   width: 100%;
+   text-align: center;
+   border: none !important;
 }
 
 .searchTab.active a {
-    background-position: 100% -60px;
-    font-weight: bold;
+   background-position: 100% -60px;
+   font-weight: bold;
 }
 
 
 [name="searchForm"] .nav-tabs li.active a, [name="searchForm"] .nav-tabs li.active a:hover {
-    background: transparent none repeat scroll 0 0;
-    border-bottom: 0 none;
-    border-color: #eff3dc #eff3dc -moz-use-text-color;
-    text-decoration: none;
-    z-index: 5;
+   background: transparent none repeat scroll 0 0;
+   border-bottom: 0 none;
+   border-color: #eff3dc #eff3dc -moz-use-text-color;
+   text-decoration: none;
+   z-index: 5;
 }
 
 .matches {
-    font-size: 14px;
-    padding-top: 12px;
-    font-weight: normal;
+   font-size: 14px;
+   padding-top: 12px;
+   font-weight: normal;
 }
 /* END Modding Search Tabs */
 
 .searchbox, .breadcrumbs, .footer {
-    background-color: #fff;
+   background-color: #fff;
 }
 
 .sort_order_hint {color: #A8DDF0;}
 
 #result0, #result2, #result4, #result6, #result8, #result10, #result12, #result14, #result16, #result18 {
-    background-color: #eff3dc;
+   background-color: #eff3dc;
 }
 
 .record {
-    background: none repeat scroll 0 0 #ffffff !important;
+   background: none repeat scroll 0 0 #ffffff !important;
 }
 
 #searchForm_lookfor, #searchForm_type {
-    border-color: #eff3dc;
+   border-color: #eff3dc;
 }
 
 header .navbar .navbar-brand {
-    background-image: url("../../../themes/bootprint3-tub/images/tubfind_logo.jpg");
-    background-repeat: no-repeat;
-    color: transparent;
-    height: 53px;
-    margin-top: 5px;
-    width: 195px;
+   background-image: url("../../../themes/bootprint3-tub/images/tubfind_logo.jpg");
+   background-repeat: no-repeat;
+   color: transparent;
+   height: 53px;
+   margin-top: 5px;
+   width: 195px;
 }
 
 tbody tr:nth-child(2n) td, tbody tr.even td {
-    background: #e5ecf9 none repeat scroll 0 0;
+   background: #e5ecf9 none repeat scroll 0 0;
 }
 
 table.datagrid td {
-    border-left: 1px solid #ffffff;
-    border-right: 1px solid #ffffff;
-    padding: 5px 10px;
+   border-left: 1px solid #ffffff;
+   border-right: 1px solid #ffffff;
+   padding: 5px 10px;
 }
 
 table.datagrid td a {
-    color: #003366;
+   color: #003366;
 }
 
 .powered-by {
-    background-image: url("../../../themes/bootprint3-tub/images/vufind_logo.png");
-    background-size: 100px;
-    background-position: right;
-    background-repeat: no-repeat;
-    height: 40px;
+   background-image: url("../../../themes/bootprint3-tub/images/vufind_logo.png");
+   background-size: 100px;
+   background-position: right;
+   background-repeat: no-repeat;
+   height: 40px;
 }
 
 .tub_holdingguide {
@@ -141,56 +141,56 @@ table.datagrid td a {
 }
 
 .holdlink, .holdlink:active, .holdlink:hover, .holdlink:visited {
-    background-color: #a8ddf0;
-    color: #000000;
-    border: thin solid #aaaaaa;
-    border-radius: 3px;
-    opacity: 1;
-    display: inline-block;
-    margin: 10px 0 0 2px;
-    padding: 2px;
-    width: 118px;
-    font-weight: normal;
-    text-align: center;
-    text-decoration: none;
+   background-color: #a8ddf0;
+   color: #000000;
+   border: thin solid #aaaaaa;
+   border-radius: 3px;
+   opacity: 1;
+   display: inline-block;
+   margin: 10px 0 0 2px;
+   padding: 2px;
+   width: 118px;
+   font-weight: normal;
+   text-align: center;
+   text-decoration: none;
 }
 .holdlink:active  {}
 .holdlink:visited {}
 .holdlink:hover   {text-decoration: none !important; cursor: pointer; }
 
 /* Customize button for single option */
-.holdelectronic {}
-.holdshelf     {}
-.holdorder     {}
-.holdreserve   {}
-.holdrefonly   {}
-.holdil        {}
-.holdwish      {}
+.holdelectronic   {}
+.holdshelf        {}
+.holdorder        {}
+.holdreserve      {}
+.holdrefonly      {}
+.holdil           {}
+.holdwish         {}
 
 /* info icon print */
 .tub_fa-info_p {
-    margin-top: 14px;
-    margin-bottom: 0;
-    padding-left: 2px;
-    cursor: pointer !important;
+   margin-top: 14px;
+   margin-bottom: 0;
+   padding-left: 2px;
+   cursor: pointer !important;
 }
 /* info icon sfx-volltext (ganz oben) */
 .tub_fa-info_e {
-    margin-top: 4px;
-    padding-left: 4px;
-    vertical-align: middle;
-    cursor: pointer !important;
+   margin-top: 4px;
+   padding-left: 4px;
+   vertical-align: middle;
+   cursor: pointer !important;
 }
 /* info icon other (ill & acq proposal - multiline) UNUSED */
 .tub_fa-info_x {
-    margin-top: 20px;
-    padding-left: 2px;
-    cursor: pointer !important;
+   margin-top: 20px;
+   padding-left: 2px;
+   cursor: pointer !important;
 }
 /* info icon facet */
 .tub_fa-info_f {
-    padding-left: 2px;
-    cursor: pointer !important;
+   padding-left: 2px;
+   cursor: pointer !important;
 }
 
 .tub_loading {
@@ -201,30 +201,30 @@ table.datagrid td a {
 .modal-dialog{z-index:1050;}
 
 .tubbadge {
-    float: right;
-    font-size: 85%;
-    margin-top: 1px;
-    display: inline-block;
-    font-size: 12px;
-    font-weight: bold;
-    line-height: 1;
-    min-width: 10px;
-    padding: 3px 7px;
-    text-align: center;
-    vertical-align: baseline;
-    white-space: nowrap;
+   float: right;
+   font-size: 85%;
+   margin-top: 1px;
+   display: inline-block;
+   font-size: 12px;
+   font-weight: bold;
+   line-height: 1;
+   min-width: 10px;
+   padding: 3px 7px;
+   text-align: center;
+   vertical-align: baseline;
+   white-space: nowrap;
 }
 
 .tublabel-success {
-    color: #028302;
+   color: #028302;
 }
 
 .tublabel-danger {
-    color: #a41915;
+   color: #a41915;
 }
 
 .tublabel-info {
-    color: #1c5f74;
+   color: #1c5f74;
 }
 
 .tub_info_topright {width: 118px; margin: 0 0 0 2px; padding: 0;} /* Same length as Volltext-Image and order buttons */
@@ -240,17 +240,17 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
 
 /* remove star: http://redmine.tub.tuhh.de/issues/612
 .tub_bbplus {
-    background-image: url("../../../themes/bootprint3-tub/images/icons/star_faded.png");
-    background-position: left top;
-    background-repeat: no-repeat;
-    padding-right: 30px;
+   background-image: url("../../../themes/bootprint3-tub/images/icons/star_faded.png");
+   background-position: left top;
+   background-repeat: no-repeat;
+   padding-right: 30px;
 }
 
 .tub_bbminus {
-    background-image: url("../../../themes/bootprint3-tub/images/icons/star.png");
-    background-position: left top;
-    background-repeat: no-repeat;
-    padding-right: 30px;
+   background-image: url("../../../themes/bootprint3-tub/images/icons/star.png");
+   background-position: left top;
+   background-repeat: no-repeat;
+   padding-right: 30px;
 }
 */
 
@@ -261,13 +261,13 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
 .col-xs-11 {width: 99% !important;}
 
 .tub_lielement {
-    background: rgba(0, 0, 0, 0) url("../../../themes/bootprint3-tub/images/small/sprite-1.png") no-repeat scroll 10px -596px;
-    padding-left: 20px;
+   background: rgba(0, 0, 0, 0) url("../../../themes/bootprint3-tub/images/small/sprite-1.png") no-repeat scroll 10px -596px;
+   padding-left: 20px;
 }
 
 .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
-    background: #A8DDF0 none repeat scroll 0 0;
-    border-color: #A8DDF0;
+   background: #A8DDF0 none repeat scroll 0 0;
+   border-color: #A8DDF0;
 }
 
 /* START Fix WP-Template Bugs */
@@ -283,25 +283,25 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
 
 /* VEERY nasty hack - rethink layout with proper usage of css bootstrap http://getbootstrap.com/css/ */
 @media (max-width: 530px) {
-    .right {
-        min-height: auto !important;
-        width: 140px !important;
-        display: block !important;
-        margin-left: 130px;
-    }
+   .right {
+      min-height: auto !important;
+      width: 140px !important;
+      display: block !important;
+      margin-left: 130px;
+   }
 
-    #bookbag-menu {
-        position: relative;
-        bottom: auto;
-    }
-    
-    .nav-tabs ul, .search-query, .twitter-typeahead, #searchForm_type {
-      width:320px !important;
-    }
-    .searchTab {
-      width: 145px;
-    }
+   #bookbag-menu {
+      position: relative;
+      bottom: auto;
+   }
+   
+   .nav-tabs ul, .search-query, .twitter-typeahead, #searchForm_type {
+     width:320px !important;
+   }
+   .searchTab {
+     width: 145px;
+   }
 
-    .recordcover {min-width: 50px; min-height: 25px;}
+   .recordcover {min-width: 50px; min-height: 25px;}
 
 }
