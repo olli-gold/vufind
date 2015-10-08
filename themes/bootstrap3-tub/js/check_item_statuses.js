@@ -289,7 +289,36 @@ function displayHoldingGuide() {
 }
 
 
-function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_src = '', modal_foot = '', icon_class='tub_fa-info_p') {
+/**
+ * Create a modal by function - easy to modify later
+ *
+ * Creating the modals inline got messy. This function isn't beautiful as well,
+ * but for now the better way.
+ *
+ * @note: 2015-09-29: Argh, only Firefox support default values for paramters
+ * (https://stackoverflow.com/questions/19699257/uncaught-syntaxerror-unexpected-token-in-google-chrome/19699282#19699282)
+ *
+ * @param id            \b STR  Some unique id for the modal (not used yet)
+ * @param loc_code      \b STR  Used by $(document).ready bewlow; use some
+ *                              speaking name (besides the location abbrevation
+ *                              like LS1 etc., currently used: Multi, Magazin, Loaned, Unknown)
+ * @param link_title    \b STR  The title displayed on hovering the modal
+ * @param modal_title   \b STR  The title displayed in the modal header
+ * @param modal_body    \b STR  The modal "body"
+ * @param iframe_src    \b STR  optional: if you add an url, it will be loaded in
+ *                              an iframe below the modal_body part
+ * @param modal_foot    \b STR  ERRRRM - not used really...
+ * @param icon_class    \b STR  optional: the link to open a modal has always the
+ *                              classes "fa fa-info-circle". If this param is empty
+ *                              also "tub_fa-info_p" - add a custom one
+ *
+ * @return \b STR modal html
+ */
+function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_src, modal_foot, icon_class) {
+  // Set function defaults if empty
+  iframe_src = iframe_src || '';
+  modal_foot = modal_foot || '';
+  icon_class = icon_class || 'tub_fa-info_p';
   var modal;
   var iframe = '';
   
