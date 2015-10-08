@@ -336,7 +336,7 @@ function displayHoldingGuide() {
  * @param id            \b STR  Some unique id for the modal (not used yet)
  * @param loc_code      \b STR  Used by $(document).ready bewlow; use some
  *                              speaking name (besides the location abbrevation
- *                              like LS1 etc., currently used: Multi, Magazin, Loaned, Unknown)
+ *                              like LS1 etc., currently used: Multi, Magazin, Loaned, Unknown; ext_ill, ext_acqusition; holddirectdl)
  * @param link_title    \b STR  The title displayed on hovering the modal
  * @param modal_title   \b STR  The title displayed in the modal header
  * @param modal_body    \b STR  The modal "body"
@@ -377,15 +377,21 @@ function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_
  * @param css_classes   \b STR  All links get the classes "fa holdlink"
  *                              (+ the icon param); add some special class
  * @param target        \b STR  opt: target for link; leave empty for self
+ * @param id            \b STR  opt: element id
+ * @param custom        \b STR  opt: any other a tag parameter part
+ *
+ * @todo: id and custom only added for cart - not too nice
  *
  * @return \b STR link html
  */
-function create_button(href, hover, text, icon, css_classes, target) {
+function create_button(href, hover, text, icon, css_classes, target, id, custom) {
   //target = target || '';
   if (typeof target !== 'undefined') { target = 'target="'+target+'"'; }
+  if (typeof id     !== 'undefined') { id = 'id="'+id+'"'; }
+  custom = custom || '';
   var button;
 
-  button    = '<a href="'+href+'" title="'+hover+'" class="fa holdlink '+css_classes+'" '+target+'><i class="fa '+icon+'"></i> <span class="btn_text">' + text + '<span></a>';
+  button    = '<a href="'+href+'" '+id+' title="'+hover+'" class="fa holdlink '+css_classes+'" '+target+' '+custom+'><i class="fa '+icon+'"></i> <span class="btn_text">' + text + '<span></a>';
 
   return button;
 }
@@ -402,15 +408,21 @@ function create_button(href, hover, text, icon, css_classes, target) {
  * @param css_classes   \b STR  All links get the classes "fa holdlink"
  *                              (+ the icon param); add some special class
  * @param target        \b STR  opt: target for link; leave empty for self
+ * @param id            \b STR  opt: element id
+ * @param custom        \b STR  opt: any other a tag parameter part 
+ *
+ * @todo: id and custom only added for cart - not too nice
  *
  * @return \b STR link html
  */
-function create_button_org(href, hover, text, icon, css_classes, target) {
+function create_button_org(href, hover, text, icon, css_classes, target, id, custom) {
   //target = target || '';
   if (typeof target !== 'undefined') { target = 'target="'+target+'"'; }
+  if (typeof id     !== 'undefined') { id = 'id="'+id+'"'; }
+  custom = custom || '';
   var button;
 
-  button    = '<a href="'+href+'" title="'+hover+'" class="fa holdlink '+icon+' '+css_classes+'" '+target+'> ' + text + '</a>';
+  button    = '<a href="'+href+'" '+id+' title="'+hover+'" class="fa holdlink '+icon+' '+css_classes+'" '+target+' '+custom+'> ' + text + '</a>';
 
   return button;
 }

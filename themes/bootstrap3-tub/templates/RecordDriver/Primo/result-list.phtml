@@ -144,7 +144,26 @@
           <?=$openUrl->renderTemplate(true)?>
         <? endif; ?>
         <? if ($directUrl): ?>
-          <a href="<?=$directUrl?>" class="fa fa-file-pdf-o holdlink holddirectdl"> <?=$this->transEsc('direct_download')?></a>
+                <!--@todo: I really don't like it here; it should be in themes/bootstrap3-tub/js/check_item_statuses.js -->
+                <script>
+                  // ILL Button
+                  loc_button = create_button(href   = '<?=$directUrl?>',
+                                       hover  = '<?=$directUrl?>',
+                                       text   = '<?=$this->transEsc('direct_download')?>',
+                                       icon   = 'fa-file-pdf-o',
+                                       css_classes = 'holddirectdl');
+                  /*                     
+                  loc_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
+                                          loc_code    = 'ext_ill',
+                                          link_title  = '<?=$this->transEsc('loc_btn_Hover_ill')?>',
+                                          modal_title = '<?=$this->transEsc('loc_modal_Title_ill')?>',
+                                          modal_body  = '<?=$this->transEsc('loc_modal_Body_ill')?>',
+                                          iframe_src  = 'https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>',
+                                          modal_foot  = '');
+                  document.write(loc_button+loc_modal_link);
+                  */
+                  document.write(loc_button);
+                </script>
         <? else: ?>
             <? if (!is_array($urls)) $urls = array();
               if(!$this->driver->isCollection()):
@@ -190,8 +209,36 @@
   <? if ($cart->isActive()): ?>
     <div id="bookbag-menu">
       <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
-      <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden holdlink fa" href="#" data-recordid="<?=$cartId ?>"><i class="tub_bbplus"></i> <?=$this->transEsc('Add to Book Bag') ?></a>
-      <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden holdlink fa" href="#" data-recordid="<?=$cartId ?>"><i class="tub_bbminus"></i> <?=$this->transEsc('Remove from Book Bag') ?></a>
+        <!--@todo: I really don't like it here; it should be in themes/bootstrap3-tub/js/check_item_statuses.js -->
+        <script>
+          // Cart button
+          loc_button1 = create_button(href   = '#',
+                               hover  = '<?=$this->transEsc('Add to Book Bag') ?>',
+                               text   = '<?=$this->transEsc('Add to Book Bag') ?>',
+                               icon   = 'fa-plus-square',
+                               css_classes = 'single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?> hidden',
+                               target = '',
+                               id = 'single-cart-add',
+                               custom = 'data-recordid="<?=$cartId ?>"');
+          loc_button2 = create_button(href   = '#',
+                               hover  = '<?=$this->transEsc('Remove from Book Bag') ?>',
+                               text   = '<?=$this->transEsc('Remove from Book Bag') ?>',
+                               icon   = 'fa-minus-square',
+                               css_classes = 'single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?> hidden',
+                               target = '',
+                               id = 'single-cart-remove',
+                               custom = 'data-recordid="<?=$cartId ?>"');
+          /*
+          loc_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
+                                  loc_code    = 'ext_ill',
+                                  link_title  = '<?=$this->transEsc('loc_btn_Hover_ill')?>',
+                                  modal_title = '<?=$this->transEsc('loc_modal_Title_ill')?>',
+                                  modal_body  = '<?=$this->transEsc('loc_modal_Body_ill')?>',
+                                  iframe_src  = 'https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>',
+                                  modal_foot  = '');
+          */
+          document.write(loc_button1+loc_button2);
+        </script>
       <noscript>
         <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
           <input type="hidden" name="ids[]" value="<?=$cartId ?>" />

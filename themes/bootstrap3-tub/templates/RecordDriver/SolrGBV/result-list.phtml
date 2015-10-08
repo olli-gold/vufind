@@ -215,11 +215,39 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
                 <? endif; ?>
         <? else: ?>
                 <!--@todo: I really don't like it here; it should be in themes/bootstrap3-tub/js/check_item_statuses.js -->
-                <span><a href="https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>" target="_blank" title="<?=$this->transEsc('loc_btn_Hover_ill')?>" class="fa fa-truck holdlink holdil"> <?=$this->transEsc('interlibrary loan')?></a></span>
-                <a href="#" id="info-<?=$this->driver->getUniqueId() ?>" title="<?=$this->transEsc('loc_btn_Hover_ill')?>" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="<?=$this->transEsc('loc_modal_Title_ill')?>" data-location="Undefined" data-iframe="https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>" class="modal-dialog hidden"><?=$this->transEsc('loc_modal_Body_ill')?></span></a>
-
-                <span><a href="<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>" target="_blank" title="<?=$this->transEsc('loc_btn_Hover_acqProposal')?>" class="fa fa-heart holdlink holdwish"> <?=$this->transEsc('Erwerbungsvorschlag')?></a></span>
-                <a href="#" id="info-<?=$this->driver->getUniqueId() ?>" title="<?=$this->transEsc('loc_btn_Hover_acqProposal')?>" style="float: right" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle tub_fa-info_p"></i><span data-title="<?=$this->transEsc('loc_modal_Title_acqProposal')?>" data-location="Undefined" data-iframe="<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>" class="modal-dialog hidden"><?=$this->transEsc('loc_modal_Body_acqProposal')?></span></a>
+                <script>
+                  // ILL Button
+                  loc_button = create_button(href   = 'https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>',
+                                       hover  = '<?=$this->transEsc('loc_btn_Hover_ill')?>',
+                                       text   = '<?=$this->transEsc('interlibrary loan')?>',
+                                       icon   = 'fa-truck',
+                                       css_classes = 'holdil',
+                                       target = '_blank');
+                  loc_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
+                                          loc_code    = 'ext_ill',
+                                          link_title  = '<?=$this->transEsc('loc_btn_Hover_ill')?>',
+                                          modal_title = '<?=$this->transEsc('loc_modal_Title_ill')?>',
+                                          modal_body  = '<?=$this->transEsc('loc_modal_Body_ill')?>',
+                                          iframe_src  = 'https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>',
+                                          modal_foot  = '');
+                  document.write(loc_button+loc_modal_link);
+                  
+                  // Aquisition proposal button
+                  loc_button = create_button(href   = '<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>',
+                                       hover  = '<?=$this->transEsc('loc_btn_Hover_acqProposal')?>',
+                                       text   = '<?=$this->transEsc('Erwerbungsvorschlag')?>',
+                                       icon   = 'fa-heart',
+                                       css_classes = 'holdwish',
+                                       target = '_blank');
+                  loc_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
+                                          loc_code    = 'ext_acqusition',
+                                          link_title  = '<?=$this->transEsc('loc_btn_Hover_acqProposal')?>',
+                                          modal_title = '<?=$this->transEsc('loc_modal_Title_acqProposal')?>',
+                                          modal_body  = '<?=$this->transEsc('loc_modal_Body_acqProposal')?>',
+                                          iframe_src  = '<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>',
+                                          modal_foot  = '');
+                  document.write(loc_button+loc_modal_link);
+                </script>
             <? endif; ?>
         </span>
 
@@ -258,8 +286,36 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
   <? if ($cart->isActive()): ?>
     <div id="bookbag-menu">
       <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
-      <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden holdlink fa" href="#" data-recordid="<?=$cartId ?>"><i class="tub_bbplus"></i> <?=$this->transEsc('Add to Book Bag') ?></a>
-      <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden holdlink fa" href="#" data-recordid="<?=$cartId ?>"><i class="tub_bbminus"></i> <?=$this->transEsc('Remove from Book Bag') ?></a>
+        <!--@todo: I really don't like it here; it should be in themes/bootstrap3-tub/js/check_item_statuses.js -->
+        <script>
+          // Cart button
+          loc_button1 = create_button(href   = '#',
+                               hover  = '<?=$this->transEsc('Add to Book Bag') ?>',
+                               text   = '<?=$this->transEsc('Add to Book Bag') ?>',
+                               icon   = 'fa-plus-square',
+                               css_classes = 'single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?> hidden',
+                               target = '',
+                               id = 'single-cart-add',
+                               custom = 'data-recordid="<?=$cartId ?>"');
+          loc_button2 = create_button(href   = '#',
+                               hover  = '<?=$this->transEsc('Remove from Book Bag') ?>',
+                               text   = '<?=$this->transEsc('Remove from Book Bag') ?>',
+                               icon   = 'fa-minus-square',
+                               css_classes = 'single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?> hidden',
+                               target = '',
+                               id = 'single-cart-remove',
+                               custom = 'data-recordid="<?=$cartId ?>"');
+          /*
+          loc_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
+                                  loc_code    = 'ext_ill',
+                                  link_title  = '<?=$this->transEsc('loc_btn_Hover_ill')?>',
+                                  modal_title = '<?=$this->transEsc('loc_modal_Title_ill')?>',
+                                  modal_body  = '<?=$this->transEsc('loc_modal_Body_ill')?>',
+                                  iframe_src  = 'https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>',
+                                  modal_foot  = '');
+          */
+          document.write(loc_button1+loc_button2);
+        </script>
       <noscript>
         <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
           <input type="hidden" name="ids[]" value="<?=$cartId ?>" />
