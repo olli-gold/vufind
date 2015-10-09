@@ -166,8 +166,8 @@ table.datagrid td a {
    color: #ffffff;
    font-size: 15px;
 }
-/* Reset fa-heart - TODO for less cleanup */
-i.fa-heart {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
+/* Reset fa-heart and fa-home - TODO for less cleanup */
+i.fa-heart, i.fa-home {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
 
 
 /* Customize button for single option */
