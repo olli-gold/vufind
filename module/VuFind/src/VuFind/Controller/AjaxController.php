@@ -360,6 +360,10 @@ return $this->output($x, self::STATUS_OK);
      *          to give the patron some clue - currently there is nothing. Example (search for)
      *          http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/268707642
      *
+     * @todo: 2015-10-09: Logic for $bestOptionLocation is really bad and got even worse by adding
+     *                    "TUBHH-Hack for bestLocation" (search for comment). 
+     *                    Think about a better way to pry the information from the data
+     *
      * @param array  $record            Information on items linked to a single bib
      *                                  record
      * @param array  $messages          Custom status HTML
@@ -482,6 +486,13 @@ return $this->output($x, self::STATUS_OK);
                     if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
                     $bestLocationPriority[4] = $info['location'];
                 }
+                // TUBHH-Hack for bestLocation
+                elseif (strlen($info['callnumber']) == 7 && $info['callnumber'] != 'Unknown') {
+                    // Ok, TUBHH reading room call numbers are always 7 characters long. And below we make $patronOptions['shelf'] 
+                    // the most preferable result (electronic is an exception). So force any shelf call number on top here.
+                    if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
+                    $bestLocationPriority[-1] = $info['location'];
+                }
             }
 
 //Can it exist without being set? Otherwise it's redundant with the if at the foreach start
@@ -600,6 +611,7 @@ else              {
         }
 
         // Also get the best location
+        ksort($bestLocationPriority);
         foreach ($bestLocationPriority AS $priority => $location) {
            if ($location) {
                 $bestOptionLocation = $location;
@@ -688,7 +700,7 @@ else              {
             'reference_location' => $referenceLocation,
             'reference_callnumber' => $referenceCallnumber,
             'multiVols' => $multiVol,
-            'tmp' => implode('  --  ', $bla)
+            'tmp' => implode('  --  ', $bestLocationPriority)
         ];
 
 /* Original
