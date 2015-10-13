@@ -1820,7 +1820,7 @@ class SolrGBV extends SolrMarc
             $part1[$key] = (isset($row['partNum'])) ? $row['partNum'] : 0;
             $part2[$key] = (isset($row['date'])) ? $row['date'] : 0;
         }
-        array_multisort($part2, SORT_DESC, $part1, SORT_DESC, $part0, SORT_ASC, $retval );
+        array_multisort($part1, SORT_ASC, $part2, SORT_DESC, $part0, SORT_ASC, $retval );
 
         // $retval has now the correct order, now set the objects into the same order
         $returnObjects = array();
@@ -2063,6 +2063,9 @@ class SolrGBV extends SolrMarc
         }
         if ($this->getFirstFieldValue('830', ['v'])) {
             return $this->getFirstFieldValue('830', ['v']);
+        }
+        if ($this->getFirstFieldValue('245', ['n'])) {
+            return $this->getFirstFieldValue('245', ['n']);
         }
         return null;
     }
