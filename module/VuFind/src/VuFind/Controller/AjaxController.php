@@ -174,11 +174,20 @@ class AjaxController extends AbstractBase
         return $filtered;
     }
 
+
     /**
      * Get Item Statuses
      *
      * This is responsible for printing the holdings information for a
      * collection of records in JSON format.
+     *
+     * @todo 2015-10-13
+     * - When getItemStatusTUBFullAjax() is fine, remove the redundant parts here
+     *   => "// Load callnumber and location settings: ..."
+     *   => "if ($locationSetting == "group") { ..."
+     *   => "if ($showFullStatus) {..."
+     * - Changing these config options would break displayHoldingGuide() in
+     *   check_item_statuses.js anyway (since a long time now)
      * 
      * @return \Zend\Http\Response
      * @author Chris Delis <cedelis@uillinois.edu>
@@ -354,15 +363,21 @@ return $this->output($x, self::STATUS_OK);
      * Support method for getItemStatuses() -- process a single bibliographic record
      * for location settings other than "group".
      *
-     * @note: 2015-09-13: The aim is: get only the location which serves the patron best
-     * @todo: 2015-09-19: CD-Roms might be categorized as e_only - this is nearly
-     *          ok, since no location or call number is available. But we'd want
-     *          to give the patron some clue - currently there is nothing. Example (search for)
-     *          http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/268707642
+     * @note: 2015-09-13
+     * -  The aim is: get only the location which serves the patron best
      *
-     * @todo: 2015-10-09: Logic for $bestOptionLocation is really bad and got even worse by adding
-     *                    "TUBHH-Hack for bestLocation" (search for comment). 
-     *                    Think about a better way to pry the information from the data
+     * @todo: 2015-09-19
+     * -  CD-Roms might be categorized as e_only - this is nearly ok, since no
+     *    location or call number is available. But we'd want to give the patron
+     *    some clue - currently there is nothing. Example (search for)
+     *    http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/268707642
+     *
+     * @todo: 2015-10-09
+     * -  Logic for $bestOptionLocation is really bad and got even worse by
+     *    adding "TUBHH-Hack for bestLocation" (search for comment). Think about
+     *    a better way to pry the information from the data.
+     *    What multiple_locations and show_full_status do _might_ be a much
+     *    better way for handling this.
      *
      * @param array  $record            Information on items linked to a single bib
      *                                  record
@@ -443,9 +458,6 @@ return $this->output($x, self::STATUS_OK);
                 // Our best option = get it from the shelf. If it is a shelf
                 // item we can only determine implicitly. So this only sticks
                 // if this copy isn't to be ordered/reserved/reference only/e-only
-// TODO TZ 2015-09-20: Here it happens: http://lincl1.b.tu-harburg.de:81/vufind2-test/Search/Results?lookfor=537875034 - wrong location
-// DAIA bug - EVERY location is a springer ebook?!?
-// $bla[] = $info['ilslink'];
                 $bestLocationPriority[0] = $info['location'];
 
                 // Check if this copy has a recallhref
@@ -461,10 +473,12 @@ return $this->output($x, self::STATUS_OK);
                     $bestLocationPriority[1] = $info['location'];
                 }
 
-// TZ: if ($info['status'] == 'only copy') would work obviously, but is meant as a interlibrary loan information
+                // TZ: if ($info['status'] == 'only copy') would work obviously,
+                // but is meant as a interlibrary loan information
                 if ($info['itemnotes'][0] == 'presence_use_only') {
                     $referenceCount++;
-                    // Remember call number and location if $patronOptions['reserve_or_local'] finally is our best option
+                    // Remember call number and location if $patronOptions['reserve_or_local']
+                    // finally is our best option
                     $tmp_referenceCallnumber = $info['callnumber'];
                     $tmp_referenceLocation   = $info['location'];
 
@@ -486,7 +500,15 @@ return $this->output($x, self::STATUS_OK);
                     if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
                     $bestLocationPriority[4] = $info['location'];
                 }
-                // TUBHH-Hack for bestLocation
+                // TUBHH-Hack for bestLocation; @see method description
+                // Ok, TUBHH reading room call numbers are always 7 characters long.
+                // And below we make $patronOptions['shelf'] the most preferable
+                // result (electronic is an exception). So force any shelf call
+                // number on top here.
+                // ...
+                // HMM, else it must be a "good" call number as well as a good
+                // location, but keep the TUB spefic way for now
+                // else {
                 elseif (strlen($info['callnumber']) == 7 && $info['callnumber'] != 'Unknown') {
                     // Ok, TUBHH reading room call numbers are always 7 characters long. And below we make $patronOptions['shelf'] 
                     // the most preferable result (electronic is an exception). So force any shelf call number on top here.
@@ -495,7 +517,8 @@ return $this->output($x, self::STATUS_OK);
                 }
             }
 
-//Can it exist without being set? Otherwise it's redundant with the if at the foreach start
+            // @todo  Can it exist without being set? Otherwise it's redundant
+            // with the if at the foreach start
             if ($info['duedate']) {
                 $lentCount++;
                 // Reserve - ok, location isn't really interesting anymore. Remember anyway (who knows?)
@@ -520,11 +543,20 @@ return $this->output($x, self::STATUS_OK);
 // TZ: Problem/idea: pickValue() should use a priority list; what does ILSHoldLogic do?
 // - For location it would be really the best way; @tubhh only really has 3 (!) 
 // - Multiple (different) call numbers - "should" not happen @tubhh? If it does - usually only reading room matters
+// tubhh setting: multiple_call_nos = first
+// @todo 2015-10-10: Hmm, first only works because TUBHH call numbers are "nice"
+// (e.g. no numerus currens appended)
         // Determine call number string based on findings:
         $callNumber = $this->pickValue($callNumbers, $callnumberSetting, 'Multiple Call Numbers');
 
         // Determine location string based on findings:
-        $location = $this->pickValue($locations, $locationSetting, 'Multiple Locations', 'location_');
+        // tubhh setting: multiple_locations = msg
+        // @todo 2015-10-10: Errrm, how does this work!?! Where is 'location_'
+        // Anyway, it just picks the first one and that might be wrong
+        //    Example: http://lincl1.b.tu-harburg.de:81/vufind2-test/Search/Results?lookfor=496536605&type=AllFields&limit=20&sort=relevance
+        // Sticking to $bestLocationPriority - this here is not needed therefore
+        // (Any other setting but single result is of no use in this method anyway)
+//        $location = $this->pickValue($locations, $locationSetting, 'Multiple Locations', 'location_');
 
         // TUBHH Extension fields
         // Sort the records with their duedate timestamp ascending
@@ -540,8 +572,12 @@ return $this->output($x, self::STATUS_OK);
             }
         }
 
-        // Check if all available items can be used reference only. Note: Maybe use more speaking values instead of numbers (like 'Only', 'Some', 'OnlyIntimeChoice' - errm...)
-        // $borrowableCount means "it can be fetched immediatly by a patron (a closed stack item we count as "very soon" = immediatly - so we don't substract $stackorderCount as well)
+        // Check if all available items can be used reference only. Note: Maybe
+        // use more speaking values instead of numbers (like 'Only', 'Some',
+        // 'OnlyIntimeChoice' - errm...)
+        // $borrowableCount means "it can be fetched immediatly by a patron (a
+        // closed stack item we count as "very soon" = immediatly - so we don't
+        // substract $stackorderCount as well)
         // Note: $info['itemnotes'][0] == 'presence_use_only' includes elecronic items
         $borrowableCount = $availableCount -($referenceCount + $lentCount);
         if ($referenceCount > 0 && $referenceCount != $electronicCount) {
@@ -554,8 +590,11 @@ return $this->output($x, self::STATUS_OK);
             elseif ($referenceCount !== $availableCount && $borrowableCount !== 0 && $lentCount > 0) {
                 $referenceIndicator = '2';
             }
-            // Case c) No, not all items are reference only but ALL available items are borrowable (btw. that available != borrowable makes it really hard :))
-            // Note: For now I keep '2', because currently I don't see a point for giving different messages for b) and c)
+            // Case c) No, not all items are reference only but ALL available
+            // items are borrowable (btw. that available != borrowable makes it
+            // really hard :))
+            // Note: For now I keep '2', because currently I don't see a point
+            // for giving different messages for b) and c)
             elseif ($referenceCount !== $availableCount && $borrowableCount > 0 && $lentCount === 0) {
                 $referenceIndicator = '2';
             }
@@ -572,6 +611,7 @@ else              {
                 $bestOptionHref  = $placeaholdhref;
             }
         }
+
 
         // Ok determine remaining best options + set link
         // No reference only, but borrowable shelf items available
@@ -611,10 +651,12 @@ else              {
         }
 
         // Also get the best location
+        // @note 2015-10-10: IF there were translations check:item_status.js would break currently
         ksort($bestLocationPriority);
         foreach ($bestLocationPriority AS $priority => $location) {
            if ($location) {
                 $bestOptionLocation = $location;
+                //$bestOptionLocation = $this->pickValue(array($location), $locationSetting, 'Multiple Locations', 'location_');
                 break;
             }
         }
@@ -630,7 +672,6 @@ else              {
             $availability = 'available';
         }
         else if ($duedate === '') {
-// TZ: I think a better message might be "not available", since reference only books are not for loan too, but their status via DAIA is available...
             $availability_message = $messages['notforloan'];
         }
         else {
@@ -638,19 +679,12 @@ else              {
             $additional_availability_message = $availability;
         }
         
-//TZ: This block could be removed - we don't need the location as html; see also json comment below      
+        // Add locationhref for Marc21 link (one of them)
         $locHref = $rec['locationhref'];
-/*
-        if ($locHref) {
-            $location = '<a href="'.$locHref.'" title="'.$location.'" target="_blank">'.htmlentities($location, ENT_COMPAT, 'UTF-8').'</a>';
-        }
-        else {
-            $location = htmlentities($location, ENT_COMPAT, 'UTF-8');
-        }
-*/
         
-//TZ TODO: Check if it is necessary here - already/also  called in getItemStatusesAjax() ?!?
-        $link_printed = $this->getPrintedStatuses();
+        // @todo  Check if it is necessary here - already/also called in
+        // getItemStatusesAjax() ?!? /TZ
+       $link_printed = $this->getPrintedStatuses();
         $linkPrintedHtml = null;
         $parentLinkHtml = null;
         if ($link_printed) {
@@ -665,11 +699,9 @@ else              {
         // at the current state of vufind we determine it this way
         if (!$bestOptionLocation && $patronBestOption != 'e_only') {
             $bestOptionLocation = 'Sonderstandort: Dienstapparat';
-            // Example: http://lincl1.b.tu-harburg.de:81/vufind2-test/Search/Results?lookfor=+%09DCF-134&type=AllFields&limit=20&sort=relevance
         }
         elseif ($bestOptionLocation === 'Unknown' && $patronBestOption !== 'e_only') {
             $bestOptionLocation = 'Sonderstandort: Semesterapparat';
-            // Example: http://lincl1.b.tu-harburg.de:81/vufind2-test/Search/Results?lookfor=BWB-182&type=AllFields&filter[]=%23%3A%22%28collection_details%3A%22GBV_ILN_23%22+OR+collection%3A%22Catalog%22+OR+collection%3A%22Weblog%22+OR+collection%3A%22Website%22+OR+collection%3A%22TUBdok%22+OR+collection%3A%22TUHH+Website%22+OR+collection%3A%22NL%22+OR+collection%3A%22DOAJ%22%29%22&filter[]=%28collection_details%3A%22GBV_ILN_23%22+OR+collection%3A%22Catalog%22+OR+collection%3A%22Weblog%22+OR+collection%3A%22Website%22+OR+collection%3A%22TUBdok%22+OR+collection%3A%22TUHH+Website%22+OR+collection%3A%22NL%22+OR+collection%3A%22DOAJ%22%29&dfApplied=1&limit=20&sort=relevance
         }
 
         $multiVol = $this->getMultiVolumes();
@@ -681,7 +713,7 @@ else              {
 // - 'availability', 'location', 'reserve', 'reserve_message', 'reservationUrl'      
 // TODO: For these I don't know what they ever where good for
 // - 'locationList', 'availability_message' (might be important)       
-// TODO: Finlly chose better naming (instead of "best") 
+// TODO: Finally chose better naming (instead of "best")
         return [
             'id' => $record[0]['id'],
             'patronBestOption' => $patronBestOption,
@@ -700,7 +732,7 @@ else              {
             'reference_location' => $referenceLocation,
             'reference_callnumber' => $referenceCallnumber,
             'multiVols' => $multiVol,
-            'tmp' => implode('  --  ', $bestLocationPriority)
+            'tmp' => '' //implode('  --  ', $bestLocationPriority)
         ];
 
 /* Original
@@ -928,6 +960,77 @@ $x = '<pre>' . var_export($results) . '</pre>';
 //$x = '<pre>' . var_export($statuses) . '</pre>';
 return $this->output($x, self::STATUS_OK);
     }
+
+
+
+
+    /**
+     * Get FULL Item Status (single item)
+     *
+     * This is responsible for printing the holdings information for a
+     * collection of records in JSON format.
+     *
+     * @todo 2015-10-13
+     * - chose a better method name
+     *
+     * @return \Zend\Http\Response
+     * @author Chris Delis <cedelis@uillinois.edu>
+     * @author Tuan Nguyen <tuan@yorku.ca>
+     */
+    protected function getItemStatusTUBFullAjax()
+    {
+        $this->writeSession();  // avoid session write timing bug
+        $catalog = $this->getILS();
+        $ids = $this->params()->fromQuery('id');
+        $results = $catalog->getStatuses($ids);
+
+        // Get access to PHP template renderer for partials:
+        $renderer = $this->getViewRenderer();
+
+        // Load messages for response:
+        $messages = [
+            'available' => $renderer->render('ajax/status-available.phtml'),
+            'unavailable' => $renderer->render('ajax/status-unavailable.phtml'),
+            'unknown' => $renderer->render('ajax/status-unknown.phtml'),
+            'notforloan' => $renderer->render('ajax/status-notforloan.phtml')
+        ];
+
+        // Load callnumber and location settings:
+        // Overrides for config settings (as used in getItemStatusAjax())
+        $showFullStatus = true;
+        $locationSetting = 'group';
+
+        // Loop through all the status information that came back
+        $statuses = [];
+        foreach ($results as $recordNumber => $record) {
+            // Filter out suppressed locations:
+            $record = $this->filterSuppressedLocations($record);
+
+            // Skip empty records:
+            if (count($record)) {
+                if ($locationSetting == "group") {
+                    $current = $this->getItemStatusGroup(
+                        $record, $messages, $callnumberSetting
+                    );
+                };
+
+                // If a full status display has been requested, append the HTML:
+                if ($showFullStatus) {
+                    $current['full_status'] = $renderer->render(
+                        'ajax/status-full.phtml', ['statusItems' => $record]
+//                    $current['full_status'] = $renderer->render(
+//                        'record/view-tabs.phtml', ['statusItems' => $record]
+                    );
+                }
+                $current['record_number'] = array_search($current['id'], $ids);
+                $statuses[] = $current;
+            }
+        }
+
+        // Done
+        return $this->output($statuses, self::STATUS_OK);
+    }
+
 
     /**
      * Check one or more records to see if they are saved in one of the user's list.
@@ -2009,189 +2112,3 @@ return $this->output($x, self::STATUS_OK);
         return $this->getServiceLocator()->get('VuFind\SearchResultsPluginManager');
     }
 }
-
-
-/* SAMPLE-TMP
- *
- * BWB-342
- *
-array (
-  0 =>
-  array (
-    0 =>
-    array (
-      'status' => '',
-      'availability' => false,
-      'duedate' => '22.09.2015',
-      'requests_placed' => '0',
-      'id' => '640170307',
-      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:1196604088',
-      'ilslink' => 'http://katalog.b.tuhh.de:9090/LBS_WEB/volumes/show.htm?BES=1&LAN=DE&USR=1000&PPN
-=64017030&EPN=119660408&VOLUME=709927',
-      'number' => 1,
-      'barcode' => '1',
-      'reserve' => 'N',
-      'callnumber' => 'BWB-342',
-      'location' => 'Lesesaal 2: BW - Betriebswirtschaft',
-      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/lesesaal/#LS2',
-      'itemnotes' =>
-      array (
-        0 => '',
-      ),
-    ),
-    1 =>
-    array (
-      'status' => 'only copy',
-      'availability' => true,
-      'duedate' => NULL,
-      'requests_placed' => '',
-      'id' => '640170307',
-      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:1297547195',
-      'ilslink' => NULL,
-      'number' => 2,
-      'barcode' => '1',
-      'reserve' => 'N',
-      'callnumber' => 'BWB-342',
-      'location' => 'Lesesaal 2: BW - Betriebswirtschaft',
-      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/lesesaal/#LS2',
-      'itemnotes' =>
-      array (
-        0 => 'presence_use_only',
-        1 => '',
-      ),
-    ),
-  ),
-)
- *
- *
- * http://lincl1.b.tu-harburg.de:81/vufind2/Search/Results?lookfor=156865416&type=AllFields&limit=20&sort=relevance
- * (Multiple locations, loan possible, presence only too...
- *
-RESULT array (
-  0 =>
-RECORDS  array (
-    0 =>
-    array (
-      'status' => 'only copy',
-      'availability' => true,
-      'duedate' => NULL,
-      'requests_placed' => '',
-      'id' => '156865416',
-      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:0264625684',
-      'ilslink' => NULL,
-      'number' => 1,
-      'barcode' => '1',
-      'reserve' => 'N',
-      'callnumber' => 'MSB-100',
-      'location' => 'Lesesaal 1: MS - Maschinenbau',
-      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/lesesaal/#LS1',
-      'itemnotes' =>
-      array (
-        0 => 'presence_use_only',
-        1 => '',
-      ),
-    ),
-    1 =>
-    array (
-      'status' => 'only copy',
-      'availability' => true,
-      'duedate' => NULL,
-      'requests_placed' => '',
-      'id' => '156865416',
-      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:0307820971',
-      'ilslink' => NULL,
-      'number' => 2,
-      'barcode' => '1',
-      'reserve' => 'N',
-      'callnumber' => 'MSB-100',
-      'location' => 'Lesesaal 1: MS - Maschinenbau',
-      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/lesesaal/#LS1',
-      'itemnotes' =>
-      array (
-        0 => 'presence_use_only',
-        1 => '',
-      ),
-    ),
-    2 =>
-    array (
-      'status' => '',
-      'availability' => true,
-      'duedate' => NULL,
-      'requests_placed' => '',
-      'id' => '156865416',
-      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:0312522835',
-      'ilslink' => NULL,
-      'number' => 3,
-      'barcode' => '1',
-      'reserve' => 'N',
-      'callnumber' => 'MSB-100',
-      'location' => 'Lehrbuchsammlung',
-      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/#LBS',
-      'itemnotes' =>
-      array (
-        0 => '',
-      ),
-    ),
-    3 =>
-    array (
-      'status' => '',
-      'availability' => true,
-      'duedate' => NULL,
-      'requests_placed' => '',
-      'id' => '156865416',
-      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:0312522835',
-      'ilslink' => NULL,
-      'number' => 4,
-      'barcode' => '1',
-      'reserve' => 'N',
-      'callnumber' => 'MSB-100',
-      'location' => 'Lehrbuchsammlung',
-      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/#LBS',
-      'itemnotes' =>
-      array (
-        0 => '',
-      ),
-    ),
-    4 =>
-    array (
-      'status' => '',
-      'availability' => true,
-      'duedate' => NULL,
-      'requests_placed' => '',
-      'id' => '156865416',
-      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:0312522835',
-      'ilslink' => NULL,
-      'number' => 5,
-      'barcode' => '1',
-      'reserve' => 'N',
-      'callnumber' => 'MSB-100',
-      'location' => 'Lehrbuchsammlung',
-      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/#LBS',
-      'itemnotes' =>
-      array (
-        0 => '',
-      ),
-    ),
-    5 =>
-    array (
-      'status' => '',
-      'availability' => true,
-      'duedate' => NULL,
-      'requests_placed' => '',
-      'id' => '156865416',
-      'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:0312522835',
-      'ilslink' => NULL,
-      'number' => 6,
-      'barcode' => '1',
-      'reserve' => 'N',
-      'callnumber' => 'MSB-100',
-      'location' => 'Lehrbuchsammlung',
-      'locationhref' => 'http://www.tub.tu-harburg.de/service/medienstandorte/#LBS',
-      'itemnotes' =>
-      array (
-        0 => '',
-      ),
-    ),
-  ),
-)
- */
