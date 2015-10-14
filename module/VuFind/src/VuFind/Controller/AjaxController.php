@@ -311,6 +311,7 @@ $x = '<pre>' . var_export($results) . '</pre>';
 return $this->output($x, self::STATUS_OK);
     }
 
+
     /**
      * Support method for getItemStatuses() -- when presented with multiple values,
      * pick which one(s) to send back via AJAX.
@@ -358,6 +359,7 @@ return $this->output($x, self::STATUS_OK);
             return $this->translate($msg);
         }
     }
+
 
     /**
      * Support method for getItemStatuses() -- process a single bibliographic record
@@ -428,6 +430,7 @@ return $this->output($x, self::STATUS_OK);
         $patronOptions['reserve_or_local']   = false;
         $patronOptions['reserve']            = false;
         $patronOptions['local']              = false;
+        $patronOptions['acquired']           = false; // Added 2015-10-14; title bought but not yet arrived
         $patronOptions['service_desk']       = false;
         $patronOptions['false']              = false;
 
@@ -475,6 +478,7 @@ return $this->output($x, self::STATUS_OK);
 
                 // TZ: if ($info['status'] == 'only copy') would work obviously,
                 // but is meant as a interlibrary loan information
+                // @note Aquired items are marked as "presence_use_only" too
                 if ($info['itemnotes'][0] == 'presence_use_only') {
                     $referenceCount++;
                     // Remember call number and location if $patronOptions['reserve_or_local']
@@ -684,7 +688,7 @@ else              {
         
         // @todo  Check if it is necessary here - already/also called in
         // getItemStatusesAjax() ?!? /TZ
-       $link_printed = $this->getPrintedStatuses();
+        $link_printed = $this->getPrintedStatuses();
         $linkPrintedHtml = null;
         $parentLinkHtml = null;
         if ($link_printed) {
@@ -697,10 +701,26 @@ else              {
         // ("Sonderstandort") that DAIA doesn't get correctly.
         // TUB-Note: Possibilities are: DA or SEM (or are there more?). If so,
         // at the current state of vufind we determine it this way
-        if (!$bestOptionLocation && $patronBestOption != 'e_only') {
+        // 2015-10-14: Another special case is items being acquired. Daia returns
+        // something like 
+        // array ('status' => '', 'availability' => true, 'duedate' => NULL, 
+        //  'requests_placed' => '', 'id' => '662452461', 
+        //  'item_id' => 'http://uri.gbv.de/document/opac-de-830:epn:1252720203',
+        //  'ilslink' => NULL, 'number' => 1, 'barcode' => '1', 'reserve' => 'N',
+        //  'callnumber' => 'bestellt Ref. 5', 'location' => 'Unknown',
+        //  'locationhref' => '',   'itemnotes' => ... ... 'presence_use_only' => true,)
+        // The lbs4 opac has better information, but with the logic in this 
+        // method the DAIA information qualify as 'Sonderstandort: Semesterapparat'.
+        // So we make an override via the first if here to get this case covered.
+        if (strpos(strtolower($callNumber), 'bestellt') !== false &&
+                $bestOptionLocation === 'Unknown' && $patronBestOption !== 'e_only') {
+            $patronBestOption   = 'acquired';
+            $bestOptionLocation = 'Shipping';
+        }
+        else if (!$bestOptionLocation && $patronBestOption != 'e_only') {
             $bestOptionLocation = 'Sonderstandort: Dienstapparat';
         }
-        elseif ($bestOptionLocation === 'Unknown' && $patronBestOption !== 'e_only') {
+        else if ($bestOptionLocation === 'Unknown' && $patronBestOption !== 'e_only') {
             $bestOptionLocation = 'Sonderstandort: Semesterapparat';
         }
 

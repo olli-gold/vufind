@@ -66,6 +66,7 @@
         //              Or maybe in AjaxController via loading a special template (like for the status messages).
         $this->jsTranslations()->addStrings(
           array(
+            'opclang' => $this->transEsc('opclang'),
             'notforloan' => $this->transEsc('status_notforloan'),
             'missing' => $this->transEsc('status_missing'),
             'lost' => $this->transEsc('status_lost'),
@@ -114,6 +115,11 @@
             'loc_modal_Title_reserve' => $this->translate('loc_modal_Title_reserve'),
             'loc_modal_Body_reserve' => $this->translate('loc_modal_Body_reserve'),
             'loc_modal_Foot_reserve' => $this->translate('loc_modal_Foot_reserve'),
+
+            'loc_btn_Hover_acquired' => $this->transEsc('loc_btn_Hover_acquired'),
+            'loc_modal_Title_acquired' => $this->translate('loc_modal_Title_acquired'),
+            'loc_modal_Body_acquired' => $this->translate('loc_modal_Body_acquired'),
+            'loc_modal_Foot_acquired' => $this->translate('loc_modal_Foot_acquired'),
 
             'loc_volumes' => $this->transEsc('See Tomes/Volumes'),
             'loc_btn_Hover_multi' => $this->transEsc('loc_btn_Hover_multi'),

@@ -118,6 +118,9 @@ function displayHoldingGuide() {
           else if (result.electronic == '1') {
             loc_abbr = 'DIG';  loc_modal_body = vufindString.loc_modal_Body_eonly;
           }
+          else if (result.bestOptionLocation.indexOf('Shipping') > -1) {
+            loc_abbr = 'ACQ';  loc_modal_body = vufindString.loc_modal_Body_acquired;
+          }
           else {
             loc_abbr = 'Undefined';
            // alert('Hier ist ein komischer Fall bei '+result.callnumber);
@@ -225,6 +228,21 @@ function displayHoldingGuide() {
                                             modal_title = loc_modal_title,
                                             modal_body  = loc_modal_body+' ' + vufindString.loc_modal_Title_refonly_generic,
                                             iframe_src  = '',
+                                            modal_foot  = '');
+              bestOption = bestOption + loc_button + ' ' + loc_modal_link;
+              break;
+            case 'acquired':
+              loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
+                                         hover  = vufindString.loc_btn_Hover_acquired,
+                                         text   = vufindString.loc_modal_Title_acquired,
+                                         icon   = 'fa-plane',
+                                         css_classes = 'holdacquired');
+              loc_modal_link = create_modal(id          = result.id,
+                                            loc_code    = loc_abbr,
+                                            link_title  = vufindString.loc_btn_Hover_acquired,
+                                            modal_title = vufindString.loc_modal_Title_acquired,
+                                            modal_body  = loc_modal_body,
+                                            iframe_src  = 'https://katalog.b.tuhh.de/DB=1/'+vufindString.opclang+'/PPN?PPN='+result.id,
                                             modal_foot  = '');
               bestOption = bestOption + loc_button + ' ' + loc_modal_link;
               break;
@@ -487,7 +505,7 @@ x = $(this).attr('id').replace('info-', ''); // Strip the info that is set in cr
       additional_content = 'DAS IST NUR EIN TEST ERSTMAL (eigentlich steht hier nur der vorangegangene Text)<br />';
       force_logoff_loan4 = false;
     }
-    else if (loc == 'SO' || loc == 'Multi') {
+    else if (loc == 'SO' || loc == 'Multi' || loc == 'ACQ') {
       //
     }
     else if (loc === 'Undefined') {
