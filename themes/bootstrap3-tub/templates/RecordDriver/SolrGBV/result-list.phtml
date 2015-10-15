@@ -184,15 +184,12 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
 
       <? $account = $this->auth()->getManager(); ?>
       <? if($account->isLoggedIn()): ?>
-      <? if ($this->userlist()->getMode() !== 'disabled'): ?>
-        <? /* Add to favorites */ ?>
-        <i class="fa fa-plus"></i> <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" class="save-record modal-link" id="<?=$this->driver->getUniqueId() ?>" title="<?=$this->transEsc('Add to favorites')?>"><?=$this->transEsc('Add to favorites')?></a><br/>
-
-        <? /* Saved lists */ ?>
-        <div class="savedLists alert alert-info hidden">
-          <strong><?=$this->transEsc("Saved in")?>:</strong>
-        </div>
-      <? endif; ?>
+        <? if ($this->userlist()->getMode() !== 'disabled'): ?>
+          <? /* Saved lists */ ?>
+          <div class="savedLists alert alert-info hidden">
+            <strong><?=$this->transEsc("Saved in")?>:</strong>
+          </div>
+        <? endif; ?>
       <? endif ?>
     </div>
     </div>
@@ -231,7 +228,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
                                           iframe_src  = 'https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>',
                                           modal_foot  = '');
                   document.write(loc_button+loc_modal_link);
-                  
+
                   // Aquisition proposal button
                   loc_button = create_button(href   = '<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>',
                                        hover  = '<?=$this->transEsc('loc_btn_Hover_acqProposal')?>',
@@ -283,6 +280,34 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
         <? endforeach; ?>
       <? endif; ?>
 
+  <? if($account->isLoggedIn()): ?>
+      <? if ($this->userlist()->getMode() !== 'disabled'): ?>
+        <? /* Add to favorites */ ?>
+        <!--@todo: I really don't like it here; it should be in themes/bootstrap3-tub/js/check_item_statuses.js -->
+        <script>
+          // Save button
+          loc_button3 = create_button(href   = '<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>',
+                               hover  = '<?=$this->transEsc('help_btn_Hover_favsave')?>',
+                               text   = '<?=$this->transEsc('Add to favorites')?>',
+                               icon   = 'fa-plus-square',
+                               css_classes = 'save-record modal-link',
+                               target = '',
+                               id = '<?=$this->driver->getUniqueId() ?>',
+                               custom = 'data-recordid="<?=$cartId ?>"');
+          /*
+          loc3_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
+                                  loc_code    = '',
+                                  link_title  = '<?=$this->transEsc('help_btn_Hover_favsave')?>',
+                                  modal_title = '<?=$this->transEsc('help_modal_Title_favsave')?>',
+                                  modal_body  = '<?=$this->transEsc('help_modal_Body_favsave')?>');
+          */
+          document.write(loc_button3);
+        </script>
+      <noscript>
+        <i class="fa fa-plus"></i> <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" class="save-record modal-link" id="<?=$this->driver->getUniqueId() ?>" title="<?=$this->transEsc('Add to favorites')?>"><?=$this->transEsc('Add to favorites')?></a><br/>
+      </noscript>
+      <? endif; ?>
+  <? endif ?>
   <? if ($cart->isActive()): ?>
     <div id="bookbag-menu">
       <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
