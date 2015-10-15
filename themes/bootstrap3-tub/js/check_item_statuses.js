@@ -277,13 +277,13 @@ function displayHoldingGuide() {
                                             modal_body  = vufindString.loc_modal_Body_service_da,
                                             iframe_src  = '',
                                             modal_foot  = '');
-              bestOption = loc_button + ' ' + loc_modal_link;             
+              bestOption = loc_button + ' ' + loc_modal_link;
           } 
 
           // Show link to printed edition for electronic edition (if available)
           // Todo: can we show the exact location?
           if (result.link_printed != null) {
-            loc_button = create_button(href   = result.link_printed_href,
+            loc_button = create_button(href   = '../Record/'+result.link_printed_href,
                                        hover  = vufindString.loc_modal_Title_printEdAvailable,
                                        text   = vufindString.available_printed,
                                        icon   = 'fa-book',
@@ -598,9 +598,8 @@ function get_holding_tab(recID) {
             if (typeof(result.full_status) != 'undefined' && result.full_status.length > 0) {
                 // Full status mode is on -- display the HTML and hide extraneous junk:
                 $('.data-modal_postload_ajax').append(result.full_status);
-            }          
+            }
 
-         
             // Prepare location list
             // @note: getItemStatusTUBFullAjax always returns locationList; if still
             // here as part of refactoring
@@ -624,7 +623,7 @@ function get_holding_tab(recID) {
                 }
                 // Show location list
 //              $('.data-modal_postload_ajax').append(locationListHTML);
-            }          
+            }
         });
       }
     }
