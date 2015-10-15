@@ -32,7 +32,6 @@ use VuFindSearch\ParamBag;
 use VuFindSearch\Backend\Primo\Backend;
 use VuFindSearch\Backend\Primo\Connector;
 
-use VuFind\Search\Primo\PrimoPermissionHandler;
 use VuFind\Search\Primo\InjectOnCampusListener;
 use VuFindTest\Unit\TestCase;
 use Zend\EventManager\Event;
@@ -90,7 +89,7 @@ class OnCampusListenerTest extends TestCase
      */
     public function testAttachWithParameter()
     {
-        $mockPermController = $this->getMockBuilder('PrimoPermissionController')
+        $mockPermController = $this->getMockBuilder('PrimoPermissionHandler')
             ->disableOriginalConstructor()
             ->getMock();
         $listener = new InjectOnCampusListener($mockPermController);
@@ -139,7 +138,6 @@ class OnCampusListenerTest extends TestCase
             ->will($this->returnValue(true));
 
         $listener = new InjectOnCampusListener($mockPermController);
-
 
         $event    = new Event('pre', $this->backend, [ 'params' => $params]);
         $listener->onSearchPre($event);

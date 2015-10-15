@@ -27,7 +27,6 @@
  */
 namespace VuFind\Search\Primo;
 
-use VuFind\Search\Primo\PrimoPermissionHandler;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\EventManager\EventInterface;
 
@@ -49,11 +48,11 @@ class InjectOnCampusListener
     use AuthorizationServiceAwareTrait;
 
     /**
-     * Primo Permission Controller.
+     * Primo Permission Handler.
      *
-     * @var PrimoPermissionController
+     * @var PrimoPermissionHandler
      */
-    protected $permissionController;
+    protected $permissionHandler;
 
     /**
      * Is user on campus or not?
@@ -65,26 +64,26 @@ class InjectOnCampusListener
     /**
      * Constructor.
      *
-     * @param PrimoPermissionController $ppc Primo Permission Controller
+     * @param PrimoPermissionHandler $pph Primo Permission Handler
      *
      * @return void
      */
-    public function __construct($ppc = null)
+    public function __construct($pph = null)
     {
-        $this->permissionController = $ppc;
-        $this->isOnCampus = null;
+        $this->setPermissionHandler($pph);
     }
 
     /**
      * Constructor.
      *
-     * @param PrimoPermissionController $ppc Primo Permission Controller
+     * @param PrimoPermissionHandler $pph Primo Permission Handler
      *
      * @return void
      */
-    public function setPermissionController($ppc)
+    public function setPermissionHandler($pph)
     {
-        $this->permissionController = $ppc;
+        $this->permissionHandler = $pph;
+        $this->isOnCampus = null; // clear cache
     }
 
     /**
@@ -102,19 +101,15 @@ class InjectOnCampusListener
     /**
      * Determines, which value is needed for the onCampus parameter
      *
-     * @return void
+     * @return boolean
      */
-    protected function checkOnCampus()
+    protected function getOnCampus()
     {
         if (null === $this->isOnCampus) {
-            $this->isOnCampus = false;
-            if ($this->permissionController) {
-                // The user is getting authenticated as default user
-                if ($this->permissionController->hasPermission()) {
-                    $this->isOnCampus = true;
-                }
-            }
+            $this->isOnCampus = $this->permissionHandler
+                ? $this->permissionHandler->hasPermission() : false;
         }
+        return $this->isOnCampus;
     }
 
     /**
@@ -126,9 +121,8 @@ class InjectOnCampusListener
      */
     public function onSearchPre(EventInterface $event)
     {
-        $this->checkOnCampus();
         $params = $event->getParam('params');
-        $params->set('onCampus', $this->isOnCampus);
+        $params->set('onCampus', $this->getOnCampus());
 
         return $event;
     }

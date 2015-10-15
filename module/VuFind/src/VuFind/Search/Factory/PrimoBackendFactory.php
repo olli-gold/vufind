@@ -73,13 +73,6 @@ class PrimoBackendFactory implements FactoryInterface
     protected $primoConfig;
 
     /**
-     * Primo Permission Handler
-     *
-     * @var PrimoPermissionHandler
-     */
-    protected $primoPermissionHandler = null;
-
-    /**
      * Create the backend.
      *
      * @param ServiceLocatorInterface $serviceLocator Superior service manager
@@ -95,20 +88,11 @@ class PrimoBackendFactory implements FactoryInterface
             $this->logger = $this->serviceLocator->get('VuFind\Logger');
         }
 
-        if (isset($this->primoConfig->InstitutionPermission)) {
-            $permHandler = new PrimoPermissionHandler(
-                $this->primoConfig->InstitutionPermission
-            );
-            $permHandler->setAuthorizationService(
-                $this->serviceLocator->get('ZfcRbac\Service\AuthorizationService')
-            );
-            $this->primoPermissionHandler = $permHandler;
-        }
-
         $connector = $this->createConnector();
         $backend   = $this->createBackend($connector);
 
         $this->createListeners($backend);
+
         return $backend;
     }
 
@@ -148,14 +132,17 @@ class PrimoBackendFactory implements FactoryInterface
      */
     protected function createConnector()
     {
+        // Get the PermissionHandler
+        $permHandler = $this->getPermissionHandler();
+
         // Load credentials and port number:
         $id = isset($this->primoConfig->General->apiId)
             ? $this->primoConfig->General->apiId : null;
         $port = isset($this->primoConfig->General->port)
             ? $this->primoConfig->General->port : 1701;
-        $instCode = isset($this->primoPermissionHandler)
-            ? $this->primoPermissionHandler->getInstCode()
-            : $this->getInstCode();
+        $instCode = isset($permHandler)
+            ? $permHandler->getInstCode()
+            : null;
 
         // Build HTTP client:
         $client = $this->serviceLocator->get('VuFind\Http')->createClient();
@@ -166,37 +153,6 @@ class PrimoBackendFactory implements FactoryInterface
         $connector = new Connector($id, $instCode, $client, $port);
         $connector->setLogger($this->logger);
         return $connector;
-    }
-
-    /**
-     * Determine the institution code
-     *
-     * @return string
-     * @depracated Use PrimoPermissionHandler instead!
-     */
-    protected function getInstCode()
-    {
-        $codes = isset($this->primoConfig->Institutions->code)
-            ? $this->primoConfig->Institutions->code : [];
-        $regex = isset($this->primoConfig->Institutions->regex)
-            ? $this->primoConfig->Institutions->regex : [];
-        if (empty($codes) || empty($regex) || count($codes) != count($regex)) {
-            throw new \Exception('Check [Institutions] settings in Primo.ini');
-        }
-
-        $request = $this->serviceLocator->get('Request');
-        $ip = $request->getServer('REMOTE_ADDR');
-
-        for ($i = 0; $i < count($codes); $i++) {
-            if (preg_match($regex[$i], $ip)) {
-                return $codes[$i];
-            }
-        }
-
-        throw new \Exception(
-            'Could not determine institution code. [Institutions] settings '
-            . 'should include a catch-all rule at the end.'
-        );
     }
 
     /**
@@ -233,7 +189,28 @@ class PrimoBackendFactory implements FactoryInterface
      */
     protected function getInjectOnCampusListener()
     {
-        $listener = new InjectOnCampusListener($this->primoPermissionHandler);
+        $listener = new InjectOnCampusListener($this->getPermissionHandler());
         return $listener;
+    }
+
+    /**
+     * Get a PrimoPermissionHandler
+     *
+     * @return PrimoPermissionHandler
+     */
+    protected function getPermissionHandler()
+    {
+        if (isset($this->primoConfig->Institutions)) {
+            $permHandler = new PrimoPermissionHandler(
+                $this->primoConfig->Institutions
+            );
+            $permHandler->setAuthorizationService(
+                $this->serviceLocator->get('ZfcRbac\Service\AuthorizationService')
+            );
+            return $permHandler;
+        }
+
+        // If no PermissionHandler can be set, return null
+        return null;
     }
 }
