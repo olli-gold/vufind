@@ -344,6 +344,29 @@ $(document).ready(function() {
     }
   );
 
+  // Clearable input (search) 
+  function tog(v) {return v ? 'addClass' : 'removeClass';} 
+
+  $(document).on('input', '.clearable', function(){
+    $(this)[tog(this.value)]('x');
+  }).on('mousemove', '.x', function( e ) {
+    $(this)[tog(this.offsetWidth-18 < e.clientX-this.getBoundingClientRect().left)]('onX'); 
+  }).on('touchstart click', '.onX', function( ev ){
+    ev.preventDefault();
+    $(this).removeClass('x onX').val('').change();
+  }).on('blur', '.clearable', function(){
+     $(this).removeClass('x');
+  }).on('focus', '.clearable', function(){
+     if($(this).val() !== ''){
+         $(this).addClass('x');
+     }
+  }).on('mouseover', '.clearable', function(){
+     if($(this).val() !== ''){
+         $(this).addClass('x');
+     }
+  });
+  // END Clearable input (search) 
+
   // Checkbox select all
   $('.checkbox-select-all').change(function() {
     $(this).closest('form').find('.checkbox-select-item').prop('checked', this.checked);
