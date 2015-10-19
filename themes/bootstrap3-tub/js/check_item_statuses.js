@@ -35,6 +35,9 @@
  *
  * @todo: USE CORRECT BASE URL (not stuff like href="../")
  *
+ * @note Since 2015-10-12 Daia return the full callnumber with location
+ * (xx:xxxx-xxxx)
+ *
  * @return void
  */
 function displayHoldingGuide() {
@@ -91,9 +94,10 @@ function displayHoldingGuide() {
           // Some helper variables
           var loc_abbr;
           var loc_button;
-          var loc_modal_title = vufindString.loc_modal_Title_shelf_generic + result.callnumber + ' (' + result.bestOptionLocation + ')';
+          var loc_shelf  = result.callnumber.split(':')[0];
+					var loc_callno = result.callnumber.split(':')[1];
+          var loc_modal_title = vufindString.loc_modal_Title_shelf_generic + loc_callno + ' (' + result.bestOptionLocation + ')';
           var loc_modal_body;
-          var loc_shelf  = result.callnumber.substring(0, 2);
 
           // Add some additional infos for TUBHH holdings
           if (result.bestOptionLocation.indexOf('Lehr') > -1) {
@@ -123,7 +127,7 @@ function displayHoldingGuide() {
           }
           else {
             loc_abbr = 'Undefined';
-           // alert('Hier ist ein komischer Fall bei '+result.callnumber);
+           // alert('Hier ist ein komischer Fall bei '+loc_callno);
           }
 
           // Return the one best option as JSon - create button and info modal
@@ -167,7 +171,7 @@ function displayHoldingGuide() {
             case 'shelf': //fa-hand-lizard-o is nice too (but only newest FA)
               loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
                                          hover  = loc_modal_body,
-                                         text   = loc_abbr + ' ' + result.callnumber,
+                                         text   = loc_abbr + ' ' + loc_callno,
                                          icon   = 'fa-map-marker',
                                          css_classes = 'holdshelf');
               loc_modal_link = create_modal(id          = result.id,
@@ -219,7 +223,7 @@ function displayHoldingGuide() {
               title = loc_modal_body+ '\n' + vufindString.loc_modal_Title_refonly_generic;
               loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
                                          hover  = title,
-                                         text   = loc_abbr + ' ' + result.callnumber,
+                                         text   = loc_abbr + ' ' + loc_callno,
                                          icon   = 'fa-home',
                                          css_classes = 'holdrefonly');
               loc_modal_link = create_modal(id          = result.id,
@@ -249,7 +253,7 @@ function displayHoldingGuide() {
             case 'service_desk':
               loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
                                          hover  = vufindString.loc_modal_Title_service_da,
-                                         text   = 'SO ' + result.callnumber,
+                                         text   = 'SO ' + loc_callno,
                                          icon   = 'fa-frown-o',
                                          css_classes = 'x');
               loc_modal_link = create_modal(id          = result.id,
