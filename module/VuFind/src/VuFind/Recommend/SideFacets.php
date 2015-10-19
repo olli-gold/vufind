@@ -85,6 +85,13 @@ class SideFacets extends AbstractFacets
     protected $checkboxFacets = [];
 
     /**
+     * Settings controlling how many values to display before "show more."
+     *
+     * @var array
+     */
+    protected $showMoreSettings = [];
+
+    /**
      * Collapsed facet setting
      *
      * @var bool|string
@@ -354,21 +361,16 @@ class SideFacets extends AbstractFacets
      */
     public function getShowMoreSetting($facetName = '*')
     {
-        // If we do not have any showMore settings, return 6 as default value
-        if (empty($this->showMoreSettings)) {
-            return 6;
+        // Look for either facet-specific configuration or else a configured
+        // default. If neither is found, initialize return value to 0.
+        if (isset($this->showMoreSettings[$facetName])) {
+            $val = intval($this->showMoreSettings[$facetName]);
+        } elseif (isset($this->showMoreSettings['*'])) {
+            $val = intval($this->showMoreSettings['*']);
         }
 
-        if ($this->showMoreSettings[$facetName]) {
-            return $this->showMoreSettings[$facetName];
-        } elseif ($facetName != '*' && $this->showMoreSettings['*']) {
-            // If the facet name is not configured, try to get the default value
-            return $this->showMoreSettings['*'];
-        }
-
-        // If the facet name is not configured and also no default value
-        // has been set, return 6 as default value
-        return 6;
+        // Validate the return value, defaulting to 6 if missing/invalid
+        return (isset($val) && $val > 0) ? $val : 6;
     }
 
     /**
