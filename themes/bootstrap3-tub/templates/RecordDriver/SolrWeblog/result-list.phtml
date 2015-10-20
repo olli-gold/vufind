@@ -1,3 +1,10 @@
+<?
+  // Set up some variables for convenience:
+  $id = $this->driver->getUniqueId();
+  $controllerClass = 'controller:' . $this->record($this->driver)->getController();
+  $cart = $this->cart();
+  $cartId = $this->driver->getResourceSource() . '|' . $id;
+?>
 <div class="<?=$this->driver->supportsAjaxStatus()?'ajaxItem ':''?>col-xs-11">
   <div class="row">
     <div class="col-sm-2 col-xs-3 left">
@@ -13,6 +20,8 @@
     </div>
     <div class="col-sm-7 col-xs-6 middle">
       <div>
+        <? if($this->driver->getTitleGerman()): ?>
+        <img src="<?=$this->imageLink('tub/de.gif')?>" />
         <a href="<?=$this->driver->getUrlGerman()?>" class="title">
         <?
           $summTitle = $this->driver->getTitleGerman();
@@ -21,7 +30,10 @@
           }
         ?>
         </a>
+        <? endif; ?>
+        <? if($this->driver->getTitleEnglish()): ?>
         <br/>
+        <img src="<?=$this->imageLink('tub/uk.gif')?>" />
         <a href="<?=$this->driver->getUrlEnglish()?>" class="title">
         <?
           $summTitleEng = $this->driver->getTitleEnglish();
@@ -30,6 +42,7 @@
           }
         ?>
         </a>
+        <? endif; ?>
       </div>
 
       <div>
@@ -146,8 +159,6 @@
         <? endif; ?>
       <? endif; ?>
 
-      <?=str_replace('class="', 'class="label label-info ', $this->record($this->driver)->getFormatList())?>
-
       <? if (!$openUrlActive && empty($urls) && $this->driver->supportsAjaxStatus()): ?>
         <span class="status ajax-availability hidden">
           <span class="label label-default"><i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...</span>
@@ -156,6 +167,11 @@
       <?=$this->record($this->driver)->getPreviews()?>
     </div>
     <div class="col-xs-3 right hidden-print">
+        <div class="tub_info_topright">
+            <?=str_replace('class="', 'class="tub_label tublabel-info ', $this->record($this->driver)->getFormatList())?>
+            <?=!empty($summDate) ? '<span class="tub_resYear">' . $this->escapeHtml($summDate[0]) . '</span>' : ''?>
+        </div>
+
       <? /* Display qrcode if appropriate: */ ?>
       <? if ($QRCode = $this->record($this->driver)->getQRCode("results")): ?>
         <?
@@ -172,16 +188,6 @@
         </span>
       <? endif; ?>
 
-      <? if ($this->userlist()->getMode() !== 'disabled'): ?>
-        <? /* Add to favorites */ ?>
-        <i class="fa fa-plus"></i> <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" class="save-record modal-link" id="<?=$this->driver->getUniqueId() ?>" title="<?=$this->transEsc('Add to favorites')?>"><?=$this->transEsc('Add to favorites')?></a><br/>
-
-        <? /* Saved lists */ ?>
-        <div class="savedLists alert alert-info hidden">
-          <strong><?=$this->transEsc("Saved in")?>:</strong>
-        </div>
-      <? endif; ?>
-
       <? /* Hierarchy tree link */ ?>
       <? $trees = $this->driver->tryMethod('getHierarchyTrees'); if (!empty($trees)): ?>
         <? foreach ($trees as $hierarchyID => $hierarchyTitle): ?>
@@ -195,7 +201,50 @@
         <? endforeach; ?>
       <? endif; ?>
 
-      <?=$openUrl?'<span class="Z3988" title="'.$this->escapeHtmlAttr($openUrl).'"></span>':''?>
+<? /* No book bag function for this kind of record
+  <? if ($cart->isActive()): ?>
+    <div id="bookbag-menu">
+      <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
+        <!--@todo: I really don't like it here; it should be in themes/bootstrap3-tub/js/check_item_statuses.js -->
+        <script>
+          // Cart button
+          loc_button1 = create_button(href   = '#',
+                               hover  = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
+                               text   = '<?=$this->transEsc('Add to Book Bag') ?>',
+                               icon   = 'fa-plus-square',
+                               css_classes = 'single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?> hidden',
+                               target = '',
+                               id = 'single-cart-add',
+                               custom = 'data-recordid="<?=$cartId ?>"');
+          loc_button2 = create_button(href   = '#',
+                               hover  = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
+                               text   = '<?=$this->transEsc('Remove from Book Bag') ?>',
+                               icon   = 'fa-minus-square',
+                               css_classes = 'single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?> hidden',
+                               target = '',
+                               id = 'single-cart-remove',
+                               custom = 'data-recordid="<?=$cartId ?>"');
+          loc_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
+                                  loc_code    = '',
+                                  link_title  = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
+                                  modal_title = '<?=$this->transEsc('help_modal_Title_bookBag')?>',
+                                  modal_body  = '<?=$this->transEsc('help_modal_Body_bookBag')?>');
+          document.write(loc_button1+loc_button2+loc_modal_link);
+        </script>
+      <noscript>
+        <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
+          <input type="hidden" name="ids[]" value="<?=$cartId ?>" />
+          <? if ($cart->contains($cartId)): ?>
+            <input class="btn btn-default" type="submit" name="delete" value="<?=$this->transEsc('Remove from Book Bag')?>"/>
+          <? else: ?>
+            <input class="btn btn-default" type="submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
+          <? endif; ?>
+        </form>
+      </noscript>
+    </div>
+  <? endif; ?>
+*/ ?>
+      <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()).'"></span>':''?>
     </div>
   </div>
 </div>

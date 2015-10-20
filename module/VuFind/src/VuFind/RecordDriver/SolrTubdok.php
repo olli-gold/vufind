@@ -53,4 +53,20 @@ class SolrTubdok extends SolrDefault
             ? $this->fields['werkurl'] : '';
     }
 
+    /**
+     * Get the publication dates of the record.  See also getDateSpan().
+     *
+     * @return array
+     */
+    public function getPublicationDates()
+    {
+        $pubDates = [];
+        if (isset($this->fields['created'])) {
+            foreach ($this->fields['created'] as $pubDate) {
+                $pubDates[] = date('d.m.Y', strtotime($pubDate));
+            }
+        }
+
+        return $pubDates;
+    }
 }

@@ -96,4 +96,21 @@ class SolrWPsite extends SolrDefault
         return isset($this->fields['titleGer'])
             ? $this->fields['url'][0] : null;
     }
+
+    /**
+     * Get the publication dates of the record.  See also getDateSpan().
+     *
+     * @return array
+     */
+    public function getPublicationDates()
+    {
+        $pubDates = [];
+        if (isset($this->fields['publishDate'])) {
+            foreach ($this->fields['publishDate'] as $pubDate) {
+                $pubDates[] = date('d.m.Y', strtotime($pubDate));
+            }
+        }
+
+        return $pubDates;
+    }
 }
