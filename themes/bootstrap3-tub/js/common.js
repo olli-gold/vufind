@@ -360,9 +360,13 @@ $(document).ready(function() {
      if($(this).val() !== ''){
          $(this).addClass('x');
      }
-  }).on('mouseover', '.clearable', function(){
+  }).on('mouseenter', '.clearable', function(){
      if($(this).val() !== ''){
          $(this).addClass('x');
+     }
+  }).on('mouseleave', '.clearable', function(){
+     if($(this).is(":focus") !== true) {
+        $(this).removeClass('x');
      }
   });
   // END Clearable input (search) 
