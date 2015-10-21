@@ -97,19 +97,13 @@ class FavoritesTest extends \VuFindTest\Unit\MinkTestCase
             $page->find('css', '.modal-body .btn.btn-primary.disabled')
         );
         $page->find('css', '.modal-body .btn.btn-primary')->click();
-        $this->assertNotNull($page->findById('account_firstname'));
+
         // Invalid email
-        $page->findById('account_firstname')->setValue('Tester');
-        $page->findById('account_lastname')->setValue('McTestenson');
-        $page->findById('account_email')->setValue('blargasaurus');
-        $page->findById('account_username')->setValue('username1');
-        $page->findById('account_password')->setValue('test');
-        $page->findById('account_password2')->setValue('test');
+        $this->fillInAccountForm($page, ['email' => 'blargasaurus']);
         $this->assertNull(
             $page->find('css', '.modal-body .btn.btn-primary.disabled')
         );
         $page->find('css', '.modal-body .btn.btn-primary')->click();
-        $this->assertNotNull($page->findById('account_firstname'));
         // Correct
         $page->findById('account_email')->setValue('username1@ignore.com');
         $page->find('css', '.modal-body .btn.btn-primary')->click();
@@ -148,22 +142,17 @@ class FavoritesTest extends \VuFindTest\Unit\MinkTestCase
         $page = $this->gotoRecord($session);
 
         $page->findById('save-record')->click();
-        $username = '.modal-body [name="username"]';
-        $password = '.modal-body [name="password"]';
-        $this->assertNotNull($page->find('css', $username));
-        $this->assertNotNull($page->find('css', $password));
         // Login
         // - empty
-        $page->find('css', '.modal-body .btn.btn-primary')->click();
-        $this->assertNotNull($page->find('css', $username));
+        $this->submitLoginForm($page);
+        $this->assertLightboxWarning($page, 'Login information cannot be blank.');
         // - wrong
-        $page->find('css', $username)->setValue('username1');
-        $page->find('css', $password)->setValue('superwrong');
-        $page->find('css', '.modal-body .btn.btn-primary')->click();
-        $this->assertNotNull($page->find('css', $username));
+        $this->fillInLoginForm($page, 'username1', 'superwrong');
+        $this->submitLoginForm($page);
+        $this->assertLightboxWarning($page, 'Invalid login -- please try again.');
         // - for real
-        $page->find('css', $password)->setValue('test');
-        $page->find('css', '.modal-body .btn.btn-primary')->click();
+        $this->fillInLoginForm($page, null, 'test');
+        $this->submitLoginForm($page);
         // Make sure we don't have Favorites because we have another populated list
         $this->assertNull($page->find('css', '.modal-body #save_list'));
         // Make Two Lists
@@ -200,9 +189,8 @@ class FavoritesTest extends \VuFindTest\Unit\MinkTestCase
         $page = $this->gotoRecord($session);
         // Login
         $page->find('css', '#loginOptions a')->click();
-        $page->find('css', '.modal-body [name="username"]')->setValue('username1');
-        $page->find('css', '.modal-body [name="password"]')->setValue('test');
-        $page->find('css', '.modal-body .btn.btn-primary')->click();
+        $this->fillInLoginForm($page, 'username1', 'test');
+        $this->submitLoginForm($page);
         $session->reload();
         // Save Record
         $page->findById('save-record')->click();
@@ -230,19 +218,13 @@ class FavoritesTest extends \VuFindTest\Unit\MinkTestCase
             $page->find('css', '.modal-body .btn.btn-primary.disabled')
         );
         $page->find('css', '.modal-body .btn.btn-primary')->click();
-        $this->assertNotNull($page->findById('account_firstname'));
-        $page->findById('account_firstname')->setValue('Tester');
-        $page->findById('account_lastname')->setValue('McTestenson');
-        $page->findById('account_password')->setValue('test');
-        $page->findById('account_password2')->setValue('test');
-        $page->findById('account_username')->setValue('username2');
-        // Invalid email
-        $page->findById('account_email')->setValue('blargasaurus');
+        $this->fillInAccountForm(
+            $page, ['username' => 'username2', 'email' => 'blargasaurus']
+        );
         $this->assertNull(
             $page->find('css', '.modal-body .btn.btn-primary.disabled')
         );
         $page->find('css', '.modal-body .btn.btn-primary')->click();
-        $this->assertNotNull($page->findById('account_firstname'));
         $page->findById('account_email')->setValue('username2@ignore.com');
         // Test taken
         $page->findById('account_username')->setValue('username1');
@@ -290,18 +272,13 @@ class FavoritesTest extends \VuFindTest\Unit\MinkTestCase
         $page = $this->gotoSearch($session);
 
         $page->find('css', '.save-record')->click();
-        $username = '.modal-body [name="username"]';
-        $password = '.modal-body [name="password"]';
-        $this->assertNotNull($page->find('css', $username));
-        $this->assertNotNull($page->find('css', $password));
         // Login
         // - empty
-        $page->find('css', '.modal-body .btn.btn-primary')->click();
-        $this->assertNotNull($page->find('css', $username));
+        $this->submitLoginForm($page);
+        $this->assertLightboxWarning($page, 'Login information cannot be blank.');
         // - for real
-        $page->find('css', $username)->setValue('username2');
-        $page->find('css', $password)->setValue('test');
-        $page->find('css', '.modal-body .btn.btn-primary')->click();
+        $this->fillInLoginForm($page, 'username2', 'test');
+        $this->submitLoginForm($page);
         // Make sure we don't have Favorites because we have another populated list
         $this->assertNull($page->find('css', '.modal-body #save_list'));
         // Make Two Lists
@@ -338,9 +315,8 @@ class FavoritesTest extends \VuFindTest\Unit\MinkTestCase
         $page = $this->gotoSearch($session);
         // Login
         $page->find('css', '#loginOptions a')->click();
-        $page->find('css', '.modal-body [name="username"]')->setValue('username2');
-        $page->find('css', '.modal-body [name="password"]')->setValue('test');
-        $page->find('css', '.modal-body .btn.btn-primary')->click();
+        $this->fillInLoginForm($page, 'username2', 'test');
+        $this->submitLoginForm($page);
         $session->reload();
         // Save Record
         $page->find('css', '.save-record')->click();
@@ -369,6 +345,6 @@ class FavoritesTest extends \VuFindTest\Unit\MinkTestCase
      */
     public static function tearDownAfterClass()
     {
-        static::tearDownUsers(['username1', 'username2']);
+        static::removeUsers(['username1', 'username2']);
     }
 }

@@ -28,6 +28,7 @@
  * @link     http://vufind.org/wiki/vufind2:unit_tests Wiki
  */
 namespace VuFindTest\Unit;
+use Behat\Mink\Element\Element;
 
 /**
  * Trait with utility methods for user creation/management. Assumes that it
@@ -65,6 +66,86 @@ trait UserCreationTrait
     }
 
     /**
+     * Mink support function: assert a warning message in the lightbox.
+     *
+     * @param Element $page    Page element
+     * @param string  $message Expected message
+     *
+     * @return void
+     */
+    protected function assertLightboxWarning(Element $page, $message)
+    {
+        $warning = $page->find('css', '.modal-body .alert-danger .message');
+        $this->assertTrue(is_object($warning));
+        $this->assertEquals($message, $warning->getText());
+    }
+
+    /**
+     * Mink support function: fill in the account creation form.
+     *
+     * @param Element $page      Page element.
+     * @param array   $overrides Optional overrides for form values.
+     *
+     * @return void
+     */
+    protected function fillInAccountForm(Element $page, $overrides = [])
+    {
+        $defaults = [
+            'firstname' => 'Tester',
+            'lastname' => 'McTestenson',
+            'email' => 'username1@ignore.com',
+            'username' => 'username1',
+            'password' => 'test',
+            'password2' => 'test'
+        ];
+
+        foreach ($defaults as $field => $default) {
+            $element = $page->findById('account_' . $field);
+            $this->assertNotNull($element);
+            $element->setValue(
+                isset($overrides[$field]) ? $overrides[$field] : $default
+            );
+        }
+    }
+
+    /**
+     * Mink support function: fill in the login form.
+     *
+     * @param Element $page     Page element.
+     * @param string  $username Username to set (null to skip)
+     * @param string  $password Password to set (null to skip)
+     *
+     * @return void
+     */
+    protected function fillInLoginForm(Element $page, $username, $password)
+    {
+        if (null !== $username) {
+            $usernameField = $page->find('css', '.modal-body [name="username"]');
+            $this->assertNotNull($usernameField);
+            $usernameField->setValue($username);
+        }
+        if (null !== $password) {
+            $passwordField = $page->find('css', '.modal-body [name="password"]');
+            $this->assertNotNull($passwordField);
+            $passwordField->setValue($password);
+        }
+    }
+
+    /**
+     * Submit the login form (assuming it's open).
+     *
+     * @param Element $page Page element.
+     *
+     * @return void
+     */
+    protected function submitLoginForm(Element $page)
+    {
+        $button = $page->find('css', '.modal-body .btn.btn-primary');
+        $this->assertNotNull($button);
+        $button->click();
+    }
+
+    /**
      * Static teardown support function to destroy user accounts. Accounts are
      * expected to exist, and the method will fail if they are missing.
      *
@@ -74,7 +155,7 @@ trait UserCreationTrait
      *
      * @throws \Exception
      */
-    protected static function tearDownUsers($users)
+    protected static function removeUsers($users)
     {
         // If CI is not running, all tests were skipped, so no work is necessary:
         $test = new static();   // create instance of current class
@@ -87,7 +168,7 @@ trait UserCreationTrait
         foreach ((array)$users as $username) {
             $user = $userTable->getByUsername($username, false);
             if (empty($user)) {
-                throw new \Exception('Problem deleting expected user.');
+                throw new \Exception("Problem deleting expected user ($username).");
             }
             $user->delete();
         }
