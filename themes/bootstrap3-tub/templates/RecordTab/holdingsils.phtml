@@ -11,6 +11,8 @@
 
     $hasVols = $this->tab->hasVolumes();
 
+    $volStock = $this->driver->getVolumeStock();
+
     // Set page title.
     $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
 ?>
@@ -46,7 +48,6 @@
 <? if ($this->driver->needsLicense() == true && $this->driver->licenseAvailable() == false): ?>
     <span><?=$this->transEsc('no_license')?></span><br/>
 <? endif; ?>
-
 <? if (!empty($urls) || $openUrlActive): ?>
   <h3 class="urllabel"><?=$this->transEsc("Internet")?></h3>
   <? if (!empty($urls)): ?>
@@ -67,6 +68,7 @@
 </h3>
 <table class="table table-striped" summary="<?=$this->transEsc('Holdings details from')?> <?=$this->transEsc($holding['location'])?>">
   <? $callNos = $this->tab->getUniqueCallNumbers($holding['items']); if (!empty($callNos)): ?>
+<!--
   <tr>
     <th><?=$this->transEsc("Call Number")?>: </th>
     <td width="50%">
@@ -76,6 +78,7 @@
     </td>
     <td></td>
   </tr>
+-->
   <? endif; ?>
   <? foreach ($this->ils()->getHoldingsTextFieldNames() as $textField): ?>
     <? if (!empty($holding[$textField])): ?>
@@ -91,6 +94,10 @@
     <? endif; ?>
   <? endforeach; ?>
   <? foreach ($holding['items'] as $row): ?>
+    <?
+        $pureCallnumberArray = explode(':', $row['callnumber']);
+        $pureCallnumber = isset($pureCallnumberArray[1]) ? $pureCallnumberArray[1] : $row['callnumber'];
+    ?>
     <? $check = (isset($row['check']) && $row['check']); ?>
     <? $checkStorageRetrievalRequest = (isset($row['checkStorageRetrievalRequest']) && $row['checkStorageRetrievalRequest']); ?>
     <? $checkILLRequest = (isset($row['checkILLRequest']) && $row['checkILLRequest']); ?>
@@ -98,6 +105,10 @@
       <tr vocab="http://schema.org/" typeof="Offer">
         <th><?=$this->transEsc("Copy")?> <?=$this->escapeHtml($row['number'])?></th>
         <td>
+    <?=$this->transEsc("Call Number")?>: <?=$pureCallnumber?><br/>
+      <? if ($volStock[$pureCallnumber]): ?>
+          <?=$this->transEsc("Volume Information")?>: <?=$volStock[$pureCallnumber]?><br/>
+      <? endif; ?>
           <? if ($row['reserve'] == "Y"): ?>
             <link property="availability" href="http://schema.org/InStoreOnly" />
             <?=$this->transEsc("On Reserve - Ask at Circulation Desk")?><br />
