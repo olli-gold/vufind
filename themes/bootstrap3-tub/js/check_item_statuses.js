@@ -267,7 +267,7 @@ function displayHoldingGuide() {
               break;
             case 'false':
               // Remove the "Loading..." - bestoption is and stays empty
-              break;
+              // break;
             default:
               loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
                                          hover  = vufindString.loc_modal_Title_service_else,
@@ -278,7 +278,7 @@ function displayHoldingGuide() {
                                             loc_code    = 'Unknown',
                                             link_title  = vufindString.loc_modal_Title_service_else,
                                             modal_title = vufindString.loc_modal_Title_service_else,
-                                            modal_body  = vufindString.loc_modal_Body_service_da,
+                                            modal_body  = vufindString.loc_modal_Body_service_else,
                                             iframe_src  = '',
                                             modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
