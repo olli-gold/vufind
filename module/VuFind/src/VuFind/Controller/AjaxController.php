@@ -393,9 +393,10 @@ return $this->output($x, self::STATUS_OK);
      * @return array                    Summarized availability information
      */
     protected function getItemStatus($record, $messages, $locationSetting, $callnumberSetting) {
+        $tmp = ''; // for quick debugging output via json
         // Keep track of different kinds of (physical) access to the copies of the current title
         // Note: for completeness we could also track/calculate the total unavailable items, but _seems_ pointless
-        $totalCount      = count($record); // Most likely unecessary, might be removed later
+        $totalCount      = count($record); // All item (available and not available)
         $availableCount  = 0;   // Total items available (Reference only + Borrowable + Closed Stack Order); reservce collection is implicitly Ref only
         $referenceCount  = 0;   // > Subset thereof: available but reference only
         $lentCount       = 0;   // > Subset thereof: total of all available items being on loan (can be RESERVED aka "Recall this")
@@ -494,7 +495,7 @@ return $this->output($x, self::STATUS_OK);
                 // Hmm, no. Ahh!! Physical items always have a call number (how else to fetch them?)...
                 // Just the 'Unknown' is a little vague - set somewhere above
                 // Very special case (CD-ROM): http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/268707642 / https://katalog.b.tuhh.de/DB=1/XMLPRS=N/PPN?PPN=268707642
-                // and http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/175989125 / https://katalog.b.tuhh.de/DB=1/XMLPRS=N/PPN?PPN=175989125 (siehe Bände ist hier die Aktion!)
+                // and http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/175989125 / https://katalog.b.tuhh.de/DB=1/XMLPRS=N/PPN?PPN=175989125 (siehe Baende ist hier die Aktion!)
                 // ...really, really special...
 //                if (stripos('opac-de-830', $info['item_id']) == -1) {
                 if ($info['callnumber'] == 'Unknown') {
@@ -513,7 +514,9 @@ return $this->output($x, self::STATUS_OK);
                 // HMM, else it must be a "good" call number as well as a good
                 // location, but keep the TUB spefic way for now
                 // else {
-                elseif (strlen($info['callnumber']) == 7 && $info['callnumber'] != 'Unknown') {
+                // 2015-10-27: New DAIA way - location is now part of the callnumber 
+                // string, thus a valid reading room no is now 11 (e.g. LBS:MSB-100)
+                elseif (strlen($info['callnumber']) == 11 && $info['callnumber'] != 'Unknown') {
                     // Ok, TUBHH reading room call numbers are always 7 characters long. And below we make $patronOptions['shelf'] 
                     // the most preferable result (electronic is an exception). So force any shelf call number on top here.
                     if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
@@ -583,7 +586,7 @@ return $this->output($x, self::STATUS_OK);
         // closed stack item we count as "very soon" = immediatly - so we don't
         // substract $stackorderCount as well)
         // Note: $info['itemnotes'][0] == 'presence_use_only' includes elecronic items
-        $borrowableCount = $availableCount -($referenceCount + $lentCount);
+        $borrowableCount = $totalCount - ($referenceCount + $lentCount);
         if ($referenceCount > 0 && $referenceCount != $electronicCount) {
             // Case a) Yes, ALL items are reference only
             if ($referenceCount === $availableCount && $availableCount == $totalCount) {
@@ -615,7 +618,6 @@ else              {
                 $bestOptionHref  = $placeaholdhref;
             }
         }
-
 
         // Ok determine remaining best options + set link
         // No reference only, but borrowable shelf items available
@@ -726,6 +728,16 @@ else              {
 
         $multiVol = $this->getMultiVolumes();
 
+        /* / Quick check if all calculation are valid
+        $tmp .= "totalCount: $totalCount
+                availableCount: $availableCount 
+                borrowableCount: $borrowableCount
+                referenceCount: $referenceCount
+                lentCount: $lentCount
+                stackorderCount: $stackorderCount
+                electronicCount: $electronicCount";
+        */
+
         // Send back the collected details:
 //TZ: Todo: take advantage of patronBestOption in check_item_statuses.js
 // Note: reference_location and reference_callnumber are false unless $patronOptions['reserve_or_local'] is true
@@ -752,7 +764,7 @@ else              {
             'reference_location' => $referenceLocation,
             'reference_callnumber' => $referenceCallnumber,
             'multiVols' => $multiVol,
-            'tmp' => '' //implode('  --  ', $bestLocationPriority)
+            'tmp' => $tmp //implode('  --  ', $bestLocationPriority)
         ];
 
 /* Original
