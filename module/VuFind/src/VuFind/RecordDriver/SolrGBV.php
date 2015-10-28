@@ -538,6 +538,9 @@ class SolrGBV extends SolrMarc
         if ($this->getFirstFieldValue('245', array('p'))) $return .= " ".$this->getFirstFieldValue('245', array('p'));
         if ($this->getFirstFieldValue('245', array('n')) || $this->getFirstFieldValue('245', array('p'))) $return .= ")";
         if ($return !== '') return $return;
+        if ($this->getFirstFieldValue('490', array('a'))) $return = $this->getFirstFieldValue('490', array('a'));
+        if ($this->getFirstFieldValue('490', array('v'))) $return .= " (".$this->getFirstFieldValue('490', array('v')).")";
+        if ($return !== '') return $return;
         if ($this->getFirstFieldValue('773', array('t'))) $return = $this->getFirstFieldValue('773', array('t'));
         return $return;
     }
