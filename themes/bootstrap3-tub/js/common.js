@@ -81,6 +81,18 @@ function lessFacets(id) {
   $('#more-'+id).removeClass('hidden');
 }
 
+// Show description
+function fulldesc() {
+  $('#fulldesc').removeClass('hidden');
+  $('#showfulldesc').addClass('hidden');
+  $('#shortdesc').addClass('hidden');
+}
+function shortdesc() {
+  $('#fulldesc').addClass('hidden');
+  $('#showfulldesc').removeClass('hidden');
+  $('#shortdesc').removeClass('hidden');
+}
+
 // Lightbox
 /*
  * This function adds jQuery events to elements in the lightbox
