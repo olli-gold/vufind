@@ -95,6 +95,18 @@
       </tr>
       <? endif; ?>
 
+      <? $subseries = $this->driver->getSubseries(); ?>
+      <? for ($x = 0; $x < count($subseries['label']); $x++): ?>
+      <? if (isset($subseries['label'][$x])): ?>
+      <tr>
+        <th><?=$this->transEsc($subseries['label'][$x])?>: </th>
+        <td>
+          <? if (isset($subseries['value'][$x])) : ?><?=$subseries['value'][$x]?><? endif; ?>
+        </td>
+      </tr>
+      <? endif; ?>
+      <? endfor; ?>
+
   <? $isbns = $this->driver->getISBNs(); if (!empty($isbns)): ?>
     <? $contentDisplayed = true; ?>
     <tr>
@@ -211,6 +223,13 @@
       <tr>
         <th><?=$this->transEsc('Edition')?>: </th>
         <td property="bookEdition"><?=$this->escapeHtml($edition)?></td>
+      </tr>
+      <? endif; ?>
+
+      <? $hss = $this->driver->getHss(); if (!empty($hss)): ?>
+      <tr>
+        <th><?=$this->transEsc('Scholarly Publication')?>: </th>
+        <td><?=$this->escapeHtml($hss)?></td>
       </tr>
       <? endif; ?>
 

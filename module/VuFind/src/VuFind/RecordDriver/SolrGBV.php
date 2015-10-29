@@ -2055,6 +2055,19 @@ class SolrGBV extends SolrMarc
         return ($result['docs'] > 0) ? $result['docs'] : false;
     }
 
+    /**
+     * Get the content of MARC field 246
+     *
+     * @return array
+     * @access protected
+     */
+    public function getSubseries() {
+        return array('label' => $this->getFieldArray('246', ['i']), 'value' => $this->getFieldArray('246', ['a']));
+    }
+
+    public function getHss() {
+        return $this->getFirstFieldValue('502');
+    }
 
     public function getEditionsFromMarc() {
         return $this->getFieldArray('250');
