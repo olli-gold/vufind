@@ -2060,6 +2060,10 @@ class SolrGBV extends SolrMarc
         return $this->getFieldArray('250');
     }
 
+    public function getMoreContributors() {
+        return array('names' => $this->getFieldArray('700', ['a']), 'functions' => $this->getFieldArray('700', ['e']));
+    }
+
     public function getVolumeInformation() {
         if ($this->getFirstFieldValue('800', ['v'])) {
             return $this->getFirstFieldValue('800', ['v']);

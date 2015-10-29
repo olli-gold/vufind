@@ -142,11 +142,15 @@
       </tr>
       <? endif; ?>
 
-      <? if (isset($authors['secondary']) && !empty($authors['secondary'])): ?>
+      <? $contributors = $this->driver->getMoreContributors(); ?>
+      <? if (isset($contributors)): ?>
       <tr>
-        <th><?=$this->transEsc('Other Authors')?>: </th>
+        <th><?=$this->transEsc('Contributors')?>: </th>
         <td>
-          <? $i = 0; foreach ($authors['secondary'] as $field): ?><?=($i++ == 0)?'':', '?><span property="contributor"><a href="<?=$this->record($this->driver)->getLink('author', $field)?>"><?=$this->escapeHtml($field)?></a></span><? endforeach; ?>
+          <? for ($i = 0; $i < count($contributors['names']); $i++): ?><span property="contributor"><a href="<?=$this->record($this->driver)->getLink('author', $contributors['names'][$i])?>"><?=$this->escapeHtml($contributors['names'][$i])?></a> 
+          <? if (isset($contributors['functions'][$i])) : ?>(<?=$contributors['functions'][$i]?>)<? endif; ?></span>
+          <?=($i < count($contributors['names']))?'<br/>':''?>
+          <? endfor; ?>
         </td>
       </tr>
       <? endif; ?>
