@@ -535,6 +535,9 @@ class Connector implements \Zend\Log\LoggerAwareInterface
             $addata = $prefix->PrimoNMBib->record->addata;
             $item['doi'] = (string)$addata->doi;
             $item['container_title'] = (string)$addata->jtitle;
+            if (!isset($addata->jtitle)) {
+                $item['container_title'] = (string)$searchdata->addtitle;
+            }
             $item['container_volume'] = (string)$addata->volume;
             $item['container_issue'] = (string)$addata->issue;
             $item['container_start_page'] = (string)$addata->spage;

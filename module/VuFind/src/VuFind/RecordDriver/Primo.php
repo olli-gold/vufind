@@ -696,5 +696,4 @@ class Primo extends SolrDefault
         return true;
     }
 
-
 }
