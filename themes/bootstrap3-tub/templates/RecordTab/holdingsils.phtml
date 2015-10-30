@@ -107,7 +107,7 @@
         <td>
     <?=$this->transEsc("Call Number")?>: <?=$pureCallnumber?><br/>
       <? if ($volStock[$pureCallnumber]): ?>
-          <?=$this->transEsc("Volume Information")?>: <?=$volStock[$pureCallnumber]?><br/>
+          <?=$volStock[$pureCallnumber]?><br/>
       <? endif; ?>
           <? if ($row['reserve'] == "Y"): ?>
             <link property="availability" href="http://schema.org/InStoreOnly" />
