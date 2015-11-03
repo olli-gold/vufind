@@ -5,13 +5,11 @@
     // Grab review data:
     $vols = $this->tab->getContent();
 
-/*
-    foreach ($vols as $c) {
-        echo $c->getTitle()[0]."<br/>";
-    }
-*/
 ?>
-<? if (count($vols) > 0): ?>
+<? if ($vols['volscount'] > 0): ?>
+  <? if ($vols['volscount'] > 200): ?>
+    In dieser Bandliste sind <?=$vols['volscount']?> Titel enthalten. Es werden nicht alle angezeigt.
+  <? endif; ?>
   <table class="datagrid extended">
     <colgroup>
       <col style="width: 10%;">
@@ -26,9 +24,9 @@
       </tr>
     </thead>
     <tbody>
-  <? foreach ($vols as $data): ?>
+  <? foreach ($vols['vols'] as $data): ?>
     <tr>
-    <td><a href="<?=$this->recordLink()->getUrl($data)?>"><?=$data->getVolumeInformation()?></a></td>
+    <td><a href="<?=$this->recordLink()->getUrl($data)?>"><?=$data->getVolumeInformation($this->driver->getUniqueId())?></a></td>
     <td>
     <?
         $t = $data->getTitle();

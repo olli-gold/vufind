@@ -83,7 +83,9 @@ class TomesVolumes extends AbstractBase
         if (empty($multipart)) {
             return null;
         }
-        $vols = $this->getRecordDriver()->getMultipartChildren();
+        $vols = array();
+        $vols['vols'] = $this->getRecordDriver()->getMultipartChildren();
+        $vols['volscount'] = $this->getRecordDriver()->getVolsCount();
         return $vols;
     }
 }
