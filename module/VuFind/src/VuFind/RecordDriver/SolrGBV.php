@@ -1312,6 +1312,33 @@ class SolrGBV extends SolrMarc
     }
 
     /**
+     * Get a value from a MARC field matching a specific where condition
+     *
+     * @param string $field Field to get from MARC
+     * @param int    $id    The context ID, taht this field should match
+     *
+     * @return null|string
+     */
+    public function getSpecificFieldValue($fields, $id)
+    {
+        $marcFields = $this->marcRecord->getFields($fields);
+        if (!empty($marcFields)) {
+            foreach ($marcFields as $field) {
+                $linkFields = $field->getSubfields('w');
+                foreach ($linkFields as $current) {
+                    $idArr = explode(')', $current->getData());
+                    if ($idArr[0] == '(DE-601') {
+                        if ($idArr[1] == $id) {
+                            return $field->getSubfields('v')[0]->getData();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Support method for getFieldData() -- factor the relationship indicator
      * into the field number where relevant to generate a note to associate
      * with a record link.
@@ -1803,7 +1830,11 @@ class SolrGBV extends SolrMarc
         // Sort the results
         foreach($result as $doc) {
             $retval[$cnt] = array();
-            $part = $doc->getVolumeInformation();
+            $part = $doc->getVolumeInformation($this->getUniqueId());
+            // Do not use anything behind a comma for sorting
+            if (strstr($part,',') !== false) {
+                $part = substr($part, 0, strpos($part,','));
+            }
             //$retval[$cnt]['sort']=$doc['sort'];
             $retval[$cnt]['title'] = $doc->getTitle()[0];
             //$retval[$cnt]['id']=$doc['id'];
@@ -1823,7 +1854,7 @@ class SolrGBV extends SolrMarc
             $part1[$key] = (isset($row['partNum'])) ? $row['partNum'] : 0;
             $part2[$key] = (isset($row['date'])) ? $row['date'] : 0;
         }
-        array_multisort($part1, SORT_ASC, $part2, SORT_DESC, $part0, SORT_ASC, $retval );
+        array_multisort($part1, SORT_DESC, $part2, SORT_DESC, $part0, SORT_ASC, $retval );
 
         // $retval has now the correct order, now set the objects into the same order
         $returnObjects = array();
@@ -1842,7 +1873,8 @@ class SolrGBV extends SolrMarc
      */
     protected function searchMultipart()
     {
-        $limit = 2;
+        $limit = 500;
+        $page = 0;
         $rid=$this->fields['id'];
         if(strlen($rid)<2) {
             return false;
@@ -1863,7 +1895,10 @@ class SolrGBV extends SolrMarc
         $params->set('fq', $hiddenFilters);
 
         $all = $this->searchService->search('Solr', $query, 0, 0, $params)->getTotal();
-        $results = $this->searchService->search('Solr', $query, 0, $all, $params);
+        if ($limit < $all) {
+            $pages = ceil($all/$limit);
+        }
+        $results = $this->searchService->search('Solr', $query, $page, $limit, $params);
 
         $frbrItems = $this->searchFRBRitems();
         $frbrItemIds = [ ];
@@ -1885,6 +1920,37 @@ class SolrGBV extends SolrMarc
         }
 
         return $return;
+    }
+
+    /**
+     * Get the count of volumes for this record
+     *
+     * @return int
+     * @access public
+     */
+    public function getVolsCount()
+    {
+        $rid=$this->fields['id'];
+        if(strlen($rid)<2) {
+            return false;
+        }
+        $rid=str_replace(":","\:",$rid);
+
+        // Assemble the query parts and filter out current record:
+        $searchQ = '(ppnlink:'.$this->stripNLZ($rid).' AND NOT (format:Article OR format:"electronic Article"))';
+
+        $hiddenFilters = null;
+        // Get filters from config file
+        if (isset($this->recordConfig->Filter->hiddenFilters)) {
+            $hiddenFilters = $this->recordConfig->Filter->hiddenFilters->toArray();
+        }
+
+        $query = new \VuFindSearch\Query\Query($searchQ);
+        $params = new ParamBag();
+        $params->set('fq', $hiddenFilters);
+
+        $all = $this->searchService->search('Solr', $query, 0, 0, $params)->getTotal();
+        return $all;
     }
 
     /**
@@ -2077,15 +2143,15 @@ class SolrGBV extends SolrMarc
         return array('names' => $this->getFieldArray('700', ['a']), 'functions' => $this->getFieldArray('700', ['e']));
     }
 
-    public function getVolumeInformation() {
-        if ($this->getFirstFieldValue('800', ['v'])) {
-            return $this->getFirstFieldValue('800', ['v']);
+    public function getVolumeInformation($contextId) {
+        if ($val = $this->getSpecificFieldValue('800',$contextId)) {
+            return $val;
         }
-        if ($this->getFirstFieldValue('830', ['v'])) {
-            return $this->getFirstFieldValue('830', ['v']);
+        if ($val = $this->getSpecificFieldValue('830',$contextId)) {
+            return $val;
         }
-        if ($this->getFirstFieldValue('245', ['n'])) {
-            return $this->getFirstFieldValue('245', ['n']);
+        if ($val = $this->getFirstFieldValue('245', ['n'])) {
+            return $val;
         }
         return null;
     }
