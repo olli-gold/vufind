@@ -65,12 +65,14 @@ if (!empty($author)) {
     echo "author = {{$author}},\n";
 }
 
+/*
 $secondaryAuthors = $this->driver->tryMethod('getSecondaryAuthors');
 if (is_array($secondaryAuthors)) {
     foreach ($secondaryAuthors as $current) {
         echo "editor = {{$current}},\n";
     }
 }
+*/
 
 $pubPlaces = $this->driver->tryMethod('getPlacesOfPublication');
 $pubDates = $this->driver->tryMethod('getPublicationDates');
@@ -96,6 +98,24 @@ if (is_array($pubPlaces) && is_array($pubDates) && is_array($pubNames)) {
             echo "year = {{$date}},\n";
         }
     }
+}
+
+$isbns = $this->driver->tryMethod('getISBNs');
+if (is_array($isbns) && isset($isbns[0])) {
+    echo 'isbn = { ';
+    foreach ($isbns as $isbn) {
+         echo $isbn . ' ';
+    }
+    echo "},\n";
+}
+
+$issns = $this->driver->tryMethod('getISSNs');
+if (is_array($issns) && isset($issns[0])) {
+    echo 'issn = { ';
+    foreach ($issns as $issn) {
+        echo $issn . ' ';
+    }
+    echo "},\n";
 }
 
 $edition = $this->driver->tryMethod('getEdition');
