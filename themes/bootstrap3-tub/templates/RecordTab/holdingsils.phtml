@@ -157,14 +157,18 @@
             <link property="businessFunction" href="http://purl.org/goodrelations/v1#LeaseOut" />
             <link property="itemOffered" href="#record" />
         </td>
+        </tr>
         <? if (isset($row['itemnotes'])): ?>
-        <td>
+        <tr>
+        <td colspan="2">
+            <ul>
             <? foreach ($row['itemnotes'] as $itemnote): ?>
-                <span><?=$this->transEsc($itemnote)?></span>
+                <li><?=$this->transEsc($itemnote)?></li>
             <? endforeach; ?>
+            </ul>
         </td>
+        </tr>
         <? endif; ?>
-      </tr>
     <? endif; ?>
   <? endforeach; ?>
   <? if (!empty($holding['purchase_history'])): ?>
