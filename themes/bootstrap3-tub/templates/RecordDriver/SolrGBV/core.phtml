@@ -155,7 +155,7 @@
       <? endif; ?>
 
       <? $contributors = $this->driver->getMoreContributors(); ?>
-      <? if (isset($contributors)): ?>
+      <? if (isset($contributors['names'][0])): ?>
       <tr>
         <th><?=$this->transEsc('Contributors')?>: </th>
         <td>
