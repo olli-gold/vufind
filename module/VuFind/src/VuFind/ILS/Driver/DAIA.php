@@ -950,6 +950,25 @@ class DAIA extends AbstractBase implements
     }
 
     /**
+     * Returns the evaluated value of the provided limitation element
+     *
+     * @param array $limitations Array with DAIA limitation data
+     *
+     * @return string
+     */
+    protected function getItemLimitations($limitations)
+    {
+        $return = array();
+        foreach ($limitations as $limitation) {
+            // return the first limitation with content set
+            if (isset($limitation['content'])) {
+                $return[] = $limitation['content'];
+            }
+        }
+        return $return;
+    }
+
+    /**
      * Returns the limitation of a service for an item
      *
      * @param array  $item    Array with DAIA limitation data
@@ -967,7 +986,7 @@ class DAIA extends AbstractBase implements
                     && isset($available['limitation'])
                 ) {
                     $limitation
-                        = $this->getItemLimitation($available['limitation']);
+                        = $this->getItemLimitations($available['limitation']);
                 }
             }
         }
@@ -980,7 +999,7 @@ class DAIA extends AbstractBase implements
                     && isset($unavailable['limitation'])
                 ) {
                     $limitation
-                        = $this->getItemLimitation($unavailable['limitation']);
+                        = $this->getItemLimitations($unavailable['limitation']);
                 }
             }
         }
@@ -1024,14 +1043,13 @@ class DAIA extends AbstractBase implements
         }
 
         // Check item for limitations on loan or presentation
-        $presLimit = $this->getItemServiceLimitation($item, 'presentation');
-        if (isset($presLimit)) {
+        $presLimits = $this->getItemServiceLimitation($item, 'presentation');
+        foreach ($presLimits as $presLimit) {
             $return[] = $presLimit;
-        } else {
-            $loanLimit = $this->getItemServiceLimitation($item, 'loan');
-            if (isset($loanLimit)) {
-                $return[] = $loanLimit;
-            }
+        }
+        $loanLimits = $this->getItemServiceLimitation($item, 'loan');
+        foreach ($loanLimits as $loanLimit) {
+            $return[] = $loanLimit;
         }
 
         return $return;
