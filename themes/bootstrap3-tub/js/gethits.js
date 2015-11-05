@@ -1,6 +1,7 @@
 $(document).ready(function() {
     if ($('#hitsgbv').hasClass('active')) getNumberOfPrimoMatches();
     if ($('#hitsprimo').hasClass('active')) getNumberOfGbvMatches();
+    eagerloadVolumeList();
 });
 
 function getNumberOfPrimoMatches() {
@@ -27,6 +28,25 @@ function getNumberOfGbvMatches() {
             }
         }
     });
+}
+
+function eagerloadVolumeList() {
+  var id = $.map($('.ajaxItem'), function(i) {
+    return $(i).find('.hiddenId')[0].value;
+  });
+  if (!id.length) {
+    return;
+  }
+
+  var currentId;
+  for (var ids in id) {
+    currentId = id[ids];
+    $.ajax({
+        dataType: 'json',
+        url: path + '/AJAX/JSON?method=loadVolumeList',
+        data: {"id":currentId},
+    });
+  }
 }
 
 function get(name){

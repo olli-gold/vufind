@@ -1939,6 +1939,19 @@ return $this->output($x, self::STATUS_OK);
     }
 
     /**
+     * Load information about multivolumes for this item
+     *
+     * @return void
+     */
+    protected function loadVolumeListAjax()
+    {
+        $driver = $this->getRecordLoader()->load(
+            $_REQUEST['id']
+        );
+        $driver->cacheMultipartChildren();
+    }
+
+    /**
      * Load information about printed copies for this item
      *
      * @return \Zend\Http\Response

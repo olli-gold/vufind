@@ -1815,6 +1815,58 @@ class SolrGBV extends SolrMarc
     }
 
     /**
+     * Caches multipart children.
+     *
+     * @return array
+     * @access protected
+     */
+    public function cacheMultipartChildren()
+    {
+        if (file_exists('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->getUniqueId())) {
+            $cacheF = file('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->getUniqueId());
+            $lastmod = $cacheF[0];
+            if ($lastmod < time()-1800) {
+                $this->saveCache();
+            }
+        }
+        else {
+            $this->saveCache();
+        }
+    }
+
+    /**
+     * Caches multipart children.
+     *
+     * @return array
+     * @access protected
+     */
+    protected function saveCache() {
+        $cacheObject = $this->getMultipartChildren();
+        $cacheFile = fopen('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->getUniqueId(), 'w');
+        fputs($cacheFile, time()."\n");
+        fputs($cacheFile, $cacheObject);
+        fclose($cacheFile);
+    }
+
+    /**
+     * get multipart children from cache.
+     *
+     * @return array
+     * @access protected
+     */
+    public function getCachedMultipartChildren()
+    {
+        if (file_exists('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->getUniqueId())) {
+            $cacheF = file('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->getUniqueId());
+            $lastmod = $cacheF[0];
+            if ($lastmod > time()-1800) {
+                return unserialize($cacheF[1]);
+            }
+        }
+        return null;
+    }
+
+    /**
      * Get multipart children.
      *
      * @return array
@@ -1822,6 +1874,12 @@ class SolrGBV extends SolrMarc
      */
     public function getMultipartChildren()
     {
+        /* TODO: make caching work at this point
+           It does not work, because somewhere a closure is used and closures
+           cannot get serialised */
+        if ($this->getCachedMultipartChildren()) {
+            return $this->getCachedMultipartChildren();
+        }
         $cnt=0;
         $retval = array();
         $sort = array();
