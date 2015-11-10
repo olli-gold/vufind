@@ -117,6 +117,7 @@
 
 #searchForm_lookfor, #searchForm_type {
    border-color: #eff3dc;
+   padding-right: 20px; /* little space for the "delete"-x
 }
 
 header .navbar .navbar-brand {
