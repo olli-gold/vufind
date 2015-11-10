@@ -403,6 +403,7 @@ return $this->output($x, self::STATUS_OK);
         $borrowableCount = 0;   // > Subset thereof: items immediatly available for take-away (including $stackorderCount)
         $stackorderCount = 0;   // (not subset; part of $availableCount calculation): total of all available items that have to be ORDERED from a closed stack (aka "Place a hold")
         $electronicCount = 0;
+        $dienstappCount  = 0;
 
         // Summarize call number, location and availability info across all items:
         $available = false;                     // Track and set to true if at least one item is available
@@ -516,12 +517,20 @@ return $this->output($x, self::STATUS_OK);
                 // else {
                 // 2015-10-27: New DAIA way - location is now part of the callnumber 
                 // string, thus a valid reading room no is now 11 (e.g. LBS:MSB-100)
-                elseif (strlen($info['callnumber']) == 11 && $info['callnumber'] != 'Unknown') {
-                    // Ok, TUBHH reading room call numbers are always 7 characters long. And below we make $patronOptions['shelf'] 
+                elseif (strlen($info['callnumber']) == 11 && $info['callnumber'] != 'Unknown') {                    // Ok, TUBHH reading room call numbers are always 7 characters long. And below we make $patronOptions['shelf'] 
                     // the most preferable result (electronic is an exception). So force any shelf call number on top here.
                     if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
                     $bestLocationPriority[-1] = $info['location'];
                 }
+            }
+            // Not available cases
+            else {
+                // 2015-11-10: Dienstapparate are the only special case
+                if (strlen($info['callnumber']) == 11 && substr($info['callnumber'], 0, 1) == 'D') {
+                    $dienstappCount++;
+                    if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
+                    $bestLocationPriority[4] = $info['location'];                   
+                }                
             }
 
             // @todo  Can it exist without being set? Otherwise it's redundant
@@ -586,7 +595,7 @@ return $this->output($x, self::STATUS_OK);
         // closed stack item we count as "very soon" = immediatly - so we don't
         // substract $stackorderCount as well)
         // Note: $info['itemnotes'][0] == 'presence_use_only' includes elecronic items
-        $borrowableCount = $totalCount - ($referenceCount + $lentCount);
+        $borrowableCount = $totalCount - ($referenceCount + $lentCount + $dienstappCount);
         if ($referenceCount > 0 && $referenceCount != $electronicCount) {
             // Case a) Yes, ALL items are reference only
             if ($referenceCount === $availableCount && $availableCount == $totalCount) {
@@ -622,7 +631,7 @@ else              {
         // Ok determine remaining best options + set link
         // No reference only, but borrowable shelf items available
         // (also) Note: $info['itemnotes'][0] == 'presence_use_only' includes elecronic items
-        if ($electronicCount > 0 && $electronicCount === $referenceCount && $availableCount === 1) {
+        if ($electronicCount > 0 && $electronicCount === $totalCount) {
             $patronOptions['e_only'] = true;
         }
         elseif ($borrowableCount > 0 && ($borrowableCount - $stackorderCount) > 0) {
@@ -728,15 +737,16 @@ else              {
 
         $multiVol = $this->getMultiVolumes();
 
-        /* / Quick check if all calculation are valid
+        // Quick check if all calculation are valid
         $tmp .= "totalCount: $totalCount
                 availableCount: $availableCount 
                 borrowableCount: $borrowableCount
                 referenceCount: $referenceCount
                 lentCount: $lentCount
                 stackorderCount: $stackorderCount
-                electronicCount: $electronicCount";
-        */
+                electronicCount: $electronicCount
+                dienstappCount: $dienstappCount";
+        // */
 
         // Send back the collected details:
 //TZ: Todo: take advantage of patronBestOption in check_item_statuses.js
