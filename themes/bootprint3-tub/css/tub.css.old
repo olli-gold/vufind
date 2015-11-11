@@ -2,27 +2,21 @@
    clear: both;
 }
 
-
 /* START Modding stuff so sorting button is smoothly aligned */
 .main > div:nth-child(1) > div:nth-child(1)   {padding: 0px;}  
-.search-controls  {padding: 0px !important; margin-left: -6px !important; background-image: linear-gradient(to top, #FFF, #EEE); margin-bottom: 10px;}
-.sidebar          {background: transparent linear-gradient(to top, #FFF, #FFE8AF) repeat scroll 0% 0%;}
-.sidebar h4       {padding-top: 0px;}
-.sidebar .list-group-item.active {background-color: #7BC2DD !important;}
+.search-controls  {padding: 0px !important; margin-left: -6px !important;}
 .col-sm-6         {width: 100%; padding: 0; margin: 0; background-image: linear-gradient(to top, #FFF, #EEE);}
-header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #FFE8AF) repeat scroll 0% 0%; }
 .navbar-form      {width: 100%;}
 .search-query     {width: 350px !important;}
-.search-submit   {padding: 4px; vertical-align: middle; background-color: #A8DDF0; border: 1px solid #000; font-weight: bold;}
+.search-submit   {padding: 3px; vertical-align: middle;}
 .navbar-form .checkbox {width: 25%; float: right; min-width: 175px;}
 .breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
 .btn-primary {
    background-color: #A8DDF0;
-   border-color: #000;
-   color: #000;
+   border-color: #fff;
+   color: #fff;
    min-width: 165px;
 }
-.btn i {color: #27827F;}
 /* END Modding stuff so sorting button is smoothly aligned */
 
 /* START modding search input 
@@ -49,23 +43,22 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #FF
    border-width: 1px;
    border-style: solid;
    border-color: #DDD;
-   color: #ffffff !important;
    /*background-color: #F9F9F9;*/
-   /*background-color: #F0D4D4;*/
+   background-color: #F0D4D4;
    position: relative;
    top: 1px;
    width: 166px; /*see also @media (max-width: 530px) */
 }
 
-.searchTab i        {display: none;} /*color: red; position: absolute; z-index: 10;*/
-.searchTab.active i   {display: none;} /*color: green;*/
+.searchTab i        {color: red; position: absolute; z-index: 10;}
+.searchTab.active i   {color: green;}
 
 .searchTab.books    {border-top-right-radius: 35px; border-top-left-radius: 4px;}
 .searchTab.books i   {left: 2px; top: 0px;}
 .searchTab.articles   {border-top-left-radius: 35px; border-top-right-radius: 4px;}
 .searchTab.articles i {right: 2px; top: 0px;}
 .searchTab.active {
-   background-color: #FFE8AF; /* #EFF3DC; */
+   background-color: #EFF3DC;
    background-position: 0px -60px;
    position: relative;
    top: 2px;
@@ -88,7 +81,7 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #FF
 
 .searchTab.active a {
    background-position: 100% -60px;
-   /* font-weight: bold; */
+   font-weight: bold;
 }
 
 
@@ -113,13 +106,10 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #FF
 
 .sort_order_hint {color: #A8DDF0;}
 
-/*
 #result0, #result2, #result4, #result6, #result8, #result10, #result12, #result14, #result16, #result18 {
-   /* background-color: #eff3dc;* /
+   /* background-color: #eff3dc;*/
    background-color: #ffffff;
 }
-*/
-.result {background-color: #ffffff !important;}
 
 .record {
    background: none repeat scroll 0 0 #ffffff !important;
@@ -139,11 +129,9 @@ header .navbar .navbar-brand {
    width: 195px;
 }
 
-/*
 tbody tr:nth-child(2n) td, tbody tr.even td {
    background: #e5ecf9 none repeat scroll 0 0;
 }
-*/
 
 table.datagrid td {
    border-left: 1px solid #ffffff;
@@ -168,8 +156,8 @@ table.datagrid td a {
 }
 
 .holdlink, .holdlink:active, .holdlink:hover, .holdlink:visited {
-   background-color: #D8F2FC;
-   color: #000;
+   background-color: #a8ddf0;
+   color: #ffffff;
    border: thin solid #aaaaaa;
    border-radius: 3px;
    opacity: 1;
@@ -188,12 +176,12 @@ table.datagrid td a {
 
 .holdlink i {
    padding: 3px;
-   background-color: #D8F2FC;
-   color: #53A1BF;
+   background-color: #6BC4E5;
+   color: #ffffff;
    font-size: 15px;
 }
 /* Reset fa-heart and fa-home - TODO for less cleanup */
-i.fa-heart, i.fa-home, i.fa-search {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
+i.fa-heart, i.fa-home {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
 
 
 /* Customize button for single option */
@@ -208,8 +196,6 @@ i.fa-heart, i.fa-home, i.fa-search {background-image: url('none'); width: auto; 
 
 
 /* info icon print */
-.fa-info-circle {color: #27827F !important;}
-
 .tub_fa-info_p {
    margin-top: 14px;
    margin-bottom: 0;
@@ -270,7 +256,7 @@ i.fa-heart, i.fa-home, i.fa-search {background-image: url('none'); width: auto; 
 }
 
 .tub_info_topright {width: 118px; margin: 0 0 0 2px; padding: 0;} /* Same length as Volltext-Image and order buttons */
-.tub_resYear { position: absolute; bottom: 0; right:0; }
+.tub_resYear { float: right;}
 #bookbag-menu {position: absolute; bottom: 0;}
 
 /* Cover & cols layout - letztlich muss es anders gemacht werden, aber fuers zeigen... */
@@ -323,7 +309,6 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
 /* END FIX WP-Template Bugs */
 
 
-
 /* VEERY nasty hack - rethink layout with proper usage of css bootstrap http://getbootstrap.com/css/ */
 @media (max-width: 530px) {
    .right {
@@ -348,56 +333,3 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
    .recordcover {min-width: 50px; min-height: 25px;}
 
 }
-
-/** class to make stuff "invisible" but still readable by screen readers */
-.offscreen {
-    position:absolute;
-    left:-10000px;
-    top:auto;
-    width:1px;
-    height:1px;
-    overflow:hidden;
-    display:inline;
-}
-
-.tubtable {
-    margin-bottom: 18px;
-    max-width: 100%;
-}
-
-.tab-content {
-    -moz-border-bottom-colors: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: #ddd;
-    border-color: -moz-use-text-color #ddd #ddd;
-    border-image: none;
-    border-style: solid;
-    border-width: 1px;
-    padding: 6px 8px;
-}
-
-.nav-tabs {
-    border-bottom: medium none;
-}
-
-.format_info {
-    bottom: 0;
-    position: absolute;
-}
-
-.pager li > a {
-    display: inline-block;
-    padding: 5px 14px;
-    background-color: #fff;
-    border: none;
-}
-
-
-
-
-
-/* TEEEMP-Kram */
-.searchTab_info             {display: none !important;}
-div.checkbox:nth-child(5)   {display: none !important;}
-/* TEEEMP ENDE */
