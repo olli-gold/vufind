@@ -1215,8 +1215,8 @@ class SolrGBV extends SolrMarc
 
         // Which fields/subfields should we check for URLs?
         $fieldsToCheck = [
-            '856' => ['3', 'y', 'z'],   // Standard URL
-            '555' => ['a']              // Cumulative index/finding aids
+            '856' => ['3', 'y', 'z', 'm'],   // Standard URL
+            '555' => ['a']                   // Cumulative index/finding aids
         ];
 
         foreach ($fieldsToCheck as $field => $subfields) {
@@ -1227,6 +1227,12 @@ class SolrGBV extends SolrMarc
                     $address = $url->getSubfield('u');
                     if ($address) {
                         $address = $address->getData();
+
+                        // Exit, if this is from Ciando - we do not want Ciando!
+                        $m_field = $url->getSubfield('m');
+                        if ($m_field && $m_field->getData() == 'CIANDO') {
+                            break;
+                        }
 
                         // Is there a description?  If not, just use the URL itself.
                         foreach ($subfields as $current) {
