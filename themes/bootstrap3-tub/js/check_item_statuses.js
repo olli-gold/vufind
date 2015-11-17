@@ -33,8 +33,6 @@
  *  - @see templates/RecordDriver/SolrGBV/result-list.phtml
  *  - @see templates/RecordDriver/Primo/result-list.phtml
  *
- * @todo: USE CORRECT BASE URL (not stuff like href="../")
- *
  * @note Since 2015-10-12 Daia return the full callnumber with location
  * (xx:xxxx-xxxx)
  *
@@ -68,7 +66,7 @@ function displayHoldingGuide() {
 
           // Early exit: display volumes button (if this item has volumes)
           if (result.multiVols == true) {
-            loc_button = create_button(href   = '../Record/'+ result.id +'/TomesVolumes#tabnav',
+            loc_button = create_button(href   = path + '/Record/'+ result.id +'/TomesVolumes#tabnav',
                                        hover  = vufindString.loc_modal_Title_multi,
                                        text   = vufindString.loc_volumes,
                                        icon   = 'fa-stack-overflow',
@@ -169,7 +167,7 @@ function displayHoldingGuide() {
               }
               break;
             case 'shelf': //fa-hand-lizard-o is nice too (but only newest FA)
-              loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
+              loc_button = create_button(href   = path + '/Record/'+ result.id +'/Holdings#tabnav',
                                          hover  = loc_modal_body,
                                          text   = loc_abbr + ' ' + loc_callno,
                                          icon   = 'fa-map-marker',
@@ -221,7 +219,7 @@ function displayHoldingGuide() {
             case 'local':
               // Todo: is it necessary to use result.reference_callnumber and result.reference_location. It might be...?
               title = loc_modal_body+ '\n' + vufindString.loc_modal_Title_refonly_generic;
-              loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
+              loc_button = create_button(href   = path + '/Record/'+ result.id +'/Holdings#tabnav',
                                          hover  = title,
                                          text   = loc_abbr + ' ' + loc_callno,
                                          icon   = 'fa-home',
@@ -236,7 +234,7 @@ function displayHoldingGuide() {
               bestOption = bestOption + loc_button + ' ' + loc_modal_link;
               break;
             case 'acquired':
-              loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
+              loc_button = create_button(href   = path + '/Record/'+ result.id +'/Holdings#tabnav',
                                          hover  = vufindString.loc_btn_Hover_acquired,
                                          text   = vufindString.loc_modal_Title_acquired,
                                          icon   = 'fa-plane',
@@ -251,7 +249,7 @@ function displayHoldingGuide() {
               bestOption = bestOption + loc_button + ' ' + loc_modal_link;
               break;
             case 'service_desk':
-              loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
+              loc_button = create_button(href   = path + '/Record/'+ result.id +'/Holdings#tabnav',
                                          hover  = vufindString.loc_modal_Title_service_da,
                                          text   = 'SO ' + loc_callno,
                                          icon   = 'fa-frown-o',
@@ -269,7 +267,7 @@ function displayHoldingGuide() {
               // Remove the "Loading..." - bestoption is and stays empty
               // break;
             default:
-              loc_button = create_button(href   = '../Record/'+ result.id +'/Holdings#tabnav',
+              loc_button = create_button(href   = path + '/Record/'+ result.id +'/Holdings#tabnav',
                                          hover  = vufindString.loc_modal_Title_service_else,
                                          text   = vufindString.loc_modal_Title_service_else,
                                          icon   = 'fa-frown-o',
@@ -287,7 +285,7 @@ function displayHoldingGuide() {
           // Show link to printed edition for electronic edition (if available)
           // Todo: can we show the exact location?
           if (result.link_printed != null) {
-            loc_button = create_button(href   = '../Record/'+result.link_printed_href,
+            loc_button = create_button(href   = path + '/Record/'+result.link_printed_href,
                                        hover  = vufindString.loc_modal_Title_printEdAvailable,
                                        text   = vufindString.available_printed,
                                        icon   = 'fa-book',
@@ -528,10 +526,10 @@ get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
       roomMap['LBS'] = roomMap['LS1'];
       roomMap['SEM'] = roomMap['LS2'];
       */
-      roomMap['LS1'] = '../themes/bootstrap3-tub/images/tub/LS1_main.jpg';
-      roomMap['LS2'] = '../themes/bootstrap3-tub/images/tub/LS2_main.jpg';
-      roomMap['LBS'] = '../themes/bootstrap3-tub/images/tub/LS1_lbs.jpg';
-      roomMap['SEM'] = '../themes/bootstrap3-tub/images/tub/LS2_sem.jpg';
+      roomMap['LS1'] = path + '/themes/bootstrap3-tub/images/tub/LS1_main.jpg';
+      roomMap['LS2'] = path + '/themes/bootstrap3-tub/images/tub/LS2_main.jpg';
+      roomMap['LBS'] = path + '/themes/bootstrap3-tub/images/tub/LS1_lbs.jpg';
+      roomMap['SEM'] = path + '/themes/bootstrap3-tub/images/tub/LS2_sem.jpg';
       additional_content = (roomMap[loc]) ? '<img src="'+ roomMap[loc] +'" />' : '';
     }
 
