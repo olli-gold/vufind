@@ -26,6 +26,7 @@
  * @link     http://vufind.org/wiki/vufind2:record_tabs Wiki
  */
 namespace VuFind\RecordTab;
+use VuFind\MultipartList;
 
 /**
  * User comments tab
@@ -38,13 +39,16 @@ namespace VuFind\RecordTab;
  */
 class TomesVolumes extends AbstractBase
 {
+    protected $sm = null;
+
     /**
      * Constructor
      *
-     * @param bool $enabled is this tab enabled?
+     * @param ServiceManager $sm ServiceManager
      */
-    public function __construct($enabled = true)
+    public function __construct($sm)
     {
+        $this->sm = $sm;
     }
 
     /**
@@ -79,13 +83,88 @@ class TomesVolumes extends AbstractBase
      */
     public function getContent()
     {
-        $multipart = $this->getRecordDriver()->tryMethod('getMultipartChildren');
-        if (empty($multipart)) {
-            return null;
-        }
+        $returnObjects = array();
         $vols = array();
-        $vols['vols'] = $this->getRecordDriver()->getMultipartChildren();
-        $vols['volscount'] = $this->getRecordDriver()->getVolsCount();
+        $mpList = new MultipartList($this->getRecordDriver()->getUniqueId());
+        if ($mpList->hasList()) {
+            $retval = $mpList->getCachedMultipartChildren();
+            // $retval has now the correct order, now set the objects into the same order
+            $returnObjects = array();
+            $recordLoader = $this->sm;
+            foreach ($retval as $object) {
+                $returnObjects[] = $recordLoader->load($object['id']);
+//                $returnObjects[] = $object['id'];
+            }
+            $vols['vols'] = $returnObjects;
+            $vols['volscount'] = count($returnObjects);
+        }
+        else {
+            $multipart = $this->getRecordDriver()->tryMethod('getMultipartChildren');
+            if (empty($multipart)) {
+                return null;
+            }
+            $vols['vols'] = $this->getRecordDriver()->getMultipartChildren();
+            $vols['volscount'] = $this->getRecordDriver()->getVolsCount();
+        }
         return $vols;
+
     }
+
+    /**
+     * Get the content of this tab page by page.
+     *
+     * @return array
+     */
+    public function getPagedContent($start = 0, $count = 5)
+    {
+        $returnObjects = array();
+        $vols = array();
+        $mpList = new MultipartList($this->getRecordDriver()->getUniqueId());
+        if ($mpList->hasList()) {
+            $retval = $mpList->getCachedMultipartChildren();
+            // $retval has now the correct order, now set the objects into the same order
+            $returnObjects = array();
+            $recordLoader = $this->sm;
+            for ($c = $start; $c < ($start+$count); $c++) {
+                $object = $retval[$c];
+                $returnObjects[] = $recordLoader->load($object['id']);
+//                $returnObjects[] = $object['id'];
+            }
+            $vols['vols'] = $returnObjects;
+            $vols['volscount'] = count($retval);
+        }
+        else {
+            $multipart = $this->getRecordDriver()->tryMethod('getMultipartChildren');
+            if (empty($multipart)) {
+                return null;
+            }
+            $vols['vols'] = $this->getRecordDriver()->getMultipartChildren();
+            $vols['volscount'] = $this->getRecordDriver()->getVolsCount();
+        }
+        return $vols;
+
+    }
+
+    /**
+     * Get the content of this tab page by page.
+     *
+     * @return array
+     */
+    public function getMultipartList()
+    {
+        $mpList = new MultipartList($this->getRecordDriver()->getUniqueId());
+        if ($mpList->hasList()) {
+            $retval = $mpList->getCachedMultipartChildren();
+            // $retval has now the correct order, now set the objects into the same order
+/*            $returnObjects = array();
+            $recordLoader = $this->getRecordLoader();
+            for ($c = $_REQUEST['start']; $c < ($_REQUEST['start']+$_REQUEST['length']); $c++) {
+                $object = $retval[$c];
+                $returnObjects[] = $recordLoader->load($object['id']);
+//                $returnObjects[] = $object['id'];
+            }
+*/        }
+        return (isset($retval)) ? $retval : false;
+    }
+
 }

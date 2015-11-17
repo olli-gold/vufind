@@ -333,3 +333,14 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
    .recordcover {min-width: 50px; min-height: 25px;}
 
 }
+
+/** class to make stuff "invisible" but still readable by screen readers */
+.offscreen {
+    position:absolute;
+    left:-10000px;
+    top:auto;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    display:inline;
+}

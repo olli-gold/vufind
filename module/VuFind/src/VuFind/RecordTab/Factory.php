@@ -168,6 +168,18 @@ class Factory
     }
 
     /**
+     * Factory for Tomes tab plugin.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return TomesVolumes
+     */
+    public static function getTomesVolumes(ServiceManager $sm)
+    {
+        return new TomesVolumes($sm->getServiceLocator()->get('VuFind\RecordLoader'));
+    }
+
+    /**
      * Factory for Map tab plugin.
      *
      * @param ServiceManager $sm Service manager.

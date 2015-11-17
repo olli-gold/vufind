@@ -27,6 +27,19 @@
  */
 namespace VuFind\Controller;
 use VuFind\Exception\Auth as AuthException;
+use VuFind\MultipartList;
+
+// Beluga Controller
+use \Zend\View\Helper\AbstractHelper;
+use Zend\View\HelperPluginManager as ServiceManager;
+use VuFind\Search\Factory\PrimoBackendFactory;
+use VuFind\Search\Factory\SolrDefaultBackendFactory;
+use VuFind\RecordDriver\SolrMarc;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\ServiceManager\ServiceManagerInterface;
+use VuFindSearch\Query\Query;
 
 /**
  * This controller handles global AJAX functionality
@@ -1962,6 +1975,29 @@ return $this->output($x, self::STATUS_OK);
     }
 
     /**
+     * Get the content of this tab page by page.
+     *
+     * @return array
+     */
+    public function getMultipartAjax()
+    {
+        $returnObjects = array();
+        $mpList = new MultipartList($_REQUEST['id']);
+        if ($mpList->hasList()) {
+            $retval = $mpList->getCachedMultipartChildren();
+            // $retval has now the correct order, now set the objects into the same order
+/*            $returnObjects = array();
+            $recordLoader = $this->getRecordLoader();
+            for ($c = $_REQUEST['start']; $c < ($_REQUEST['start']+$_REQUEST['length']); $c++) {
+                $object = $retval[$c];
+                $returnObjects[] = $recordLoader->load($object['id']);
+//                $returnObjects[] = $object['id'];
+            }
+*/        }
+        return $this->output($retval, self::STATUS_OK);
+    }
+
+    /**
      * Load information about printed copies for this item
      *
      * @return \Zend\Http\Response
@@ -2166,4 +2202,170 @@ return $this->output($x, self::STATUS_OK);
     {
         return $this->getServiceLocator()->get('VuFind\SearchResultsPluginManager');
     }
+
+   protected $institutions;
+
+   protected $serviceLocator;
+   protected $serviceLocatorAwareInterface;
+
+    public function getConnectedRecordsAjax()
+    {
+        $this->writeSession();  // avoid session write timing bug
+        $connectedRecords = $this->query('Solr', 'BELUGA_ALL', 'ppnlink:'.$_GET['ppnlink'].' -format:Article', 500);
+        $recordData = array('docs' => array(), 'numFound' => $connectedRecords['numFound']);
+        $recordSort = array();
+        foreach ($connectedRecords['docs'] as $connectedRecord) {
+            $recordDate = array();
+            $recordDate['sort'] = (isset($connectedRecord['publishDateSort'])) ? 3000 - $connectedRecord['publishDateSort'] : 3000;
+            $recordDate['title'] = '';
+            $recordDate['extraTitle'] = '';
+            if (isset($connectedRecord['topic_title']) && is_array($connectedRecord['topic_title'])) {
+                foreach ( $connectedRecord['topic_title'] as $topicTitle) {
+                    list(, $issue, ) = explode(' ', $topicTitle);
+                    if (preg_match( '/^[0-9]+\.[0-9]{4}$/' , $issue)) {
+                        break;
+                    } else {
+                        $issue = '';
+                    }
+                }
+	        }
+            if (isset($issue) && $issue != '') {
+                if (isset($connectedRecord['title']) && is_array($connectedRecord['title'])) {
+                    $recordDate['title'] = $this->prepareData($connectedRecord['title'][0]);
+                } elseif (isset($connectedRecord['title_full']) && is_array($connectedRecord['title_full'])) {
+                    $recordDate['title'] = $this->prepareData($connectedRecord['title_full'][0]).' ';
+                }
+                $recordDate['title'] .= $issue;
+            } elseif (isset($connectedRecord['title_short']) && is_array($connectedRecord['title_short'])) {
+                $recordDate['title'] = $this->prepareData($connectedRecord['title_short'][0]);
+                if (isset($connectedRecord['title']) && is_array($connectedRecord['title'])) {
+                    $recordDate['extraTitle'] = ' / '.$this->prepareData($connectedRecord['title'][0]);
+                } elseif (isset($connectedRecord['title_full']) && is_array($connectedRecord['title_full'])) {
+                    $recordDate['extraTitle'] = ' / '.$this->prepareData($connectedRecord['title_full'][0]);
+                }
+                if (isset($connectedRecord['author']) && $connectedRecord['author'] != '') {
+                    $recordDate['extraTitle'] .= ' '.$this->prepareData($connectedRecord['author']);
+                }
+                if (isset($connectedRecord['publishDate']) && is_array($connectedRecord['publishDate'])) {
+                    $recordDate['extraTitle'] .= ' '.$this->prepareData($connectedRecord['publishDate'][0]);
+                }
+            } elseif (isset($connectedRecord['title']) && is_array($connectedRecord['title'][0])) {
+                $recordDate['title'] = $this->prepareData($connectedRecord['title'][0]);
+                if (isset($connectedRecord['author']) && $connectedRecord['author'] != '') {
+                    $recordDate['extraTitle'] = ' '.$this->prepareData($connectedRecord['author']);
+                }
+                if (isset($connectedRecord['publishDate']) && is_array($connectedRecord['publishDate'])) {
+                    $recordDate['extraTitle'] .= ' '.$connectedRecord['publishDate'][0];
+                }
+            } elseif (isset($connectedRecord['title_full']) && is_array($connectedRecord['title_full'][0])) {
+                $recordDate['title'] = $this->prepareData($connectedRecord['title_full'][0]);
+                if (isset($connectedRecord['author']) && $connectedRecord['author'] != '') {
+                    $recordDate['extraTitle'] = ' '.$this->prepareData($connectedRecord['author']);
+                }
+                if (isset($connectedRecord['publishDate']) && is_array($connectedRecord['publishDate'])) {
+                    $recordDate['extraTitle'] .= ' '.$connectedRecord['publishDate'][0];
+                }
+            } else {
+                $solrMarc = new SolrMarc();
+                $solrMarc->setRawData($connectedRecord);
+                $recordTitle = $solrMarc->getVolumeTitle();
+                if (!empty($recordTitle)) {
+                    $recordDate['title'] = $recordTitle;
+                } else {
+                    $recordDate['title'] = 'Band';
+                    if (isset($connectedRecord['author']) && $connectedRecord['author'] != '') {
+                        $recordDate['extraTitle'] = ' '.$this->prepareData($connectedRecord['author']);
+                    }
+                    if (isset($connectedRecord['publishDate']) && is_array($connectedRecord['publishDate'])) {
+                        $recordDate['extraTitle'] .= ' '.$connectedRecord['publishDate'][0];
+                    }
+                }
+            }
+            $recordDate['id'] = $connectedRecord['id'];
+            $recordData['docs'][] = $recordDate;
+        }
+        array_multisort($recordData['docs'], SORT_ASC);
+        return $this->output($recordData, self::STATUS_OK);
+    }
+
+   /**
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
+        if ($serviceLocator instanceof ServiceLocatorAwareInterface) {
+            $this->serviceLocatorAwareInterface = $serviceLocator;
+        } else {
+            $this->serviceLocator = $serviceLocator;
+        }
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator() {
+        return $this->serviceLocator;
+    }
+
+    protected function query($class, $institution, $search_terms, $limit = 0) {
+/*      if ($institution == 'BELUGA_ALL') {
+         $institution = $this->institutions->getInstitutionCodeForBelugaAll();
+      }
+      if ($class == 'Primo') {
+         $terms = array(array('index' => 'AllFields', 'lookfor' => $search_terms));
+         $params = array();
+         $params['query'][]= array('index' => 'AllFields',
+                                   'lookfor' => $search_terms,
+                                   'fl' => '*,score',
+                                   'spellcheck' => 'true',
+                                   //'facet' => 'true',
+                                   //'facet.limit' => '2000',
+                                   //'facet.field' => array('collection_details', 'building', 'format', 'publishDate', 'language', 'authorStr', 'bklname'),
+                                   //'facet.sort' => 'count',
+                                   //'facet.mincount' => '1',
+                                   //'sort' => 'sort desc',
+                                   'hl' => 'true',
+                                   'hl.fl' => '*',
+                                   'hl.simple.pre' => '{{{{START_HILITE}}}}',
+                                   'hl.simple.post' => '{{{{END_HILITE}}}}',
+                                   'spellcheck.dictionary' => 'default',
+                                   'spellcheck.q' => $search_terms
+                                   );
+         $params['limit'] = $limit;
+         $params['pageNumber'] = 1;
+         $params['filterList']['rtype'][] = 'Articles';
+         $primo_backend_factory = new PrimoBackendFactory();
+         $service = $primo_backend_factory->createService($this->serviceLocatorAwareInterface->getServiceLocator());
+         $query_result = $service->getConnector()->query($institution, $terms, $params);
+	 return $query_result;
+      } else if ($class == 'Solr') { */
+         $query = new Query();
+         $query->setHandler('AllFields');
+         $query->setString($search_terms);
+         $solr_backend_factory = new SolrDefaultBackendFactory();
+         $service = $solr_backend_factory->createService($this->serviceLocatorAwareInterface->getServiceLocator());
+         $query_result = $service->search($query, 0, $limit);
+	 return $query_result->getResponse();
+      //}
+      return false;
+   }
+
+    /**
+     * handling data from gbv-index
+     *
+     * @param mixed $data
+     *
+     * @return string
+     */
+    protected function prepareData($data)
+    {
+        $searchArray = array('/A\xcc\x88/', '/A\xcc\x8a/', '/C\xcc\x8c/', '/O\xcc\x88/', '/U\xcc\x88/', '/a\xcc\x88/', '/a\xcc\x8a/', '/c\xcc\x8c/', '/c\xcc\xa6/', '/e\xcc\x8c/', '/e\xcc\x82/', '/o\xcc\x88/', '/u\xcc\x88/', '/\xc2\x98/', '/\xc2\x9c/');
+        $translateArray = array('Ä', 'Å', 'Č', 'Ö' ,'Ü' ,'ä' ,'å', 'č', 'ç', 'ě', 'ê', 'ö' ,'ü' ,'' ,'' );
+        $data = (is_array($data)) ? $data[0] : $data;
+        return preg_replace($searchArray, $translateArray, $data);
+    }
+
 }

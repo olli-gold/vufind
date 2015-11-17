@@ -477,6 +477,7 @@ $config = [
                     'hierarchytree' => 'VuFind\RecordTab\Factory::getHierarchyTree',
                     'holdingsils' => 'VuFind\RecordTab\Factory::getHoldingsILS',
                     'holdingsworldcat' => 'VuFind\RecordTab\Factory::getHoldingsWorldCat',
+                    'tomesvolumes' => 'VuFind\RecordTab\Factory::getTomesVolumes',
                     'map' => 'VuFind\RecordTab\Factory::getMap',
                     'preview' => 'VuFind\RecordTab\Factory::getPreview',
                     'reviews' => 'VuFind\RecordTab\Factory::getReviews',

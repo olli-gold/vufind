@@ -2,15 +2,11 @@
     // Set page title.
     $this->headTitle($this->translate('Tomes/Volumes') . ': ' . $this->driver->getBreadcrumb());
 
-    // Grab review data:
-    $vols = $this->tab->getContent();
-
+    $vols = $this->tab->getMultipartList();
 ?>
-<? if ($vols['volscount'] > 0): ?>
-  <? if ($vols['volscount'] > 200): ?>
-    In dieser Bandliste sind <?=$vols['volscount']?> Titel enthalten. Es werden nicht alle angezeigt.
-  <? endif; ?>
-  <table class="datagrid extended">
+
+In dieser Bandliste sind <span id="volcount"></span> Titel enthalten.
+<table class="datagrid extended">
     <colgroup>
       <col style="width: 10%;">
       <col style="width: 60%;">
@@ -23,33 +19,29 @@
         <th>Jahr</th>
       </tr>
     </thead>
-    <tbody>
-  <? foreach ($vols['vols'] as $data): ?>
-    <tr>
-    <td><a href="<?=$this->recordLink()->getUrl($data)?>"><?=$data->getVolumeInformation($this->driver->getUniqueId())?></a></td>
+    <tbody class="multipartlist">
+  <? $i = 0; ?>
+  <? foreach ($vols as $data): ?>
+    <tr
+    <? if ($i > 5): ?>
+    class="offscreen"
+    <? endif ?>
+    >
+    <td><a href=""><?=$data['partNum']?></a></td>
     <td>
-    <?
-        $t = $data->getTitle();
-        $s = $t;
-        if (is_array($t) === true) {
-            $s = $t[0];
-        }
-    ?>
-    <a href="<?=$this->recordLink()->getUrl($data)?>">
-    <?=$this->escapeHtml($s)?>
-    <?
-        $ed = $data->getEditionsFromMarc();
-        if (count($ed) > 0) {
-            echo $ed[0];
-        }
-    ?>
+    <a href="">
+    <?=$this->escapeHtml($data['title'])?>
     </a>
     </td>
-    <td><a href="<?=$this->recordLink()->getUrl($data)?>"><?=$data->getPublicationDates()[0]?></a></td>
+    <td><a href=""><?=$data['date']?></a></td>
     </tr>
+    <? $i++; ?>
   <? endforeach; ?>
-  </tbody>
-  </table>
-<? else: ?>
-  <?=$this->transEsc('No volumes were found for this record')?>.
-<? endif; ?>
+    </tbody>
+</table>
+<ul class="pager">
+    <li class="next-parts"> Show more </li>
+    <li class="setback-parts" style="display: none;"> Reset </li>
+    <li class="all-parts"> Show all </li>
+</ul>
+<script src="/vufind2/themes/bootstrap3-tub/js/multipart.js" type="text/javascript"></script>

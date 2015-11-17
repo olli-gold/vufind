@@ -37,6 +37,8 @@ use VuFindSearch\Backend\Solr\Backend;
 use VuFindSearch\Query\Query;
 use VuFindSearch\ParamBag;
 
+use VuFind\MultipartList;
+
 use VuFind\Search\Factory\PrimoBackendFactory;
 use VuFind\Search\Factory\SolrDefaultBackendFactory;
 
@@ -1822,48 +1824,58 @@ class SolrGBV extends SolrMarc
      */
     public function cacheMultipartChildren()
     {
-        if (file_exists('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->getUniqueId())) {
-            $cacheF = file('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->getUniqueId());
-            $lastmod = $cacheF[0];
-            if ($lastmod < time()-1800) {
-                $this->saveCache();
-            }
-        }
-        else {
-            $this->saveCache();
-        }
+        $mpList = new MultipartList($this->getUniqueId());
+        $mpList->setMultipartList($this->getMultipartChildrenArray());
+        $mpList->cacheList();
+        return true;
     }
 
     /**
-     * Caches multipart children.
+     * Get multipart children.
      *
      * @return array
      * @access protected
      */
-    protected function saveCache() {
-        $cacheObject = $this->getMultipartChildren();
-        $cacheFile = fopen('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->getUniqueId(), 'w');
-        fputs($cacheFile, time()."\n");
-        fputs($cacheFile, $cacheObject);
-        fclose($cacheFile);
-    }
-
-    /**
-     * get multipart children from cache.
-     *
-     * @return array
-     * @access protected
-     */
-    public function getCachedMultipartChildren()
+    public function getMultipartChildrenArray()
     {
-        if (file_exists('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->getUniqueId())) {
-            $cacheF = file('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->getUniqueId());
-            $lastmod = $cacheF[0];
-            if ($lastmod > time()-1800) {
-                return unserialize($cacheF[1]);
+        $cnt=0;
+        $retval = array();
+        $sort = array();
+        $result = $this->searchMultipart();
+
+        // Sort the results
+        foreach($result as $doc) {
+            $retval[$cnt] = array();
+            $partVol = $doc->getVolumeInformation($this->getUniqueId());
+            // Do not use anything behind a comma for sorting
+            if (strstr($partVol,',') !== false) {
+                $part = substr($partVol, 0, strpos($partVol,','));
             }
+            else {
+                $part = $partVol;
+            }
+            //$retval[$cnt]['sort']=$doc['sort'];
+            $retval[$cnt]['title']   = $doc->getTitle();
+            $retval[$cnt]['id']      = $doc->getUniqueId();
+            $retval[$cnt]['date']    = preg_replace("/[^0-9]/","", $doc->getPublicationDates()[0]);
+            $retval[$cnt]['part']    = $partVol;
+            $retval[$cnt]['partNum'] = preg_replace("/[^0-9]/","", $part);
+//            $retval[$cnt]['object'] = $doc;
+            $cnt++;
         }
-        return null;
+
+        $part0 = array();
+        $part1 = array();
+        $part2 = array();
+
+        foreach ($retval as $key => $row) {
+            $part0[$key] = (isset($row['title'])) ? $row['title'] : 0;
+            $part1[$key] = (isset($row['partNum'])) ? $row['partNum'] : 0;
+            $part2[$key] = (isset($row['date'])) ? $row['date'] : 0;
+        }
+        array_multisort($part1, SORT_DESC, $part2, SORT_DESC, $part0, SORT_ASC, $retval );
+
+        return $retval;
     }
 
     /**
@@ -1874,12 +1886,6 @@ class SolrGBV extends SolrMarc
      */
     public function getMultipartChildren()
     {
-        /* TODO: make caching work at this point
-           It does not work, because somewhere a closure is used and closures
-           cannot get serialised */
-        if ($this->getCachedMultipartChildren()) {
-            return $this->getCachedMultipartChildren();
-        }
         $cnt=0;
         $retval = array();
         $sort = array();
@@ -1888,16 +1894,19 @@ class SolrGBV extends SolrMarc
         // Sort the results
         foreach($result as $doc) {
             $retval[$cnt] = array();
-            $part = $doc->getVolumeInformation($this->getUniqueId());
+            $partVol = $doc->getVolumeInformation($this->getUniqueId());
             // Do not use anything behind a comma for sorting
-            if (strstr($part,',') !== false) {
-                $part = substr($part, 0, strpos($part,','));
+            if (strstr($partVol,',') !== false) {
+                $part = substr($partVol, 0, strpos($partVol,','));
+            }
+            else {
+                $part = $partVol;
             }
             //$retval[$cnt]['sort']=$doc['sort'];
-            $retval[$cnt]['title'] = $doc->getTitle()[0];
-            //$retval[$cnt]['id']=$doc['id'];
-            $retval[$cnt]['date'] = preg_replace("/[^0-9]/","", $doc->getPublicationDates()[0]);
-            $retval[$cnt]['part'] = $part;
+            $retval[$cnt]['title']   = $doc->getTitle()[0];
+            $retval[$cnt]['id']      = $doc->getUniqueId();
+            $retval[$cnt]['date']    = preg_replace("/[^0-9]/","", $doc->getPublicationDates()[0]);
+            $retval[$cnt]['part']    = $partVol;
             $retval[$cnt]['partNum'] = preg_replace("/[^0-9]/","", $part);
             $retval[$cnt]['object'] = $doc;
             $cnt++;
@@ -1919,7 +1928,6 @@ class SolrGBV extends SolrMarc
         foreach ($retval as $object) {
             $returnObjects[] = $object['object'];
         }
-
         return $returnObjects;
     }
 
@@ -1931,7 +1939,7 @@ class SolrGBV extends SolrMarc
      */
     protected function searchMultipart()
     {
-        $limit = 500;
+        $limit = 10000;
         $page = 0;
         $rid=$this->fields['id'];
         if(strlen($rid)<2) {
