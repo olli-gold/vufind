@@ -1968,10 +1968,14 @@ return $this->output($x, self::STATUS_OK);
      */
     protected function loadVolumeListAjax()
     {
-        $driver = $this->getRecordLoader()->load(
-            $_REQUEST['id']
-        );
-        $driver->cacheMultipartChildren();
+        $mpList = new MultipartList($_REQUEST['id']);
+        if (!$mpList->hasList()) {
+            $driver = $this->getRecordLoader()->load(
+                $_REQUEST['id']
+            );
+            $driver->cacheMultipartChildren();
+        }
+        return true;
     }
 
     /**
@@ -1981,7 +1985,7 @@ return $this->output($x, self::STATUS_OK);
      */
     public function getMultipartAjax()
     {
-        $returnObjects = array();
+        $retval = array();
         $mpList = new MultipartList($_REQUEST['id']);
         if ($mpList->hasList()) {
             $retval = $mpList->getCachedMultipartChildren();
@@ -1993,7 +1997,8 @@ return $this->output($x, self::STATUS_OK);
                 $returnObjects[] = $recordLoader->load($object['id']);
 //                $returnObjects[] = $object['id'];
             }
-*/        }
+*/
+        }
         return $this->output($retval, self::STATUS_OK);
     }
 
