@@ -202,7 +202,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
             <?=!empty($summDate) ? '<span class="tub_resYear">' . $this->escapeHtml($summDate[0]) . '</span>' : ''?>
         </div>
 
-        <span class="tub_holdingguide">
+        <span class="tub_holdingguide" record-id="<?=$id?>">
             <? if ($openUrlActive || !empty($urls)): ?>
                 <? if ($openUrlActive): ?>
                     <?=$openUrl->renderTemplate(true)?>

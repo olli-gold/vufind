@@ -36,6 +36,35 @@ function embedOpenUrlLinks(element) {
     }
 }
 
+function checkFulltextButtons() {
+    var id = $.map($('.hiddenId'), function(i) {
+        return $(i).attr('value');
+    });
+    var currentId;
+    for (var ids in id) {
+        currentId = id[ids];
+        checkImage(currentId);
+    }
+}
+
+function checkImage(currentId) {
+    var ouimageArr = $('*[data-recordid="'+currentId+'"]');
+    var ouimage = ouimageArr[0];
+    if (ouimage) {
+        ouimage.onload = function(){
+            if (ouimage.complete){
+                var height = ouimage.height;
+                var width = ouimage.width;
+                if (width > 1 && height > 1) {
+                    var parentArr = $('*[record-id="'+currentId+'"]')
+                    var parent = parentArr[0];
+                    $(parent).find('.holdlocation').addClass('hidden');
+                }
+            }
+        }
+    }
+}
+
 $(document).ready(function() {
     // assign action to the openUrlWindow link class
     $('a.openUrlWindow').click(function(){
@@ -54,31 +83,3 @@ $(document).ready(function() {
     checkFulltextButtons();
     $('.openUrlEmbed.openUrlEmbedAutoLoad a').trigger("click");
 });
-
-function checkFulltextButtons() {
-    var id = $.map($('#record_id'), function(i) {
-        return $(i).attr('value');
-    });
-    var currentId;
-    for (var ids in id) {
-        currentId = id[ids];
-        checkImage(currentId);
-    }
-}
-
-function checkImage(currentId) {
-    var ouimageArr = $('*[data-recordid="'+currentId+'"]');
-    var ouimage = ouimageArr[0];
-    if (ouimage) {
-        ouimage.onload = function(){
-            if (ouimage.complete){
-                var height = ouimage.height;
-                var width = ouimage.width;
-                if (width <= 1 && height <= 1 && $('.externalurl').length == 0) {
-                    $('.urllabel').addClass('hidden');
-                    $('.openUrlControls').addClass('hidden');
-                }
-            }
-        }
-    }
-}
