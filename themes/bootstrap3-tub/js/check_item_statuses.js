@@ -458,6 +458,25 @@ function create_button_org(href, hover, text, icon, css_classes, target, id, cus
 
 
 
+function eagerloadVolumeList() {
+  var id = $.map($('.ajaxItem'), function(i) {
+    return $(i).find('.hiddenId')[0].value;
+  });
+  if (!id.length) {
+    return;
+  }
+
+  var currentId;
+  for (var ids in id) {
+    currentId = id[ids];
+    $.ajax({
+        dataType: 'json',
+        url: path + '/AJAX/JSON?method=loadVolumeList',
+        data: {"id":currentId},
+    });
+  }
+}
+
 /**
  * JQuery ready stuff
  *
@@ -469,6 +488,9 @@ function create_button_org(href, hover, text, icon, css_classes, target, id, cus
 $(document).ready(function() {
 //  checkItemStatuses();
   displayHoldingGuide();
+
+  // load volume list
+  eagerloadVolumeList();
 
   //https://stackoverflow.com/questions/1359018/in-jquery-how-to-attach-events-to-dynamic-html-elements
   // Todo: 
