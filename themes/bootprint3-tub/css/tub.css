@@ -129,9 +129,11 @@ header .navbar .navbar-brand {
    width: 195px;
 }
 
+/*
 tbody tr:nth-child(2n) td, tbody tr.even td {
    background: #e5ecf9 none repeat scroll 0 0;
 }
+*/
 
 table.datagrid td {
    border-left: 1px solid #ffffff;
@@ -343,4 +345,25 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
     height:1px;
     overflow:hidden;
     display:inline;
+}
+
+.tubtable {
+    margin-bottom: 18px;
+    max-width: 100%;
+}
+
+.tab-content {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: #ddd;
+    border-color: -moz-use-text-color #ddd #ddd;
+    border-image: none;
+    border-style: solid;
+    border-width: 1px;
+    padding: 6px 8px;
+}
+
+.nav-tabs {
+    border-bottom: medium none;
 }
