@@ -475,6 +475,7 @@ $config = [
                     'collectionlist' => 'VuFind\RecordTab\Factory::getCollectionList',
                     'excerpt' => 'VuFind\RecordTab\Factory::getExcerpt',
                     'hierarchytree' => 'VuFind\RecordTab\Factory::getHierarchyTree',
+                    'holdingselectronic' => 'VuFind\RecordTab\Factory::getHoldingsElectronic',
                     'holdingsils' => 'VuFind\RecordTab\Factory::getHoldingsILS',
                     'holdingsworldcat' => 'VuFind\RecordTab\Factory::getHoldingsWorldCat',
                     'tomesvolumes' => 'VuFind\RecordTab\Factory::getTomesVolumes',
@@ -623,7 +624,7 @@ $config = [
             ],
             'VuFind\RecordDriver\Primo' => [
                 'tabs' => [
-                    'Description' => 'Description',
+                    'Holdings' => 'HoldingsElectronic', 'Description' => 'Description',
                     'TOC' => 'TOC', 'UserComments' => 'UserComments',
                     'Reviews' => 'Reviews', 'Excerpt' => 'Excerpt',
                     'Preview' => 'preview',

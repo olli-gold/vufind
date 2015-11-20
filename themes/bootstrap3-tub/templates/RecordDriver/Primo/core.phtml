@@ -53,7 +53,7 @@
     <? endif; ?>
 
     <?/* Display Main Details */?>
-    <table class="table table-striped" summary="<?=$this->transEsc('Bibliographic Details')?>">
+    <table class="table" summary="<?=$this->transEsc('Bibliographic Details')?>">
       <? $ref = $this->driver->getIsPartOf(); ?>
       <? $journalTitle = $this->driver->getContainerTitle(); if (!empty($journalTitle) || !empty($ref)): ?>
       <tr>

@@ -155,6 +155,18 @@ class Factory
     }
 
     /**
+     * Factory for HoldingsILS tab plugin.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return HoldingsILS
+     */
+    public static function getHoldingsElectronic(ServiceManager $sm)
+    {
+        return new HoldingsElectronic();
+    }
+
+    /**
      * Factory for HoldingsWorldCat tab plugin.
      *
      * @param ServiceManager $sm Service manager.
