@@ -534,4 +534,15 @@ $(document).ready(function() {
     var parts = this.href.split('/');
     return Lightbox.get(parts[parts.length-3],'Save',{id:$(this).attr('id')});
   });
+
+  // Toggle button (currently only for result sorting)
+  $('.btn-toggle').click(function() {
+    $(this).find('.tub_btn').toggleClass('active');
+    //if ($(this).find('.btn-primary').size()>0)  $(this).find('.tub_btn').toggleClass('btn-primary');
+    //if ($(this).find('.btn-danger').size()>0)   $(this).find('.tub_btn').toggleClass('btn-danger');
+    //if ($(this).find('.btn-success').size()>0)  $(this).find('.tub_btn').toggleClass('btn-success');
+    //if ($(this).find('.btn-info').size()>0)     $(this).find('.tub_btn').toggleClass('btn-info');
+    //$(this).find('.tub_btn').toggleClass('btn-default');
+  });
+
 });

@@ -13,7 +13,7 @@
 header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #FFE8AF) repeat scroll 0% 0%; }
 .navbar-form      {width: 100%;}
 .search-query     {width: 350px !important;}
-.search-submit   {padding: 4px; vertical-align: middle; background-color: #A8DDF0; border: 1px solid #000; font-weight: bold;}
+.search-submit   {padding: 5px; vertical-align: middle; background-color: #A8DDF0; border: 1px solid #CCC; font-weight: bold;}
 .navbar-form .checkbox {width: 25%; float: right; min-width: 175px;}
 .breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
 .btn-primary {
@@ -111,7 +111,13 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #FF
    background-color: #fff;
 }
 
+/* Result sorting; hmm, this toggle looks nicer: http://www.bootply.com/92189 */
 .sort_order_hint {color: #A8DDF0;}
+.btn-group {position: relative; display: inline-block; vertical-align: middle; background-color: #fff; padding: 3px;}
+.btn-primary, .btn-default {min-width: 30px !important; margin: 0; padding: 4px; border: 1px solid #CCC; background-color: #fff;}
+.btn-primary    {border-radius: 30px 0px 0px 30px;}
+.btn-default    {border-radius: 0px 30px 30px 0px;}
+.active         {background-color: #A8DDF0 !important; }
 
 /*
 #result0, #result2, #result4, #result6, #result8, #result10, #result12, #result14, #result16, #result18 {
@@ -126,7 +132,8 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #FF
 }
 
 #searchForm_lookfor, #searchForm_type {
-   border-color: #eff3dc;
+   /*border-color: #eff3dc;*/
+   border: none;
    padding-right: 20px; /* little space for the "delete"-x */
 }
 
@@ -177,7 +184,7 @@ table.datagrid td a {
    margin: 10px 0 0 2px;
    padding: 0px;
    width: 118px;
-   font-weight: bold;
+   /* font-weight: bold; */
    font-size: 13px;
    text-align: left;
    text-decoration: none;
@@ -392,12 +399,3 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
     background-color: #fff;
     border: none;
 }
-
-
-
-
-
-/* TEEEMP-Kram */
-.searchTab_info             {display: none !important;}
-div.checkbox:nth-child(5)   {display: none !important;}
-/* TEEEMP ENDE */
