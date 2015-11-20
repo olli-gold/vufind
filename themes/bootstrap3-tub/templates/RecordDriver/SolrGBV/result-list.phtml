@@ -4,6 +4,7 @@
   $controllerClass = 'controller:' . $this->record($this->driver)->getController();
   $cart = $this->cart();
   $cartId = $this->driver->getResourceSource() . '|' . $id;
+  $summDate = $this->driver->getPublicationDates();
 ?>
 <? /* We need to find out if we're supposed to display an OpenURL link ($openUrlActive),
     but even if we don't plan to display the link, we still want to get the $openUrl
@@ -50,6 +51,8 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
         </a>
       </div>
 
+
+
       <?
         $volumename = $this->driver->getVolumeName();
         if (!empty($volumename)): ?>
@@ -92,7 +95,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
           ?></a>
           <? endif; ?>
 
-          <? $journalTitle = $this->driver->getContainerTitle(); $summDate = $this->driver->getPublicationDates(); ?>
+          <? $journalTitle = $this->driver->getContainerTitle(); ?>
           <? if (!empty($journalTitle)): ?>
             <?=!empty($summAuthor) ? '<br />' : ''?>
             <?=$this->transEsc('Published in')?>
@@ -195,13 +198,13 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
         <? endif; ?>
       <? endif ?>
     </div>
+
+          <?=!empty($summDate) ? '<span class="tub_resYear">' . $this->escapeHtml($summDate[0]) . '</span>' : ''?>
+        <div class="format_info">
+          <?=str_replace('class="', 'class="tub_label tublabel-info ', $this->record($this->driver)->getFormatList())?>
+        </div>
     </div>
     <div class="col-xs-3 right">
-        <div class="tub_info_topright">
-            <?=str_replace('class="', 'class="tub_label tublabel-info ', $this->record($this->driver)->getFormatList())?>
-            <?=!empty($summDate) ? '<span class="tub_resYear">' . $this->escapeHtml($summDate[0]) . '</span>' : ''?>
-        </div>
-
         <span class="tub_holdingguide" record-id="<?=$id?>">
             <? if ($openUrlActive || !empty($urls)): ?>
                 <? if ($openUrlActive): ?>
@@ -210,6 +213,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
             <? endif; ?>
             <? if ($this->driver->checkInterlibraryLoan() == '0'): ?>
                 <? if ($this->driver->supportsAjaxStatus()): ?>
+                    <span class="holdelectro"></span>
                     <span class="oa-fulltextes"></span>
                     <span class="holdlocation"><i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...</span>
                 <? endif; ?>

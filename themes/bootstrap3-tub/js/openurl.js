@@ -58,7 +58,25 @@ function checkImage(currentId) {
                 if (width > 1 && height > 1) {
                     var parentArr = $('*[record-id="'+currentId+'"]')
                     var parent = parentArr[0];
-                    $(parent).find('.holdlocation').addClass('hidden');
+                    // disable links in result list view
+                    $(parent).find('.holdelectro').addClass('hidden');
+                    // disable links in detailed record view
+                    $('.externalurl').addClass('hidden');
+                    // hide additional SFX button in PrimoTab
+                    $(parent).find('.holdlink.fulltext').addClass('hidden');
+                    // optionally display MARC links
+                    $('.marclinks').append('<span class="showmore">Show more links</span> <span class="showless">Show less links</span>');
+                    $('.showless').addClass('hidden');
+                    $('.showmore').click( function () {
+                        $('.externalurl').removeClass('hidden');
+                        $('.showmore').addClass('hidden');
+                        $('.showless').removeClass('hidden');
+                    });
+                    $('.showless').click( function () {
+                        $('.externalurl').addClass('hidden');
+                        $('.showmore').removeClass('hidden');
+                        $('.showless').addClass('hidden');
+                    });
                 }
             }
         }

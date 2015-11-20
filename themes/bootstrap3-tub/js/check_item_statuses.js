@@ -163,7 +163,8 @@ function displayHoldingGuide() {
                                               modal_body  = vufindString.loc_modal_Body_eMarc21,
                                               iframe_src  = result.locHref,
                                               modal_foot  = '');
-                bestOption = loc_button + ' ' + loc_modal_link;
+                electronic = loc_button + ' ' + loc_modal_link;
+                item.find('.holdelectro').empty().append(electronic);
               }
               break;
             case 'shelf': //fa-hand-lizard-o is nice too (but only newest FA)
