@@ -1,0 +1,21 @@
+<?
+    $openUrl = $this->openUrl($this->driver, 'holdings');
+    $openUrlActive = $openUrl->isActive();
+    // Account for replace_other_urls setting
+    $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
+
+    // Set page title.
+    $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
+?>
+
+<? if (!empty($urls) || $openUrlActive): ?>
+  <h3 class="urllabel"><?=$this->transEsc("Internet")?></h3>
+  <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>
+  <? if (!empty($urls)): ?>
+    <span class="marclinks">
+    <? foreach ($urls as $current): ?>
+      <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="externalurl fa holdlink holdelectronic"><i class="fa fa-download"></i><span class="btn_text"><?=$this->escapeHtml($current['desc'])?></span></a>
+    <? endforeach; ?>
+    </span>
+  <? endif; ?>
+<? endif; ?>
