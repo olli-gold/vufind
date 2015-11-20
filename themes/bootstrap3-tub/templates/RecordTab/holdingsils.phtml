@@ -50,12 +50,14 @@
 <? endif; ?>
 <? if (!empty($urls) || $openUrlActive): ?>
   <h3 class="urllabel"><?=$this->transEsc("Internet")?></h3>
-  <? if (!empty($urls)): ?>
-    <? foreach ($urls as $current): ?>
-      <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="externalurl"><?=$this->escapeHtml($current['desc'])?></a><br/>
-    <? endforeach; ?>
-  <? endif; ?>
   <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>
+  <? if (!empty($urls)): ?>
+    <span class="marclinks">
+    <? foreach ($urls as $current): ?>
+      <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="externalurl fa holdlink holdelectronic"><i class="fa fa-download"></i><span class="btn_text"><?=$this->escapeHtml($current['desc'])?></span></a>
+    <? endforeach; ?>
+    </span>
+  <? endif; ?>
 <? endif; ?>
 <? foreach ($holdings as $holding): ?>
 <h3>

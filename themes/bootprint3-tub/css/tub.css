@@ -258,7 +258,7 @@ i.fa-heart, i.fa-home {background-image: url('none'); width: auto; height: auto;
 }
 
 .tub_info_topright {width: 118px; margin: 0 0 0 2px; padding: 0;} /* Same length as Volltext-Image and order buttons */
-.tub_resYear { float: right;}
+.tub_resYear { position: absolute; bottom: 0; right:0; }
 #bookbag-menu {position: absolute; bottom: 0;}
 
 /* Cover & cols layout - letztlich muss es anders gemacht werden, aber fuers zeigen... */
@@ -366,4 +366,9 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
 
 .nav-tabs {
     border-bottom: medium none;
+}
+
+.format_info {
+    bottom: 0;
+    position: absolute;
 }

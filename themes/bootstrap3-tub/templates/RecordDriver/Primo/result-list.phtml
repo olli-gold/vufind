@@ -122,6 +122,10 @@
 
       </div>
 
+            <?=!empty($summDate) ? '<span class="tub_resYear">' . $this->escapeHtml($summDate) . '</span>' : ''?>
+        <div class="format_info">
+            <?=str_replace('class="', 'class="tub_label tublabel-info ', $this->record($this->driver)->getFormatList())?>
+        </div>
       <? $account = $this->auth()->getManager(); ?>
       <? if($account->isLoggedIn()): ?>
       <? if ($this->userlist()->getMode() !== 'disabled'): ?>
@@ -133,12 +137,7 @@
       <? endif ?>
     </div>
     <div class="col-xs-3 right">
-        <div class="tub_info_topright">
-            <?=str_replace('class="', 'class="tub_label tublabel-info ', $this->record($this->driver)->getFormatList())?>
-            <?=!empty($summDate) ? '<span class="tub_resYear">' . $this->escapeHtml($summDate) . '</span>' : ''?>
-        </div>
-
-      <span class="tub_holdingguide">
+      <span class="tub_holdingguide" record-id="<?=$id?>">
       <? /* We need to find out if we're supposed to display an OpenURL link ($openUrlActive),
             but even if we don't plan to display the link, we still want to get the $openUrl
             value for use in generating a COinS (Z3988) tag -- see bottom of file.
@@ -178,7 +177,7 @@
             <? if (!is_array($urls)) $urls = array();
               if(!$this->driver->isCollection()):
                 foreach ($urls as $current): ?>
-                  <br/><a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fa fa-external-link holdlink fulltext" target="new"> <?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?></a><br/>
+                  <br/><a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fa fa-external-link holdlink fulltext" target="new"><span class="btn_text"><?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?></span></a><br/>
               <? endforeach; ?>
             <? endif; ?>
           <? endif; ?>
