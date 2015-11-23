@@ -372,3 +372,10 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
     bottom: 0;
     position: absolute;
 }
+
+.pager li > a {
+    display: inline-block;
+    padding: 5px 14px;
+    background-color: #fff;
+    border: none;
+}
