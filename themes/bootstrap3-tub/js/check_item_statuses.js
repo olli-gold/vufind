@@ -315,7 +315,7 @@ function displayHoldingGuide() {
           // SFX-Hack: If nothing is found, a very small dummy gif is returned.
           // If so, hide the controls (or just the image), so everything else around
           // is displayed nicely (not indented etc.). Maybe better in \themes\bootstrap3-tub\js\openurl.js
-          sfx_fix = item.find('.openUrlControls');
+          sfx_fix = item.find('.imagebased');
           if (sfx_fix.innerWidth() < 10) {
             sfx_fix.hide();
           }
@@ -329,7 +329,7 @@ function displayHoldingGuide() {
                                           iframe_src  = '',
                                           modal_foot  = '',
                                           icon_class  = 'tub_fa-info_e');
-            item.find('.openUrlControls').after(loc_modal_link);
+            item.find('.imagebased').after(loc_modal_link);
           }
 
           // Show our final result!

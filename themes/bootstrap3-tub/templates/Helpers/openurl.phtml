@@ -2,9 +2,9 @@
   $this->headScript()->appendFile("openurl.js");
   $classes = '';
   if ($this->openUrlEmbed) {
-    $classes = "fulltext";
+    $classes = "fa fa-fulltext";
   } elseif ($this->openUrlWindow) {
-    $classes = 'fulltext openUrlWindow window_settings:' . $this->escapeHtmlAttr($this->openUrlWindow);
+    $classes = 'fa fa-fulltext openUrlWindow window_settings:' . $this->escapeHtmlAttr($this->openUrlWindow);
   }
   if (!empty($classes)) {
     $class = ' class="' . $classes . '"';
