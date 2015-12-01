@@ -280,8 +280,9 @@ function displayHoldingGuide() {
                                             modal_body  = vufindString.loc_modal_Body_service_else,
                                             iframe_src  = '',
                                             modal_foot  = '');
-              bestOption = loc_button + ' ' + loc_modal_link;
-          } 
+              electronic = loc_button + ' ' + loc_modal_link;
+              item.find('.holdelectro').empty().append(electronic);
+          }
 
           // Show link to printed edition for electronic edition (if available)
           // Todo: can we show the exact location?

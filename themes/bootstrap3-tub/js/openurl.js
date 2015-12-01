@@ -81,6 +81,13 @@ function checkImage(currentId) {
             }
         }
     }
+    // Hiding status unclear button if we have any kind of fulltextbutton
+    // I know, that does not belong here, but it works here...
+    var parentArr = $('*[record-id="'+currentId+'"]')
+    var parent = parentArr[0];
+    if (!$(parent).find('.holdlink.fulltext').hasClass('hidden')) {
+        $(parent).find('.holdelectro').addClass('hidden');
+    }
 }
 
 $(document).ready(function() {
