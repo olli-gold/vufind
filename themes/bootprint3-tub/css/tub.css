@@ -2,7 +2,6 @@
    clear: both;
 }
 
-
 /* START Modding stuff so sorting button is smoothly aligned */
 .main > div:nth-child(1) > div:nth-child(1)   {padding: 0px;}  
 .search-controls  {padding: 0px !important; margin-left: -6px !important; background-image: linear-gradient(to top, #FFF, #EEE); margin-bottom: 10px;}
@@ -122,7 +121,9 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #FF
 }
 */
 
-.result {background-color: #ffffff !important; border-bottom: 2px dotted #CCC;}
+.result         {background-color: #ffffff !important; border-bottom: 2px dotted #CCC;}
+.result a       {color: #576CA0;}
+.result a:hover {text-decoration: none; color: #09f;}
 
 .record {
    background: none repeat scroll 0 0 #ffffff !important;
