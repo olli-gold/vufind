@@ -274,30 +274,16 @@ i.fa-heart, i.fa-home, i.fa-search {background-image: url('none'); width: auto; 
 
 .tub_info_topright {width: 118px; margin: 0 0 0 2px; padding: 0;} /* Same length as Volltext-Image and order buttons */
 .tub_resYear { position: absolute; bottom: 0; right:0; }
-#bookbag-menu {position: absolute; bottom: 0;}
 
 /* Cover & cols layout - letztlich muss es anders gemacht werden, aber fuers zeigen... */
 div .left   {width: 17%; position: relative; min-height: 150px;}
 div .middle {width: 59%; position: relative; min-height: 150px;}
 div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15px;}
-.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* 21px/11px trifft genau bildecke */
+.result .checkbox label {position: absolute; top: 110px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* 21px/11px trifft genau bildecke */
 .recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
+#bookbag-menu {position: absolute; bottom: 7px; left: 89px; background-color: #fff; padding: 2px; font-size: 16px;}
+/* #bookbag-menu .fa-star, #bookbag-menu .fa-star-o {color: yellow;} */
 
-/* remove star: http://redmine.tub.tuhh.de/issues/612
-.tub_bbplus {
-   background-image: url("../../../themes/bootprint3-tub/images/icons/star_faded.png");
-   background-position: left top;
-   background-repeat: no-repeat;
-   padding-right: 30px;
-}
-
-.tub_bbminus {
-   background-image: url("../../../themes/bootprint3-tub/images/icons/star.png");
-   background-position: left top;
-   background-repeat: no-repeat;
-   padding-right: 30px;
-}
-*/
 
 .tub_label {
   /* Just renamed vufind class "label" to tub_label- no formatting needed */

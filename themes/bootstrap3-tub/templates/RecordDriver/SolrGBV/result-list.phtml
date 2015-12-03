@@ -22,6 +22,25 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
     <? if ($cover = $this->record($this->driver)->getCover('result-list', 'medium', $this->recordLink()->getUrl($this->driver))): ?>
       <div class="col-sm-2 col-xs-3 left"><?=$cover ?></div>
     <? endif ?>
+
+    <? if ($cart->isActive()): ?>
+      <div id="bookbag-menu">
+        <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
+        <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-star-o" href="#" data-recordid="<?=$cartId ?>"> </a>
+        <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-star" href="#" data-recordid="<?=$cartId ?>"> </a>
+        <noscript>
+          <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
+            <input type="hidden" name="ids[]" value="<?=$cartId ?>" />
+            <? if ($cart->contains($cartId)): ?>
+              <input class="btn btn-default" type="submit" name="delete" value="<?=$this->transEsc('Remove from Book Bag')?>"/>
+            <? else: ?>
+              <input class="btn btn-default" type="submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
+            <? endif; ?>
+          </form>
+        </noscript>
+      </div>
+    <? endif; ?>
+
     <?
       $displayTitle = '';
       $summHighlightedTitle = $this->driver->getHighlightedTitle();
@@ -315,23 +334,6 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
       </noscript>
       <? endif; ?>
   <? endif ?>
-  <? if ($cart->isActive()): ?>
-    <div id="bookbag-menu">
-      <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
-      <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden fa" href="#" data-recordid="<?=$cartId ?>"><i class="tub_bbplus"></i> <?=$this->transEsc('Add to Book Bag') ?></a>
-      <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden fa" href="#" data-recordid="<?=$cartId ?>"><i class="tub_bbminus"></i> <?=$this->transEsc('Remove from Book Bag') ?></a>
-      <noscript>
-        <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
-          <input type="hidden" name="ids[]" value="<?=$cartId ?>" />
-          <? if ($cart->contains($cartId)): ?>
-            <input class="btn btn-default" type="submit" name="delete" value="<?=$this->transEsc('Remove from Book Bag')?>"/>
-          <? else: ?>
-            <input class="btn btn-default" type="submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
-          <? endif; ?>
-        </form>
-      </noscript>
-    </div>
-  <? endif; ?>
 
       <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()).'"></span>':''?>
     </div>
