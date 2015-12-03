@@ -39,7 +39,6 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #FF
 /* END modding search input */
 
 /* START Modding Search Tabs */
-.searchTab_info, .searchTab_info a {margin: 0px; padding: 0px; width: 6px; left: -22px; top: 6px;} /* Very, very ugly - just for the idea */
 .searchTab {
    font-size: 1.2em;
    position: relative;
@@ -54,11 +53,8 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #FF
    /*background-color: #F0D4D4;*/
    position: relative;
    top: 1px;
-   width: 166px; /*see also @media (max-width: 530px) */
+   width: 169px; /*see also @media (max-width: 530px) */
 }
-
-.searchTab i        {display: none;} /*color: red; position: absolute; z-index: 10;*/
-.searchTab.active i   {display: none;} /*color: green;*/
 
 .searchTab.books    {border-top-right-radius: 35px; border-top-left-radius: 4px;}
 .searchTab.books i   {left: 2px; top: 0px;}

@@ -8,18 +8,12 @@
     <? $i++ ?>
     <li<?=$tab['label']=="tab_articles" ? ' title="'.$this->transEsc('tab_articles_title').'" class="searchTab articles' : ' title="'.$this->transEsc('tab_books_title').'" class="searchTab books'?>
       <?=$tab['selected'] ? ' active"' : '"'?>>
-      <i <?=$tab['selected'] ? 'class="fa fa-eye"' : 'class="fa fa-eye-slash"'?>></i>
       <a href="<?=$tab['selected'] ? '' : $this->escapeHtmlAttr($tab['url'])?>">
       
       <?=$this->transEsc($tab['label']); ?>
       <span id="<?=$tab['label']=="tab_articles" ? 'hitsprimo' : 'hitsgbv'?>" class="matches <?=$tab['selected'] ? 'active"' : '"'?>><?=$tab['selected'] ? '('.$this->localizedNumber($this->results->getResultTotal()).')' : ''?></span>
       </a>
     </li>
-    <? if ($i === 1): ?>
-        <li class="searchTab_info">
-            <a href="#" id="info-searchTabs" class="locationInfox modal-link" title="<?=$this->transEsc('help_btn_Hover_searchTabs')?>"><i class="fa fa-info-circle tub_fa-info_f"></i> <span data-title="<?=$this->transEsc('help_modal_Title_searchTabs')?>" data-location="Undefined" data-iframe="" class="modal-dialog hidden"><?=$this->transEsc('help_modal_Body_searchTabs')?></span></a>
-        </li>
-    <? endif; ?>
   <? endforeach; ?>
   </ul>
 <? endif; ?>
