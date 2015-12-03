@@ -528,9 +528,10 @@ return $this->output($x, self::STATUS_OK);
                 // HMM, else it must be a "good" call number as well as a good
                 // location, but keep the TUB spefic way for now
                 // else {
-                // 2015-10-27: New DAIA way - location is now part of the callnumber 
+                // 2015-10-27: New DAIA way - location is now part of the callnumber
                 // string, thus a valid reading room no is now 11 (e.g. LBS:MSB-100)
-                elseif (strlen($info['callnumber']) == 11 && $info['callnumber'] != 'Unknown') {                    // Ok, TUBHH reading room call numbers are always 7 characters long. And below we make $patronOptions['shelf'] 
+                // 2015-12-03: New DAIA way - It's again 7 (e.g. MSB-100)
+                elseif (strlen($info['callnumber']) == 7 && $info['callnumber'] != 'Unknown') {                    // Ok, TUBHH reading room call numbers are always 7 characters long. And below we make $patronOptions['shelf']
                     // the most preferable result (electronic is an exception). So force any shelf call number on top here.
                     if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
                     $bestLocationPriority[-1] = $info['location'];
@@ -539,7 +540,7 @@ return $this->output($x, self::STATUS_OK);
             // Not available cases
             else {
                 // 2015-11-10: Dienstapparate are the only special case
-                if (strlen($info['callnumber']) == 11 && substr($info['callnumber'], 0, 1) == 'D') {
+                if (strlen($info['callnumber']) ==7 && substr($info['callnumber'], 0, 1) == 'D') {
                     $dienstappCount++;
                     if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
                     $bestLocationPriority[4] = $info['location'];                   

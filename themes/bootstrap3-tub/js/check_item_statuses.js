@@ -92,8 +92,8 @@ function displayHoldingGuide() {
           // Some helper variables
           var loc_abbr;
           var loc_button;
-          var loc_shelf  = result.callnumber.split(':')[0];
-					var loc_callno = result.callnumber.split(':')[1];
+          var loc_shelf  = result.callnumber.substring(0,2);
+          var loc_callno = result.callnumber;
           var loc_modal_title = vufindString.loc_modal_Title_shelf_generic + loc_callno + ' (' + result.bestOptionLocation + ')';
           var loc_modal_body;
 
