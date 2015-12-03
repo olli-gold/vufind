@@ -318,27 +318,8 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
   <? if ($cart->isActive()): ?>
     <div id="bookbag-menu">
       <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
-        <!--@todo: I really don't like it here; it should be in themes/bootstrap3-tub/js/check_item_statuses.js -->
-        <script>
-          // Cart button
-          loc_button1 = create_button(href   = '#',
-                               hover  = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
-                               text   = '<?=$this->transEsc('Add to Book Bag') ?>',
-                               icon   = 'fa-plus-square',
-                               css_classes = 'single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?> hidden',
-                               target = '',
-                               id = 'single-cart-add',
-                               custom = 'data-recordid="<?=$cartId ?>"');
-          loc_button2 = create_button(href   = '#',
-                               hover  = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
-                               text   = '<?=$this->transEsc('Remove from Book Bag') ?>',
-                               icon   = 'fa-minus-square',
-                               css_classes = 'single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?> hidden',
-                               target = '',
-                               id = 'single-cart-remove',
-                               custom = 'data-recordid="<?=$cartId ?>"');
-          document.write(loc_button1+loc_button2);
-        </script>
+      <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden fa" href="#" data-recordid="<?=$cartId ?>"><i class="tub_bbplus"></i> <?=$this->transEsc('Add to Book Bag') ?></a>
+      <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden fa" href="#" data-recordid="<?=$cartId ?>"><i class="tub_bbminus"></i> <?=$this->transEsc('Remove from Book Bag') ?></a>
       <noscript>
         <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
           <input type="hidden" name="ids[]" value="<?=$cartId ?>" />
