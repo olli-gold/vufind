@@ -737,8 +737,8 @@ else              {
         // The lbs4 opac has better information, but with the logic in this 
         // method the DAIA information qualify as 'Sonderstandort: Semesterapparat'.
         // So we make an override via the first if here to get this case covered.
-        if (strpos(strtolower($callNumber), 'bestellt') !== false &&
-                $bestOptionLocation === 'Unknown' && $patronBestOption !== 'e_only') {
+        // && $bestOptionLocation === 'Unknown'
+        if (strpos(strtolower($callNumber), 'bestellt') !== false && $patronBestOption !== 'e_only') {
             $patronBestOption   = 'acquired';
             $bestOptionLocation = 'Shipping';
         }
