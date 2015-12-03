@@ -337,12 +337,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
                                target = '',
                                id = 'single-cart-remove',
                                custom = 'data-recordid="<?=$cartId ?>"');
-          loc_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
-                                  loc_code    = '',
-                                  link_title  = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
-                                  modal_title = '<?=$this->transEsc('help_modal_Title_bookBag')?>',
-                                  modal_body  = '<?=$this->transEsc('help_modal_Body_bookBag')?>');
-          document.write(loc_button1+loc_button2+' '+loc_modal_link);
+          document.write(loc_button1+loc_button2);
         </script>
       <noscript>
         <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
