@@ -121,7 +121,8 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #FF
    background-color: #ffffff;
 }
 */
-.result {background-color: #ffffff !important;}
+
+.result {background-color: #ffffff !important; border-bottom: 2px dotted #CCC;}
 
 .record {
    background: none repeat scroll 0 0 #ffffff !important;
