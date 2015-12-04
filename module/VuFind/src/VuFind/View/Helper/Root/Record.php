@@ -422,6 +422,26 @@ class Record extends AbstractHelper
     }
 
     /**
+     * Render an HTML checkbox control for the current record.
+     *
+     * @param string $idPrefix Prefix for checkbox HTML ids
+     *
+     * @return string
+     */
+    public function getCustomCheckbox($idPrefix = '')
+    {
+        static $checkboxCount = 0;
+        $id = $this->driver->getResourceSource() . '|'
+            . $this->driver->getUniqueId();
+
+        $context
+            = ['id' => $id, 'count' => $checkboxCount++, 'prefix' => $idPrefix, 'cartId' => $id];
+        return $this->contextHelper->renderInContext(
+            'record/bookbag.phtml', $context
+        );
+    }
+
+    /**
      * Render a cover for the current record.
      *
      * @param string $context Context of code being genarated

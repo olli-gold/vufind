@@ -139,49 +139,6 @@
         <? endforeach; ?>
       <? endif; ?>
 
-<? /* No Book Bag function for these records
-  <? if ($cart->isActive()): ?>
-    <div id="bookbag-menu">
-      <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
-        <!--@todo: I really don't like it here; it should be in themes/bootstrap3-tub/js/check_item_statuses.js -->
-        <script>
-          // Cart button
-          loc_button1 = create_button(href   = '#',
-                               hover  = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
-                               text   = '<?=$this->transEsc('Add to Book Bag') ?>',
-                               icon   = 'fa-plus-square',
-                               css_classes = 'single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?> hidden',
-                               target = '',
-                               id = 'single-cart-add',
-                               custom = 'data-recordid="<?=$cartId ?>"');
-          loc_button2 = create_button(href   = '#',
-                               hover  = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
-                               text   = '<?=$this->transEsc('Remove from Book Bag') ?>',
-                               icon   = 'fa-minus-square',
-                               css_classes = 'single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?> hidden',
-                               target = '',
-                               id = 'single-cart-remove',
-                               custom = 'data-recordid="<?=$cartId ?>"');
-          loc_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
-                                  loc_code    = '',
-                                  link_title  = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
-                                  modal_title = '<?=$this->transEsc('help_modal_Title_bookBag')?>',
-                                  modal_body  = '<?=$this->transEsc('help_modal_Body_bookBag')?>');
-          document.write(loc_button1+loc_button2+loc_modal_link);
-        </script>
-      <noscript>
-        <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
-          <input type="hidden" name="ids[]" value="<?=$cartId ?>" />
-          <? if ($cart->contains($cartId)): ?>
-            <input class="btn btn-default" type="submit" name="delete" value="<?=$this->transEsc('Remove from Book Bag')?>"/>
-          <? else: ?>
-            <input class="btn btn-default" type="submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
-          <? endif; ?>
-        </form>
-      </noscript>
-    </div>
-  <? endif; ?>
-*/ ?>
       <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()).'"></span>':''?>
     </div>
   </div>
