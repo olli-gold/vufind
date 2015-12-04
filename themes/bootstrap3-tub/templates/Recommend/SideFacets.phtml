@@ -1,14 +1,18 @@
 <? $results = $this->recommend->getResults(); ?>
-<? if ($results->getResultTotal() > 0): ?>
-  <h4><?=$this->transEsc(isset($this->overrideSideFacetCaption) ? $this->overrideSideFacetCaption : 'Narrow Search')?></h4>
-<? endif; ?>
+  <div id="side-panel-tubfilters" class="list-group facet">
+    <div aria-expanded="true" class="list-group-item title" data-toggle="collapse" href="#side-collapse-tubfilters">
+    <? if ($results->getResultTotal() > 0): ?>
+      <?=$this->transEsc(isset($this->overrideSideFacetCaption) ? $this->overrideSideFacetCaption : 'Narrow Search')?>
+    <? endif; ?>
+    </div>
+    <div style="" aria-expanded="true" id="side-collapse-tubfilters" class="collapse in">
 <? $checkboxFilters = $results->getParams()->getCheckboxFacets(); if (count($checkboxFilters) > 0): ?>
 <?
   $html = '';
   $shown = 0;
   foreach ($checkboxFilters as $current) {
     $current_id = $this->escapeHtmlAttr(str_replace(' ', '', $current['desc']));
-    $html .= '<label class="checkbox';
+    $html .= '<label class="list-group-item checkbox';
     if($results->getResultTotal() < 1 && !$current['selected'] && !$current['alwaysVisible']) {
       $html .= ' hidden';
     } else {
@@ -38,7 +42,11 @@
       onclick="document.location.href=\''.($current['selected'] ? $results->getUrlQuery()->removeFilter($current['filter']) : $results->getUrlQuery()->addFilter($current['filter'])).'\';" />'.$modal.' '.$this->transEsc($current['desc']).'</label>';
   }
 ?>
-  <div class="checkboxFilter<?if($shown == 0):?> hidden<? endif; ?>"><?=$html ?></div>
+      <div class="checkboxFilter<?if($shown == 0):?> hidden<? endif; ?>"><?=$html ?></div>
+
+    </div>
+  </div>
+
 <? endif; ?>
 <? $extraFilters = isset($this->extraSideFacetFilters) ? $this->extraSideFacetFilters : array(); ?>
 <? $collapsedFacets = $this->recommend->getCollapsedFacets() ?>

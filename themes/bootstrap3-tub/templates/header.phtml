@@ -25,7 +25,7 @@
     <ul role="navigation" class="nav navbar-nav navbar-right">
     <li>
       <a href="#" id="info-help" title="<?=$this->translate('help_menu_Hover_clueless')?>" class="locationInfox modal-link hidden-print"><i class="tub_lielement"></i> <?=$this->translate('help_menu_Link_clueless')?>
-      <span data-title="<?=$this->translate('help_modal_Title_clueless')?>" data-location="TEST" class="modal-dialog hidden"><?=$this->translate('help_modal_Body_clueless')?></span></a>
+      <span data-title="<?=$this->translate('help_modal_Title_clueless')?>" data-location="TEST" class="modal-dialog hidden"><?=$this->transEsc('help_modal_Body_clueless')?></span></a>
     </li>
       <? if ($this->feedback()->tabEnabled()): ?>
         <li>

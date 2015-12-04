@@ -158,7 +158,8 @@ function registerUpdateCart($form) {
 $(document).ready(function() {
 
     $('#single-cart-add.correct,#single-cart-remove.correct').removeClass('correct hidden');
-    $('.single-cart-add').click(function() {
+    $('.single-cart-add').click(function(ev) {
+        ev.preventDefault();
         var cartRecordId = $(this).attr('data-recordid');
         var sCartId = cartRecordId.split('|');
         scurrentId = sCartId[1];
@@ -166,7 +167,8 @@ $(document).ready(function() {
         addItemToCart(scurrentId,scurrentSource);
         $('*[data-recordid="'+cartRecordId+'"]').toggleClass('hidden');
     });
-    $('.single-cart-remove').click(function() {
+    $('.single-cart-remove').click(function(ev) {
+        ev.preventDefault();
         var cartRecordId = $(this).attr('data-recordid');
         var sCartId = cartRecordId.split('|');
         scurrentId = sCartId[1];

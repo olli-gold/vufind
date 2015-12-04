@@ -5,17 +5,33 @@
     <!-- <label for="sort_options_1"><?=$this->transEsc('Sort')?></label> -->
     <? if (count($list) == 2): ?>
       <!-- if there are two entries, a toggle will do -->
-      <? foreach ($list as $sortType => $sortData): ?>
-        <? if ($sortData['selected']): ?>
-          <? $cur_sort = '<span class="sort_order_hint">Currently: '.$this->transEsc($sortData['desc']).'</span>' ?>
-        <? else: ?>
-          <? $selected = $sortData['selected'] ? ' style="display: none"' : 'class="btn btn-primary"'?>
-          <? $cur_button = '<button type="submit" name="sort" value="'.$this->escapeHtmlAttr($sortType).'" '.$selected.'><i class="fa fa-sort-numeric-desc"></i> '.$this->transEsc($sortData['desc']).'</button>'?>
-        <? endif; ?>
-      <? endforeach; ?>
-      <!-- Output $cur_sort and button here -->
-      <?=$cur_sort?>
-      <?=$cur_button?>
+    <?
+      foreach ($list as $sortType => $sortData){
+            $class = '';
+            if ($sortData['selected']) {
+                $cur_sort = '<span class="sort_order_hint">Currently: '.$this->transEsc($sortData['desc']).'</span>';
+                $class = 'active';
+            }
+
+            $cur_button = '<button type="submit" name="sort" value="'.$this->escapeHtmlAttr($sortType).'"><i class="fa fa-sort-numeric-desc"></i> '.$this->transEsc($sortData['desc']).'</button>';
+
+            // Left button for toggle
+            if (!isset($buttons)) {
+                $buttons = $this->transEsc($sortData['desc']).' <button type="submit" name="sort" value="'.$this->escapeHtmlAttr($sortType).'" class="tub_btn btn-primary '.$class.'">&nbsp;</button>';
+            }
+            // Right button for toggle
+            else {
+                $buttons .= '<button type="submit" name="sort" value="'.$this->escapeHtmlAttr($sortType).'" class="tub_btn btn-default '.$class.'">&nbsp;</button> '.$this->transEsc($sortData['desc']);
+            }
+      }
+      ?>
+      <!-- Version 1: Output only text with sort order hint and one button -->
+      <?//=$cur_sort ?>
+      <?//=$cur_button ?>
+      <!-- Version 2: Output two buttons as toggle -->
+        <div class="btn-group btn-toggle">
+            <?=$buttons;?>
+        </div>
     <? else: ?>
       <!-- Otherwise do it the old way and add a select box -->
       <select id="sort_options_1" name="sort" class="jumpMenu form-control">
