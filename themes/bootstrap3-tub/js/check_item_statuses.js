@@ -544,7 +544,7 @@ function create_modal_button(id, loc_code, link_title, modal_title, modal_body, 
     iframe = ' data-iframe="'+iframe_src+'" ';
   }
 
-  modal = '<a href="#" id="info-'+id+'" title="' + link_title + '" class="locationInfox holdlink modal-link hidden-print"><i class="fa '+icon+' '+icon_class+'"></i> <span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span><span class="btn_text">' + text + '<span></a>';
+  modal = '<a href="#" id="info-'+id+'" title="' + link_title + '" class="locationInfox holdlink modal-link hidden-print"><i class="fa '+icon+' '+icon_class+'"></i> ' + text + '<span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
 
   return modal;
 }
