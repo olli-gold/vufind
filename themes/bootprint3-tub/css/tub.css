@@ -5,11 +5,11 @@
 /* START Modding stuff so sorting button is smoothly aligned */
 .main > div:nth-child(1) > div:nth-child(1)   {padding: 0px;}  
 .search-controls  {padding: 0px !important; margin-left: -6px !important; background-image: linear-gradient(to top, #FFF, #EEE); margin-bottom: 10px;}
-.sidebar          {background: transparent linear-gradient(to top, #FFF, #FFE8AF) repeat scroll 0% 0%;}
+.sidebar          {background: transparent linear-gradient(to top, #FFF, #EEE) repeat scroll 0% 0%;}
 .sidebar h4       {padding-top: 0px;}
 .sidebar .list-group-item.active {background-color: #7BC2DD !important;}
 .col-sm-6         {width: 100%; padding: 0; margin: 0; background-image: linear-gradient(to top, #FFF, #EEE);}
-header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #FFE8AF) repeat scroll 0% 0%; }
+header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EEE) repeat scroll 0% 0%; }
 .navbar-form      {width: 100%;}
 .search-query     {width: 350px !important;}
 .search-submit   {padding: 5px; vertical-align: middle; background-color: #A8DDF0; border: 1px solid #CCC; font-weight: bold;}
@@ -479,3 +479,24 @@ label {
 /*    content: "\E607"; */
 /*    color: #77A60F;
 }*/
+
+.doi_outer  {
+    font-size: small;
+}
+.doi_prefix {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: gray;
+    color: #ffffff;
+    padding: 3px 8px;
+    border-right: thin solid black;
+}
+.doi_link   {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: #428be5;
+    padding: 3px 4px;
+}
+.doi_link a {
+    color: #ffffff;
+}

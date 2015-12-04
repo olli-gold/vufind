@@ -81,7 +81,8 @@
       <? $doi = $this->driver->getContainerDoi(); ?>
       <? if (!empty($doi)): ?>
         <br/>
-        DOI: <a href="http://dx.doi.org/<?=$doi?>"><?=$doi?></a>
+<!--        DOI: <a href="http://dx.doi.org/<?=$doi?>"><?=$doi?></a>     -->
+        <span class="doi_outer"><span class="doi_prefix">DOI</span><span class="doi_link"><a href="https://dx.doi.org/<?=$doi?>"><?=$doi?></a></span></span>
       <? endif; ?>
 
       <? if(!$this->driver->isCollection()): ?>
