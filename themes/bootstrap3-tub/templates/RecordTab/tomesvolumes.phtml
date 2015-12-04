@@ -27,13 +27,13 @@ In dieser Bandliste sind <span id="volcount"></span> Titel enthalten.
     class="offscreen"
     <? endif ?>
     >
-    <td><a href=""><?=$data['partNum']?></a></td>
+    <td><a href="<?=$this->recordLink()->getUrl($data)?><?=$data['id']?>"><?=$data['partNum']?></a></td>
     <td>
-    <a href="">
+    <a href="<?=$this->recordLink()->getUrl($data)?><?=$data['id']?>">
     <?=$this->escapeHtml($data['title'])?>
     </a>
     </td>
-    <td><a href=""><?=$data['date']?></a></td>
+    <td><a href="<?=$this->recordLink()->getUrl($data)?><?=$data['id']?>"><?=$data['date']?></a></td>
     </tr>
     <? $i++; ?>
   <? endforeach; ?>
