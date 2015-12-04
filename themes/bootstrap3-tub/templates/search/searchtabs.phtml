@@ -7,11 +7,11 @@
   <? foreach ($searchTabs as $tab): ?>
     <? $i++ ?>
     <li<?=$tab['label']=="tab_articles" ? ' title="'.$this->transEsc('tab_articles_title').'" class="searchTab articles' : ' title="'.$this->transEsc('tab_books_title').'" class="searchTab books'?>
-      <?=$tab['selected'] ? ' active"' : '"'?>>
+      <?=$tab['selected'] ? ' mainactive active"' : '"'?>>
       <a href="<?=$tab['selected'] ? '' : $this->escapeHtmlAttr($tab['url'])?>">
       
       <?=$this->transEsc($tab['label']); ?>
-      <span id="<?=$tab['label']=="tab_articles" ? 'hitsprimo' : 'hitsgbv'?>" class="matches <?=$tab['selected'] ? 'active"' : '"'?>><?=$tab['selected'] ? '('.$this->localizedNumber($this->results->getResultTotal()).')' : ''?></span>
+      <span id="<?=$tab['label']=="tab_articles" ? 'hitsprimo' : 'hitsgbv'?>" class="matches <?=$tab['selected'] ? 'mainactive active"' : '"'?>><?=$tab['selected'] ? '('.$this->localizedNumber($this->results->getResultTotal()).')' : ''?></span>
       </a>
     </li>
   <? endforeach; ?>
