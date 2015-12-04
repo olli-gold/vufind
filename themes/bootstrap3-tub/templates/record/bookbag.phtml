@@ -1,0 +1,49 @@
+    <? $cart = $this->cart(); ?>
+      <input id="cartId" type="hidden" name="ids[<?=$this->id ?>]" value="<?=$this->cartId ?>" />
+        <!--@todo: I really don't like it here; it should be in themes/bootstrap3-tub/js/check_item_statuses.js -->
+        <script>
+          function create_symbol(href, hover, text, icon, css_classes, target, id, custom, style) {
+            //target = target || '';
+            if (typeof target !== 'undefined') { target = 'target="'+target+'"'; }
+            if (typeof id     !== 'undefined') { id = 'id="'+id+'"'; }
+            custom = custom || '';
+            var button;
+
+            button = '<a href="'+href+'" '+id+' title="'+hover+'" class="fa '+css_classes+'" '+target+' '+custom+'><i class="fa '+icon+'" style="'+style+'"></i></a>';
+
+            return button;
+          }
+
+          // Cart button
+          loc_button1 = create_symbol(href   = '#',
+                               hover         = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
+                               text          = '<?=$this->transEsc('Add to Book Bag') ?>',
+                               icon          = '',
+                               css_classes   = 'tub_bbplus single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?> hidden',
+                               target        = '',
+                               id            = 'single-cart-add',
+                               custom        = 'data-recordid="<?=$this->cartId ?>"',
+                               style         = 'color:#a1e4fa;'
+          );
+          loc_button2 = create_symbol(href   = '#',
+                               hover         = '<?=$this->transEsc('help_btn_Hover_bookBag')?>',
+                               text          = '<?=$this->transEsc('Remove from Book Bag') ?>',
+                               icon          = '',
+                               css_classes   = 'tub_bbminus single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?> hidden',
+                               target        = '',
+                               id            = 'single-cart-remove',
+                               custom        = 'data-recordid="<?=$this->cartId ?>"',
+                               style         = 'color:yellow;'
+          );
+          document.write(loc_button1+loc_button2);
+        </script>
+      <noscript>
+        <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
+          <input type="hidden" name="ids[]" value="<?=$this->cartId ?>" />
+          <? if ($cart->contains($cartId)): ?>
+            <input class="btn btn-default" type="submit" name="delete" value="<?=$this->transEsc('Remove from Book Bag')?>"/>
+          <? else: ?>
+            <input class="btn btn-default" type="submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
+          <? endif; ?>
+        </form>
+      </noscript>
