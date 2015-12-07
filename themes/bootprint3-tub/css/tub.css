@@ -108,16 +108,13 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EE
 
 /* Result sorting; hmm, this toggle looks nicer: http://www.bootply.com/92189 */
 .sort_order_hint {color: #A8DDF0;}
-.btn-group {position: relative; display: inline-block; vertical-align: middle; background-color: #fff; padding: 3px;  border-bottom: 2px dotted #CCC; width: 50%}
-.btn-primary, .btn-default {min-width: 30px !important; margin: 0; padding: 4px; border: 1px solid #CCC; background-color: #fff;}
-.btn-primary    {border-radius: 30px 0px 0px 30px;}
-.btn-default    {border-radius: 0px 30px 30px 0px;}
-.mainactive         {background-color: #A8DDF0 !important; }
-.tub_btn-group   {position: relative; display: inline-block; vertical-align: middle; background-color: #fff; padding: 3px;  border-bottom: 2px dotted #CCC; width: 50%}
+.tub_btn-group   {position: relative; display: inline-block; vertical-align: middle; background-color: #fff; padding: 3px 15px;  border-bottom: 2px dotted #CCC; } /*width: 50%*/
 .tub_btn_primary, .btn-default {min-width: 30px !important; margin: 0; padding: 4px; border: 1px solid #CCC; background-color: #fff;}
+/*
 .tub_btn_primary {border-radius: 30px 0px 0px 30px;}
 .tub_btn_def     {border-radius: 0px 30px 30px 0px;}
-button.active    {background-color: #A8DDF0 !important; }
+*/
+button.active    {background-color: #A8DDF0 !important; color: #000000 !important; font-weight: normal !important;}
 
 /*
 #result0, #result2, #result4, #result6, #result8, #result10, #result12, #result14, #result16, #result18 {
