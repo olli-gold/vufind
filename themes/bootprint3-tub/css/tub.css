@@ -12,8 +12,10 @@
 header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EEE) repeat scroll 0% 0%; }
 .navbar-form      {width: 100%;}
 .search-query     {width: 350px !important;}
-.search-submit   {padding: 5px; vertical-align: middle; background-color: #A8DDF0; border: 1px solid #CCC; font-weight: bold;}
-.navbar-form .checkbox {width: 25%; float: right; min-width: 175px;}
+.search-submit, .search-retainfilter
+                  {padding: 5px; vertical-align: middle; background-color: #A8DDF0; border: 1px solid #CCC; font-weight: bold;}
+.search-retainfilter {padding: 4px;}
+/*.navbar-form .checkbox {width: 25%; float: right; min-width: 175px;}*/
 .breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
 .btn-primary {
    background-color: #A8DDF0;
