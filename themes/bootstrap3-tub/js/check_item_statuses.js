@@ -758,7 +758,8 @@ get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
     }
 
     // Show everything
-    return $('#modal').modal('show');
+    $('#modal').modal('show');
+
   });
 });
 
@@ -792,11 +793,11 @@ function get_holding_tab(recID) {
             //var item = $($('.ajaxItem')[xhr.rid]);
             if (typeof(result.full_status) != 'undefined' && result.full_status.length > 0) {
                 // Full status mode is on -- display the HTML and hide extraneous junk:
-                $('.data-modal_postload_ajax').append(result.full_status);
+                $('.data-modal_postload_ajax').empty().append(result.full_status);
             }
 
             // Prepare location list
-            // @note: getItemStatusTUBFullAjax always returns locationList; if still
+            // @note: getItemStatusTUBFullAjax always returns locationList; still
             // here as part of refactoring
             if (result.locationList) {
                 var locationListHTML = "";
