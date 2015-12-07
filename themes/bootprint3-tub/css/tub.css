@@ -491,7 +491,7 @@ label {
 .doi_prefix {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
-    background-color: gray;
+    background-color: #53A1BF;
     color: #ffffff;
     padding: 3px 8px;
     border-right: thin solid black;
@@ -499,9 +499,9 @@ label {
 .doi_link   {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-    background-color: #428be5;
+    background-color: #D6F0FA;
     padding: 3px 4px;
 }
 .doi_link a {
-    color: #ffffff;
+    /*color: #ffffff;*/
 }

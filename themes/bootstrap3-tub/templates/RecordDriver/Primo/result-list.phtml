@@ -98,12 +98,6 @@
             <? endforeach; ?>
           <? endif; ?>
         <? endif; ?>
-      <? $doi = $this->driver->getContainerDoi(); ?>
-      <? if (!empty($doi)): ?>
-        <br/>
-<!--        DOI: <a href="http://dx.doi.org/<?=$doi?>"><?=$doi?></a>     -->
-        <span class="doi_outer"><span class="doi_prefix">DOI</span><span class="doi_link"><a href="https://dx.doi.org/<?=$doi?>"><?=$doi?></a></span></span>
-      <? endif; ?>
 
       <? if(!$this->driver->isCollection()): ?>
         <? if ($snippet = $this->driver->getHighlightedSnippet()): ?>
@@ -145,7 +139,14 @@
 
             <?=!empty($summDate) ? '<span class="tub_resYear">' . $this->escapeHtml($summDate) . '</span>' : ''?>
         <div class="format_info">
-            <?=str_replace('class="', 'class="tub_label tublabel-info ', $this->record($this->driver)->getFormatList())?>
+            <?=str_replace('class="', 'class="tub_label tublabel-info ', $this->record($this->driver)->getFormatList())?>&nbsp;
+
+            <? $doi = $this->driver->getContainerDoi(); ?>
+            <? if (!empty($doi)): ?>
+      <!--        DOI: <a href="http://dx.doi.org/<?=$doi?>"><?=$doi?></a>     -->
+              <span class="doi_outer"><span class="doi_prefix">DOI</span><span class="doi_link"><a href="https://dx.doi.org/<?=$doi?>"><?=$doi?></a></span></span>
+            <? endif; ?>
+
         </div>
       <? $account = $this->auth()->getManager(); ?>
       <? if($account->isLoggedIn()): ?>
