@@ -232,7 +232,6 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
             <? endif; ?>
             <? if ($this->driver->checkInterlibraryLoan() == '0'): ?>
                 <? if ($this->driver->supportsAjaxStatus()): ?>
-                    <span class="holdelectro"></span>
                     <span class="oa-fulltextes"></span>
                     <span class="holdlocation"><i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...</span>
                 <? endif; ?>

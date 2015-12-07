@@ -64,30 +64,6 @@ function displayHoldingGuide() {
 
           var item = $($('.ajaxItem')[xhr.rid]);
 
-          // Early exit: display volumes button (if this item has volumes)
-          if (result.multiVols == true) {
-            loc_button = create_button(href   = path + '/Record/'+ result.id +'/TomesVolumes#tabnav',
-                                       hover  = vufindString.loc_modal_Title_multi,
-                                       text   = vufindString.loc_volumes,
-                                       icon   = 'fa-stack-overflow',
-                                       css_classes = 'holdtomes');
-            loc_modal_link = create_modal(id          = result.id,
-                                          loc_code    = 'Multi',
-                                          link_title  = vufindString.loc_modal_Title_multi,
-                                          modal_title = vufindString.loc_modal_Title_multi,
-                                          modal_body  = vufindString.loc_modal_Body_multi,
-                                          iframe_src  = '',
-                                          modal_foot  = '');
-            bestOption = loc_button + ' ' + loc_modal_link;
-            //item.find('.holdtomes').removeClass('hidden');
-            item.find('.holdlocation').empty().append(bestOption);
-            // If something has multiple volumes, our voyage ends here already;
-            // @todo: It does, doesn't it? It happens only for print (so no E-Only info icon is needed)
-            return true;
-          }
-
-          // Future: Here we would like another "early exit" for "e-only"
-
           // Here we start figuring out what we have to show on implicit information
           // Some helper variables
           var loc_abbr;
@@ -128,11 +104,66 @@ function displayHoldingGuide() {
            // alert('Hier ist ein komischer Fall bei '+loc_callno);
           }
 
-          // Return the one best option as JSon - create button and info modal
+
+          // Early exit: display VOLUMES button (if this item has volumes)
+          if (result.multiVols == true) {
+            /* 2015-12-03: only create modal
+            loc_button = create_button(href   = path + '/Record/'+ result.id +'/TomesVolumes#tabnav',
+                                       hover  = vufindString.loc_modal_Title_multi,
+                                       text   = vufindString.loc_volumes,
+                                       icon   = 'fa-stack-overflow',
+                                       css_classes = 'holdtomes');
+            loc_modal_link = create_modal(id          = result.id,
+                                          loc_code    = 'Multi',
+                                          link_title  = vufindString.loc_modal_Title_multi,
+                                          modal_title = vufindString.loc_modal_Title_multi,
+                                          modal_body  = vufindString.loc_modal_Body_multi + xy(),
+                                          iframe_src  = '',
+                                          modal_foot  = '');
+            bestOption = loc_button + ' ' + loc_modal_link;
+            */
+            // Create a readin room button (last 5 years) - use same button as for case 'local'
+            loc_modal_button_last5years = '';
+            if (loc_abbr == 'LS1' || loc_abbr == 'LS2') {
+                loc_modal_button_last5years = create_modal_button(id = result.id,
+                                            loc_code    = loc_abbr,
+                                            link_title  = title,
+                                            modal_title = loc_modal_title,
+                                            modal_body  = loc_modal_body+' ' + vufindString.loc_modal_Title_refonly_generic,
+                                            iframe_src  = '',
+                                            modal_foot  = '',
+                                            icon_class  = 'holdrefonly',
+                                            icon        = 'fa-home',
+                                            text        = loc_abbr + ' ' + loc_callno);
+            }
+            // Add button "See volumes"
+            loc_modal_button_volumes = create_modal_button(id = result.id,
+                                          loc_code    = 'Multi',
+                                          link_title  = vufindString.loc_modal_Title_multi,
+                                          modal_title = vufindString.loc_modal_Title_multi,
+                                          modal_body  = vufindString.loc_modal_Body_multi,
+                                          iframe_src  = '',
+                                          modal_foot  = '',
+                                          icon_class  = 'holdtomes',
+                                          icon        = 'fa-stack-overflow',
+                                          text        = vufindString.loc_volumes);
+            bestOption = loc_modal_button_last5years + loc_modal_button_volumes;
+            //item.find('.holdtomes').removeClass('hidden');
+            item.find('.holdlocation').empty().append(bestOption);
+            // If something has multiple volumes, our voyage ends here already;
+            // @todo: It does, doesn't it? It happens only for print (so no E-Only info icon is needed)
+            return true;
+          }
+          // Future: Here we would like another "early exit" for "e-only"
+
+
+          // Do the job as intended - no more early exits
+          // Return the one BEST OPTION as JSon - create button and info modal
           var bestOption = '';
+          var fallbackOption = ''; // we need this, because the sfx button comes from another source - and we have to check, if it exists before adding buttons in some cases
           switch(result.patronBestOption) {
             case 'e_only':
-              // No button to show. Show only if it is no broken record
+              // No button to show. Show only if it is no broken record AND no SFX button exists (see sfx_fix)
               if (result.missing_data !== true && result.bestOptionLocation != 'Unknown' && result.locHref != '') {
                 /* 2015-09-28: MOVED to sfx_fix below
                 This check should work. But we have a better way. Indirectly SFX
@@ -163,8 +194,8 @@ function displayHoldingGuide() {
                                               modal_body  = vufindString.loc_modal_Body_eMarc21,
                                               iframe_src  = result.locHref,
                                               modal_foot  = '');
-                electronic = loc_button + ' ' + loc_modal_link;
-                item.find('.holdelectro').empty().append(electronic);
+                //Dont's show loc_abbr = WEB in addition to SFX-link
+                fallbackOption = loc_button + ' ' + loc_modal_link;
               }
               break;
             case 'shelf': //fa-hand-lizard-o is nice too (but only newest FA)
@@ -358,8 +389,7 @@ function displayHoldingGuide() {
                                             modal_body  = vufindString.loc_modal_Body_service_else,
                                             iframe_src  = '',
                                             modal_foot  = '');
-              electronic = loc_button + ' ' + loc_modal_link;
-              item.find('.holdelectro').empty().append(electronic);
+              fallbackOption = loc_button + ' ' + loc_modal_link;
           }
 
           // Show link to printed edition for electronic edition (if available)
@@ -390,12 +420,25 @@ function displayHoldingGuide() {
           }
           */
 
+          // Show our final result!
+          item.find('.holdlocation').empty().append(bestOption);
+
           // SFX-Hack: If nothing is found, a very small dummy gif is returned.
           // If so, hide the controls (or just the image), so everything else around
           // is displayed nicely (not indented etc.). Maybe better in \themes\bootstrap3-tub\js\openurl.js
+          // @todo: sometimes this check is too fast and the help show up...
+          // correct way would be like https://api.jquery.com/ajaxSuccess/ or https://stackoverflow.com/a/9865124
           sfx_fix = item.find('.imagebased');
+          sfx_available = true;
           if (sfx_fix.innerWidth() < 10) {
             sfx_fix.hide();
+            sfx_available = false;
+
+            // Fulltext-Hack
+            // <strike>Seriously</strike> :) shouldn't be here, but the idea is not that bad, basically? :)
+            // Next step: put it into a modal, so the full link can easily be shown - or links (I think there are such cases?)
+            // Remove > append to oa-fulltextes > add button classes
+            item.find('.grab-fulltext1').detach().appendTo(item.find('.oa-fulltextes')).addClass('fa holdlink');
           }
           // Alway show help if Electronic
           else {
@@ -410,14 +453,13 @@ function displayHoldingGuide() {
             item.find('.imagebased').after(loc_modal_link);
           }
 
-          // Show our final result!
-          item.find('.holdlocation').empty().append(bestOption);
+          // Final cleanup
+          // If neither sfx is available and our fulltext hack didn't fill in
+          // something, then show our fallback information
+          if (sfx_available == false && item.find('.holdlink').length == 0) {
+            item.find('.holdlocation').empty().append(fallbackOption);
+          }
 
-          // Fulltext-Hack
-          // Seriously shouldn't be here, but the idea is not that bad, basically? :)
-          // Next step: put it into a modal, so the full link can easily be shown - or links (I think there are such cases?)
-          // Remove > append to oa-fulltextes > add button classes
-          item.find('.grab-fulltext1').detach().appendTo(item.find('.oa-fulltextes')).addClass('fa holdlink');
         });
       } else {
         // display the error message on each of the ajax status place holder
@@ -622,7 +664,7 @@ $(document).ready(function() {
   $('body').on('click', 'a.locationInfox', function(event) {
     event.preventDefault();
 
-// TMP: Test Postloading Holding
+// TMP: Test Postloading Holding/Volumes
 // Get full-status only on clicking link; add the result into span with class "data-postload_ajax" (part of modal-body)
 x = $(this).attr('id').replace('info-', ''); // Strip the info that is set in createModal()
 //get_holding_tab(x);
@@ -632,6 +674,7 @@ x = $(this).attr('id').replace('info-', ''); // Strip the info that is set in cr
     var additional_content = '';
     var modal_iframe_href;
     var modal_frame = '';
+    var preload_animation = '';
     var force_logoff_loan4 = false;
 
     // @todo: Errm, if there's a lot text above, well then this matters ;)
@@ -652,6 +695,10 @@ x = $(this).attr('id').replace('info-', ''); // Strip the info that is set in cr
       additional_content = '';
       force_logoff_loan4 = false;
     }
+    else if (loc == 'Multi') {
+preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
+get_volume_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
+    }
     else if (loc == 'SO' || loc == 'Multi' || loc == 'ACQ') {
       //
     }
@@ -662,6 +709,7 @@ x = $(this).attr('id').replace('info-', ''); // Strip the info that is set in cr
       // additional_content = 'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.';
     }
     else {
+preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
 get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
       // Got shelf location
       var roomMap = [];
@@ -680,7 +728,7 @@ get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
 
     // TODO: Lightbox has methods to do this?
     $('#modalTitle').html($(this).children('span').attr('data-title'));
-    $('.modal-body').html('<p>'+ $(this).children('span').text() + '</p><span class="data-modal_postload_ajax"></span>' + additional_content + modal_frame);
+    $('.modal-body').html('<p>'+ $(this).children('span').text() + '</p><span class="data-modal_postload_ajax">'+preload_animation+'</span>' + additional_content + modal_frame);
 
 
     // Remove iframe - prevents browser history
@@ -710,7 +758,8 @@ get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
     }
 
     // Show everything
-    return $('#modal').modal('show');
+    $('#modal').modal('show');
+
   });
 });
 
@@ -744,11 +793,11 @@ function get_holding_tab(recID) {
             //var item = $($('.ajaxItem')[xhr.rid]);
             if (typeof(result.full_status) != 'undefined' && result.full_status.length > 0) {
                 // Full status mode is on -- display the HTML and hide extraneous junk:
-                $('.data-modal_postload_ajax').append(result.full_status);
+                $('.data-modal_postload_ajax').empty().append(result.full_status);
             }
 
             // Prepare location list
-            // @note: getItemStatusTUBFullAjax always returns locationList; if still
+            // @note: getItemStatusTUBFullAjax always returns locationList; still
             // here as part of refactoring
             if (result.locationList) {
                 var locationListHTML = "";
@@ -775,4 +824,60 @@ function get_holding_tab(recID) {
       }
     }
   });
+}
+
+
+
+/**
+ * Load volume list into a modal on request
+ *
+ * @todo
+ * - This view and the tab view used in themes/bootstrap3-tub/templates/record/view.phtml
+ *   (prepared in themes/bootstrap3-tub/templates/record/view-tabs.phtml) should 
+ *   just use the same template (most likely best place: themes/bootstrap3-tub/templates/ajax)
+ * - (Multilanguage table header)
+ *
+ * @note:
+ * - rip off of themes/bootstrap3-tub/js/multipart.js
+ * - Related
+ *   > module/VuFind/src/VuFind/Controller/AjaxController.php
+ *   > module/VuFind/src/VuFind/MultipartList.php
+ *   > module/VuFind/src/VuFind/RecordTab/TomesVolumes.php
+ *   > module/VuFind/src/VuFind/RecordDriver/SolrGBV.php    > getMultipartChildren()?
+ *   > themes/bootstrap3-tub/templates/RecordTab/tomesvolumes.phtml
+ *
+ * @return Populates data-modal_postload_ajax (@see Jquery.document.ready above)
+ */
+function get_volume_tab(recID) {
+    ppnlink = recID;
+    var tobi = [""];
+
+    jQuery.ajax({
+        //http://lincl1.b.tu-harburg.de:81/vufind2-test/AJAX/JSON?method=getMultipart&id=680310649&start=0&length=10000
+        url:path+'/AJAX/JSON?method=getMultipart&id='+ppnlink+'&start=0&length=10000',
+        dataType:'json',
+        success:function(data, textStatus) {
+            var volcount = data.data.length;
+            var visibleCount = Math.min(50, volcount);
+            if (visibleCount == 0) {
+                return false;
+            }
+            for (var index = 0; index < visibleCount; index++) {
+                var entry = data.data[index];
+                tobi.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td></tr>');
+            }
+            if (volcount > visibleCount) {
+                for (var index = visibleCount; index < data.data.length; index++) {
+                    var entry = data.data[index];
+                    tobi.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td></tr>');
+                }
+            }
+
+            // Append to modal and return
+            var myreturn = '<table class="datagrid extended"><thead><tr><th>Band</th><th>Titel</th><th>Jahr</th></tr></thead><tbody>' + tobi.join('') + '</tbody></table>';
+            $('.data-modal_postload_ajax').empty().append(myreturn);
+            return true;
+        }
+    });
+
 }

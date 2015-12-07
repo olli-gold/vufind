@@ -12,8 +12,10 @@
 header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EEE) repeat scroll 0% 0%; }
 .navbar-form      {width: 100%;}
 .search-query     {width: 350px !important;}
-.search-submit   {padding: 5px; vertical-align: middle; background-color: #A8DDF0; border: 1px solid #CCC; font-weight: bold;}
-.navbar-form .checkbox {width: 25%; float: right; min-width: 175px;}
+.search-submit, .search-retainfilter
+                  {padding: 5px; vertical-align: middle; background-color: #A8DDF0; border: 1px solid #CCC; font-weight: bold;}
+.search-retainfilter {padding: 4px;}
+/*.navbar-form .checkbox {width: 25%; float: right; min-width: 175px;}*/
 .breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
 .btn-primary {
    background-color: #A8DDF0;
@@ -108,16 +110,13 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EE
 
 /* Result sorting; hmm, this toggle looks nicer: http://www.bootply.com/92189 */
 .sort_order_hint {color: #A8DDF0;}
-.btn-group {position: relative; display: inline-block; vertical-align: middle; background-color: #fff; padding: 3px;  border-bottom: 2px dotted #CCC; width: 50%}
-.btn-primary, .btn-default {min-width: 30px !important; margin: 0; padding: 4px; border: 1px solid #CCC; background-color: #fff;}
-.btn-primary    {border-radius: 30px 0px 0px 30px;}
-.btn-default    {border-radius: 0px 30px 30px 0px;}
-.mainactive         {background-color: #A8DDF0 !important; }
-.tub_btn-group   {position: relative; display: inline-block; vertical-align: middle; background-color: #fff; padding: 3px;  border-bottom: 2px dotted #CCC; width: 50%}
+.tub_btn-group   {position: relative; display: inline-block; vertical-align: middle; background-color: #fff; padding: 3px 15px;  border-bottom: 2px dotted #CCC; } /*width: 50%*/
 .tub_btn_primary, .btn-default {min-width: 30px !important; margin: 0; padding: 4px; border: 1px solid #CCC; background-color: #fff;}
+/*
 .tub_btn_primary {border-radius: 30px 0px 0px 30px;}
 .tub_btn_def     {border-radius: 0px 30px 30px 0px;}
-button.active    {background-color: #A8DDF0 !important; }
+*/
+button.active    {background-color: #A8DDF0 !important; color: #000000 !important; font-weight: normal !important;}
 
 /*
 #result0, #result2, #result4, #result6, #result8, #result10, #result12, #result14, #result16, #result18 {
@@ -203,7 +202,7 @@ table.datagrid td a {
    font-size: 15px;
 }
 /* Reset fa-heart and fa-home - TODO for less cleanup */
-i.fa-heart, i.fa-home, i.fa-search {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
+i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
 
 
 /* Customize button for single option */
@@ -286,8 +285,8 @@ i.fa-heart, i.fa-home, i.fa-search {background-image: url('none'); width: auto; 
 div .left   {width: 17%; position: relative; min-height: 150px;}
 div .middle {width: 59%; position: relative; min-height: 150px;}
 div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15px;}
-.result .checkbox label {position: absolute; top: 110px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* 21px/11px trifft genau bildecke */
-.recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
+.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* 21px/11px trifft genau bildecke */
+.recordcover, .primorecordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
 #bookbag-menu {position: absolute; bottom: 7px; left: 89px; background-color: #fff; padding: 2px; font-size: 16px;}
 #bookbag-menu .tub_star_on  {color: #EEC429;}
 #bookbag-menu .tub_star_off {color: #FAEFD4;}
@@ -492,7 +491,7 @@ label {
 .doi_prefix {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
-    background-color: gray;
+    background-color: #53A1BF;
     color: #ffffff;
     padding: 3px 8px;
     border-right: thin solid black;
@@ -500,9 +499,9 @@ label {
 .doi_link   {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-    background-color: #428be5;
+    background-color: #D6F0FA;
     padding: 3px 4px;
 }
 .doi_link a {
-    color: #ffffff;
+    /*color: #ffffff;*/
 }
