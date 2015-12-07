@@ -152,6 +152,13 @@ function displayHoldingGuide() {
             item.find('.holdlocation').empty().append(bestOption);
             // If something has multiple volumes, our voyage ends here already;
             // @todo: It does, doesn't it? It happens only for print (so no E-Only info icon is needed)
+
+            //preload volume list
+            $.ajax({
+                dataType: 'json',
+                url: path + '/AJAX/JSON?method=loadVolumeList',
+                data: {"id":result.id},
+            });
             return true;
           }
           // Future: Here we would like another "early exit" for "e-only"
@@ -653,9 +660,6 @@ function eagerloadVolumeList() {
 $(document).ready(function() {
 //  checkItemStatuses();
   displayHoldingGuide();
-
-  // load volume list
-  eagerloadVolumeList();
 
   //https://stackoverflow.com/questions/1359018/in-jquery-how-to-attach-events-to-dynamic-html-elements
   // Todo: 
