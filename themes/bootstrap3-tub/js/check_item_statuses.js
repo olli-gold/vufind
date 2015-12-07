@@ -666,7 +666,7 @@ $(document).ready(function() {
 
 // TMP: Test Postloading Holding/Volumes
 // Get full-status only on clicking link; add the result into span with class "data-postload_ajax" (part of modal-body)
-x = $(this).attr('id').replace('info-', ''); // Strip the info that is set in createModal()
+recPPN = $(this).attr('id').replace('info-', ''); // Strip the info that is set in createModal()
 //get_holding_tab(x);
 // END TMP: Test Postloading Holding
 
@@ -697,7 +697,7 @@ x = $(this).attr('id').replace('info-', ''); // Strip the info that is set in cr
     }
     else if (loc == 'Multi') {
 preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
-get_volume_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
+get_volume_tab(recPPN); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
     }
     else if (loc == 'SO' || loc == 'Multi' || loc == 'ACQ') {
       //
@@ -710,7 +710,7 @@ get_volume_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
     }
     else {
 preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
-get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
+get_holding_tab(recPPN); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
       // Got shelf location
       var roomMap = [];
       /*
@@ -728,7 +728,7 @@ get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
 
     // TODO: Lightbox has methods to do this?
     $('#modalTitle').html($(this).children('span').attr('data-title'));
-    $('.modal-body').html('<p>'+ $(this).children('span').text() + '</p><span class="data-modal_postload_ajax">'+preload_animation+'</span>' + additional_content + modal_frame);
+    $('.modal-body').html('<p>'+ $(this).children('span').text() + '</p><span class="data-modal_postload_ajax" id="'+recPPN+'">'+preload_animation+'</span>' + additional_content + modal_frame);
 
 
     // Remove iframe - prevents browser history
@@ -772,10 +772,15 @@ get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
  * - Make it simpler, no array needed ever
  * - Finally replace it by the tab view used in themes/bootstrap3-tub/templates/record/view.phtml
  *   (prepared in themes/bootstrap3-tub/templates/record/view-tabs.phtml)
+ *   > Plus add buttons if called from get_volume_tab
+ *
+ * @param recID     The PPN
+ * @param target    Tag with class or id the result shall be appended to
  *
  * @return Populates data-modal_postload_ajax (@see Jquery.document.ready above)
  */
-function get_holding_tab(recID) {
+function get_holding_tab(recID, target) {
+    var target = target || '.data-modal_postload_ajax';
     var currentId;
     var record_number;
     var xhr;
@@ -793,7 +798,7 @@ function get_holding_tab(recID) {
             //var item = $($('.ajaxItem')[xhr.rid]);
             if (typeof(result.full_status) != 'undefined' && result.full_status.length > 0) {
                 // Full status mode is on -- display the HTML and hide extraneous junk:
-                $('.data-modal_postload_ajax').empty().append(result.full_status);
+                $(target).empty().append(result.full_status);
             }
 
             // Prepare location list
@@ -818,7 +823,7 @@ function get_holding_tab(recID) {
                     locationListHTML += '</div>';
                 }
                 // Show location list
-//              $('.data-modal_postload_ajax').append(locationListHTML);
+                //$(target).append(locationListHTML);
             }
         });
       }
@@ -835,6 +840,7 @@ function get_holding_tab(recID) {
  * - This view and the tab view used in themes/bootstrap3-tub/templates/record/view.phtml
  *   (prepared in themes/bootstrap3-tub/templates/record/view-tabs.phtml) should 
  *   just use the same template (most likely best place: themes/bootstrap3-tub/templates/ajax)
+ *   > hmm, just include themes/bootstrap3-tub/templates/record/hold.phtml somehow?
  * - (Multilanguage table header)
  *
  * @note:
@@ -846,11 +852,13 @@ function get_holding_tab(recID) {
  *   > module/VuFind/src/VuFind/RecordDriver/SolrGBV.php    > getMultipartChildren()?
  *   > themes/bootstrap3-tub/templates/RecordTab/tomesvolumes.phtml
  *
+ * @param recID     The PPN (of a multivolume item)
+ *
  * @return Populates data-modal_postload_ajax (@see Jquery.document.ready above)
  */
 function get_volume_tab(recID) {
     ppnlink = recID;
-    var tobi = [""];
+    var volume_rows = [""];
 
     jQuery.ajax({
         //http://lincl1.b.tu-harburg.de:81/vufind2-test/AJAX/JSON?method=getMultipart&id=680310649&start=0&length=10000
@@ -858,26 +866,45 @@ function get_volume_tab(recID) {
         dataType:'json',
         success:function(data, textStatus) {
             var volcount = data.data.length;
-            var visibleCount = Math.min(50, volcount);
+            var visibleCount = Math.min(10, volcount);
+
             if (visibleCount == 0) {
                 return false;
             }
             for (var index = 0; index < visibleCount; index++) {
                 var entry = data.data[index];
-                tobi.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td></tr>');
+                var volume_ajax_row = '<tr><td class="volume_'+entry.id+'" colspan="4"></td></tr>';
+
+                volume_rows.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"> Exemplare</td></tr>'+volume_ajax_row);
             }
             if (volcount > visibleCount) {
                 for (var index = visibleCount; index < data.data.length; index++) {
                     var entry = data.data[index];
-                    tobi.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td></tr>');
+                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td class="btn get_volum_items" id="'+entry.id+'">Exemplare</td></tr>'+volume_ajax_row);
                 }
             }
 
             // Append to modal and return
-            var myreturn = '<table class="datagrid extended"><thead><tr><th>Band</th><th>Titel</th><th>Jahr</th></tr></thead><tbody>' + tobi.join('') + '</tbody></table>';
+            var myreturn = '<table class="datagrid extended"><thead><tr><th>Band</th><th>Titel</th><th>Jahr</th><th>Exemplare</th></tr></thead><tbody>' + volume_rows.join('') + '</tbody></table>';
             $('.data-modal_postload_ajax').empty().append(myreturn);
             return true;
         }
     });
 
 }
+
+
+/**
+ * Another document ready function
+ */
+$(document).ready(function() {
+
+    /**
+     * Listen to clicks on volume button in multivolume modal
+     */
+    $('.modal-content').on('click', '.get_volum_items', function() {
+        multiVolPPN = $(this).attr('id');
+        get_holding_tab(multiVolPPN, '.volume_'+multiVolPPN);
+    });
+
+});
