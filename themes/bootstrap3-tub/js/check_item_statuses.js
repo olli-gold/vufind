@@ -130,9 +130,10 @@ function displayHoldingGuide() {
 
           // Return the one best option as JSon - create button and info modal
           var bestOption = '';
+          var fallbackOption = ''; // we need this, because the sfx button comes from another source - and we have to check, if it exists before adding buttons in some cases
           switch(result.patronBestOption) {
             case 'e_only':
-              // No button to show. Show only if it is no broken record
+              // No button to show. Show only if it is no broken record AND no SFX button exists (see sfx_fix)
               if (result.missing_data !== true && result.bestOptionLocation != 'Unknown' && result.locHref != '') {
                 /* 2015-09-28: MOVED to sfx_fix below
                 This check should work. But we have a better way. Indirectly SFX
@@ -163,8 +164,8 @@ function displayHoldingGuide() {
                                               modal_body  = vufindString.loc_modal_Body_eMarc21,
                                               iframe_src  = result.locHref,
                                               modal_foot  = '');
-                electronic = loc_button + ' ' + loc_modal_link;
-                item.find('.holdelectro').empty().append(electronic);
+                //Dont's show loc_abbr = WEB in addition to SFX-link
+                fallbackOption = loc_button + ' ' + loc_modal_link;
               }
               break;
             case 'shelf': //fa-hand-lizard-o is nice too (but only newest FA)
@@ -358,8 +359,7 @@ function displayHoldingGuide() {
                                             modal_body  = vufindString.loc_modal_Body_service_else,
                                             iframe_src  = '',
                                             modal_foot  = '');
-              electronic = loc_button + ' ' + loc_modal_link;
-              item.find('.holdelectro').empty().append(electronic);
+              fallbackOption = loc_button + ' ' + loc_modal_link;
           }
 
           // Show link to printed edition for electronic edition (if available)
@@ -390,12 +390,25 @@ function displayHoldingGuide() {
           }
           */
 
+          // Show our final result!
+          item.find('.holdlocation').empty().append(bestOption);
+
           // SFX-Hack: If nothing is found, a very small dummy gif is returned.
           // If so, hide the controls (or just the image), so everything else around
           // is displayed nicely (not indented etc.). Maybe better in \themes\bootstrap3-tub\js\openurl.js
+          // @todo: sometimes this check is too fast and the help show up...
+          // correct way would be like https://api.jquery.com/ajaxSuccess/ or https://stackoverflow.com/a/9865124
           sfx_fix = item.find('.imagebased');
+          sfx_available = true;
           if (sfx_fix.innerWidth() < 10) {
             sfx_fix.hide();
+            sfx_available = false;
+
+            // Fulltext-Hack
+            // <strike>Seriously</strike> :) shouldn't be here, but the idea is not that bad, basically? :)
+            // Next step: put it into a modal, so the full link can easily be shown - or links (I think there are such cases?)
+            // Remove > append to oa-fulltextes > add button classes
+            item.find('.grab-fulltext1').detach().appendTo(item.find('.oa-fulltextes')).addClass('fa holdlink');
           }
           // Alway show help if Electronic
           else {
@@ -410,14 +423,13 @@ function displayHoldingGuide() {
             item.find('.imagebased').after(loc_modal_link);
           }
 
-          // Show our final result!
-          item.find('.holdlocation').empty().append(bestOption);
+          // Final cleanup
+          // If neither sfx is available and our fulltext hack didn't fill in
+          // something, then show our fallback information
+          if (sfx_available == false && item.find('.holdlink').length == 0) {
+            item.find('.holdlocation').empty().append(fallbackOption);
+          }
 
-          // Fulltext-Hack
-          // Seriously shouldn't be here, but the idea is not that bad, basically? :)
-          // Next step: put it into a modal, so the full link can easily be shown - or links (I think there are such cases?)
-          // Remove > append to oa-fulltextes > add button classes
-          item.find('.grab-fulltext1').detach().appendTo(item.find('.oa-fulltextes')).addClass('fa holdlink');
         });
       } else {
         // display the error message on each of the ajax status place holder
