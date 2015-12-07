@@ -664,7 +664,7 @@ $(document).ready(function() {
   $('body').on('click', 'a.locationInfox', function(event) {
     event.preventDefault();
 
-// TMP: Test Postloading Holding
+// TMP: Test Postloading Holding/Volumes
 // Get full-status only on clicking link; add the result into span with class "data-postload_ajax" (part of modal-body)
 x = $(this).attr('id').replace('info-', ''); // Strip the info that is set in createModal()
 //get_holding_tab(x);
@@ -693,6 +693,9 @@ x = $(this).attr('id').replace('info-', ''); // Strip the info that is set in cr
     else if (loc == 'Magazin') {
       additional_content = '';
       force_logoff_loan4 = false;
+    }
+    else if (loc == 'Multi') {
+get_volume_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
     }
     else if (loc == 'SO' || loc == 'Multi' || loc == 'ACQ') {
       //
@@ -817,4 +820,60 @@ function get_holding_tab(recID) {
       }
     }
   });
+}
+
+
+
+/**
+ * Load volume list into a modal on request
+ *
+ * @todo
+ * - This view and the tab view used in themes/bootstrap3-tub/templates/record/view.phtml
+ *   (prepared in themes/bootstrap3-tub/templates/record/view-tabs.phtml) should 
+ *   just use the same template (most likely best place: themes/bootstrap3-tub/templates/ajax)
+ * - (Multilanguage table header)
+ *
+ * @note:
+ * - rip off of themes/bootstrap3-tub/js/multipart.js
+ * - Related
+ *   > module/VuFind/src/VuFind/Controller/AjaxController.php
+ *   > module/VuFind/src/VuFind/MultipartList.php
+ *   > module/VuFind/src/VuFind/RecordTab/TomesVolumes.php
+ *   > module/VuFind/src/VuFind/RecordDriver/SolrGBV.php    > getMultipartChildren()?
+ *   > themes/bootstrap3-tub/templates/RecordTab/tomesvolumes.phtml
+ *
+ * @return Populates data-modal_postload_ajax (@see Jquery.document.ready above)
+ */
+function get_volume_tab(recID) {
+    ppnlink = recID;
+    var tobi = [""];
+
+    jQuery.ajax({
+        //http://lincl1.b.tu-harburg.de:81/vufind2-test/AJAX/JSON?method=getMultipart&id=680310649&start=0&length=10000
+        url:path+'/AJAX/JSON?method=getMultipart&id='+ppnlink+'&start=0&length=10000',
+        dataType:'json',
+        success:function(data, textStatus) {
+            var volcount = data.data.length;
+            var visibleCount = Math.min(50, volcount);
+            if (visibleCount == 0) {
+                return false;
+            }
+            for (var index = 0; index < visibleCount; index++) {
+                var entry = data.data[index];
+                tobi.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td></tr>');
+            }
+            if (volcount > visibleCount) {
+                for (var index = visibleCount; index < data.data.length; index++) {
+                    var entry = data.data[index];
+                    tobi.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td></tr>');
+                }
+            }
+
+            // Append to modal and return
+            var myreturn = '<table class="datagrid extended"><thead><tr><th>Band</th><th>Titel</th><th>Jahr</th></tr></thead><tbody>' + tobi.join('') + '</tbody></table>';
+            $('.data-modal_postload_ajax').empty().append(myreturn);
+            return true;
+        }
+    });
+
 }
