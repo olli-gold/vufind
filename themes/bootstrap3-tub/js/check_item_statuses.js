@@ -674,6 +674,7 @@ x = $(this).attr('id').replace('info-', ''); // Strip the info that is set in cr
     var additional_content = '';
     var modal_iframe_href;
     var modal_frame = '';
+    var preload_animation = '';
     var force_logoff_loan4 = false;
 
     // @todo: Errm, if there's a lot text above, well then this matters ;)
@@ -695,6 +696,7 @@ x = $(this).attr('id').replace('info-', ''); // Strip the info that is set in cr
       force_logoff_loan4 = false;
     }
     else if (loc == 'Multi') {
+preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
 get_volume_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
     }
     else if (loc == 'SO' || loc == 'Multi' || loc == 'ACQ') {
@@ -707,6 +709,7 @@ get_volume_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
       // additional_content = 'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.';
     }
     else {
+preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
 get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
       // Got shelf location
       var roomMap = [];
@@ -725,7 +728,7 @@ get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
 
     // TODO: Lightbox has methods to do this?
     $('#modalTitle').html($(this).children('span').attr('data-title'));
-    $('.modal-body').html('<p>'+ $(this).children('span').text() + '</p><span class="data-modal_postload_ajax"></span>' + additional_content + modal_frame);
+    $('.modal-body').html('<p>'+ $(this).children('span').text() + '</p><span class="data-modal_postload_ajax">'+preload_animation+'</span>' + additional_content + modal_frame);
 
 
     // Remove iframe - prevents browser history
