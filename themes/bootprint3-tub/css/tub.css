@@ -202,7 +202,7 @@ table.datagrid td a {
    font-size: 15px;
 }
 /* Reset fa-heart and fa-home - TODO for less cleanup */
-i.fa-heart, i.fa-home, i.fa-search {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
+i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
 
 
 /* Customize button for single option */
@@ -285,8 +285,8 @@ i.fa-heart, i.fa-home, i.fa-search {background-image: url('none'); width: auto; 
 div .left   {width: 17%; position: relative; min-height: 150px;}
 div .middle {width: 59%; position: relative; min-height: 150px;}
 div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15px;}
-.result .checkbox label {position: absolute; top: 110px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* 21px/11px trifft genau bildecke */
-.recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
+.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* 21px/11px trifft genau bildecke */
+.recordcover, .primorecordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
 #bookbag-menu {position: absolute; bottom: 7px; left: 89px; background-color: #fff; padding: 2px; font-size: 16px;}
 #bookbag-menu .tub_star_on  {color: #EEC429;}
 #bookbag-menu .tub_star_off {color: #FAEFD4;}

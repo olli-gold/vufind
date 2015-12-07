@@ -18,6 +18,26 @@
         <? endif; ?>
       </a>
     </div>
+
+    <? if ($cart->isActive()): ?>
+      <div id="bookbag-menu">
+        <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
+        <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-star tub_star_off" href="#" data-recordid="<?=$cartId ?>"> </a>
+        <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-star tub_star_on" href="#" data-recordid="<?=$cartId ?>"> </a>
+        <noscript>
+          <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
+            <input type="hidden" name="ids[]" value="<?=$cartId ?>" />
+            <? if ($cart->contains($cartId)): ?>
+              <input class="btn btn-default" type="submit" name="delete" value="<?=$this->transEsc('Remove from Book Bag')?>"/>
+            <? else: ?>
+              <input class="btn btn-default" type="submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
+            <? endif; ?>
+          </form>
+        </noscript>
+      </div>
+    <? endif; ?>
+
+
     <div class="col-sm-7 col-xs-6 middle">
       <div>
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title">
@@ -178,7 +198,7 @@
             <? if (!is_array($urls)) $urls = array();
               if(!$this->driver->isCollection()):
                 foreach ($urls as $current): ?>
-                  <br/><a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fa holdlink fulltext" target="new"><i class="fa-external-link"></i><span class="btn_text"> <?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?></span></a><br/>
+                  <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fa holdlink fulltext" target="new"><i class="fa-external-link"></i><span class="btn_text"> <?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?></span></a><br/>
               <? endforeach; ?>
             <? endif; ?>
           <? endif; ?>
