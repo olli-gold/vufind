@@ -153,6 +153,13 @@ class Params implements ServiceLocatorAwareInterface
     protected $defaultsApplied = false;
 
     /**
+     * How many default filters are applied?
+     *
+     * @var int
+     */
+    protected $numberOfDefaultsApplied = 0;
+
+    /**
      * Constructor
      *
      * @param \VuFind\Search\Base\Options  $options      Options to use
@@ -1316,6 +1323,8 @@ class Params implements ServiceLocatorAwareInterface
             if (!empty($defaults)) {
                 foreach ($defaults as $current) {
                     $this->addFilter($current);
+                    // count default filters to detect if only default filters are active
+                    $this->numberOfDefaultsApplied++;
                 }
                 $this->defaultsApplied = true;
             }
@@ -1617,5 +1626,15 @@ class Params implements ServiceLocatorAwareInterface
     public function hasDefaultsApplied()
     {
         return $this->defaultsApplied;
+    }
+
+    /**
+     * How many default filters are applied?
+     *
+     * @return bool
+     */
+    public function getNumberOfDefaultsApplied()
+    {
+        return $this->numberOfDefaultsApplied;
     }
 }
