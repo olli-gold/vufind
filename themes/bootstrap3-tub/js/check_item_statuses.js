@@ -64,30 +64,6 @@ function displayHoldingGuide() {
 
           var item = $($('.ajaxItem')[xhr.rid]);
 
-          // Early exit: display volumes button (if this item has volumes)
-          if (result.multiVols == true) {
-            loc_button = create_button(href   = path + '/Record/'+ result.id +'/TomesVolumes#tabnav',
-                                       hover  = vufindString.loc_modal_Title_multi,
-                                       text   = vufindString.loc_volumes,
-                                       icon   = 'fa-stack-overflow',
-                                       css_classes = 'holdtomes');
-            loc_modal_link = create_modal(id          = result.id,
-                                          loc_code    = 'Multi',
-                                          link_title  = vufindString.loc_modal_Title_multi,
-                                          modal_title = vufindString.loc_modal_Title_multi,
-                                          modal_body  = vufindString.loc_modal_Body_multi,
-                                          iframe_src  = '',
-                                          modal_foot  = '');
-            bestOption = loc_button + ' ' + loc_modal_link;
-            //item.find('.holdtomes').removeClass('hidden');
-            item.find('.holdlocation').empty().append(bestOption);
-            // If something has multiple volumes, our voyage ends here already;
-            // @todo: It does, doesn't it? It happens only for print (so no E-Only info icon is needed)
-            return true;
-          }
-
-          // Future: Here we would like another "early exit" for "e-only"
-
           // Here we start figuring out what we have to show on implicit information
           // Some helper variables
           var loc_abbr;
@@ -128,7 +104,61 @@ function displayHoldingGuide() {
            // alert('Hier ist ein komischer Fall bei '+loc_callno);
           }
 
-          // Return the one best option as JSon - create button and info modal
+
+          // Early exit: display VOLUMES button (if this item has volumes)
+          if (result.multiVols == true) {
+            /* 2015-12-03: only create modal
+            loc_button = create_button(href   = path + '/Record/'+ result.id +'/TomesVolumes#tabnav',
+                                       hover  = vufindString.loc_modal_Title_multi,
+                                       text   = vufindString.loc_volumes,
+                                       icon   = 'fa-stack-overflow',
+                                       css_classes = 'holdtomes');
+            loc_modal_link = create_modal(id          = result.id,
+                                          loc_code    = 'Multi',
+                                          link_title  = vufindString.loc_modal_Title_multi,
+                                          modal_title = vufindString.loc_modal_Title_multi,
+                                          modal_body  = vufindString.loc_modal_Body_multi + xy(),
+                                          iframe_src  = '',
+                                          modal_foot  = '');
+            bestOption = loc_button + ' ' + loc_modal_link;
+            */
+            // Create a readin room button (last 5 years) - use same button as for case 'local'
+            loc_modal_button_last5years = '';
+            if (loc_abbr == 'LS1' || loc_abbr == 'LS2') {
+                loc_modal_button_last5years = create_modal_button(id = result.id,
+                                            loc_code    = loc_abbr,
+                                            link_title  = title,
+                                            modal_title = loc_modal_title,
+                                            modal_body  = loc_modal_body+' ' + vufindString.loc_modal_Title_refonly_generic,
+                                            iframe_src  = '',
+                                            modal_foot  = '',
+                                            icon_class  = 'holdrefonly',
+                                            icon        = 'fa-home',
+                                            text        = loc_abbr + ' ' + loc_callno);
+            }
+            // Add button "See volumes"
+            loc_modal_button_volumes = create_modal_button(id = result.id,
+                                          loc_code    = 'Multi',
+                                          link_title  = vufindString.loc_modal_Title_multi,
+                                          modal_title = vufindString.loc_modal_Title_multi,
+                                          modal_body  = vufindString.loc_modal_Body_multi,
+                                          iframe_src  = '',
+                                          modal_foot  = '',
+                                          icon_class  = 'holdtomes',
+                                          icon        = 'fa-stack-overflow',
+                                          text        = vufindString.loc_volumes);
+            bestOption = loc_modal_button_last5years + loc_modal_button_volumes;
+            //item.find('.holdtomes').removeClass('hidden');
+            item.find('.holdlocation').empty().append(bestOption);
+            // If something has multiple volumes, our voyage ends here already;
+            // @todo: It does, doesn't it? It happens only for print (so no E-Only info icon is needed)
+            return true;
+          }
+          // Future: Here we would like another "early exit" for "e-only"
+
+
+          // Do the job as intended - no more early exits
+          // Return the one BEST OPTION as JSon - create button and info modal
           var bestOption = '';
           var fallbackOption = ''; // we need this, because the sfx button comes from another source - and we have to check, if it exists before adding buttons in some cases
           switch(result.patronBestOption) {
