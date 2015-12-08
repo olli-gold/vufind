@@ -125,7 +125,7 @@ function displayHoldingGuide() {
             // Create a readin room button (last 5 years) - use same button as for case 'local'
             loc_modal_button_last5years = '';
             if (loc_abbr == 'LS1' || loc_abbr == 'LS2') {
-                loc_modal_button_last5years = create_modal_button(id = result.id,
+                loc_modal_button_last5years = create_modal(id = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = title,
                                             modal_title = loc_modal_title,
@@ -137,7 +137,7 @@ function displayHoldingGuide() {
                                             text        = loc_abbr + ' ' + loc_callno);
             }
             // Add button "See volumes"
-            loc_modal_button_volumes = create_modal_button(id = result.id,
+            loc_modal_button_volumes = create_modal(id = result.id,
                                           loc_code    = 'Multi',
                                           link_title  = vufindString.loc_modal_Title_multi,
                                           modal_title = vufindString.loc_modal_Title_multi,
@@ -152,6 +152,14 @@ function displayHoldingGuide() {
             item.find('.holdlocation').empty().append(bestOption);
             // If something has multiple volumes, our voyage ends here already;
             // @todo: It does, doesn't it? It happens only for print (so no E-Only info icon is needed)
+
+            // preload volume list
+            // @todo: loads too much
+            $.ajax({
+                dataType: 'json',
+                url: path + '/AJAX/JSON?method=loadVolumeList',
+                data: {"id":result.id},
+            });
             return true;
           }
           // Future: Here we would like another "early exit" for "e-only"
@@ -214,7 +222,7 @@ function displayHoldingGuide() {
                                             modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
               */
-              loc_modal_button = create_modal_button(id          = result.id,
+              loc_modal_button = create_modal(id          = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = loc_modal_body,
                                             modal_title = loc_modal_title,
@@ -243,7 +251,7 @@ function displayHoldingGuide() {
                                             modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
               */
-              loc_modal_button = create_modal_button(id = result.id,
+              loc_modal_button = create_modal(id = result.id,
                                             loc_code    = 'Magazin',
                                             link_title  = vufindString.loc_btn_Hover_order,
                                             modal_title = vufindString.loc_modal_Title_order,
@@ -275,7 +283,7 @@ function displayHoldingGuide() {
                                             modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
               */
-              loc_modal_button = create_modal_button(id = result.id,
+              loc_modal_button = create_modal(id = result.id,
                                             loc_code    = 'Loaned',
                                             link_title  = title,
                                             modal_title = title,
@@ -305,7 +313,7 @@ function displayHoldingGuide() {
                                             modal_foot  = '');
               bestOption = bestOption + loc_button + ' ' + loc_modal_link;
               */
-              loc_modal_button = create_modal_button(id = result.id,
+              loc_modal_button = create_modal(id = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = title,
                                             modal_title = loc_modal_title,
@@ -333,7 +341,7 @@ function displayHoldingGuide() {
                                             modal_foot  = '');
               bestOption = bestOption + loc_button + ' ' + loc_modal_link;
               */
-              loc_modal_button = create_modal_button(id = result.id,
+              loc_modal_button = create_modal(id = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = vufindString.loc_btn_Hover_acquired,
                                             modal_title = vufindString.loc_modal_Title_acquired,
@@ -361,7 +369,7 @@ function displayHoldingGuide() {
                                             modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
               */
-              loc_modal_button = create_modal_button(id = result.id,
+              loc_modal_button = create_modal(id = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = vufindString.loc_modal_Title_service_da,
                                             modal_title = vufindString.loc_modal_Title_service_da,
@@ -443,10 +451,10 @@ function displayHoldingGuide() {
           // Alway show help if Electronic
           else {
             loc_modal_link = create_modal(id          = result.id,
-                                          loc_code    = loc_abbr,
+                                          loc_code    = 'DIG',
                                           link_title  = vufindString.loc_modal_Title_eonly,
-                                          modal_title = result.bestOptionLocation,
-                                          modal_body  = loc_modal_body,
+                                          modal_title = vufindString.loc_modal_Title_eonly,
+                                          modal_body  = vufindString.loc_modal_Body_eonly,
                                           iframe_src  = '',
                                           modal_foot  = '',
                                           icon_class  = 'tub_fa-info_e');
@@ -476,50 +484,7 @@ function displayHoldingGuide() {
 
 
 /**
- * Create a generic "Infomation" modal by function
- *
- * Creating the modals inline got messy. This function isn't beautiful as well,
- * but for now the better way.
- *
- * @note: 2015-09-29: Argh, only Firefox support default values for paramters
- * (https://stackoverflow.com/questions/19699257/uncaught-syntaxerror-unexpected-token-in-google-chrome/19699282#19699282)
- *
- * @param id            \b STR  Some unique id for the modal (not used yet)
- * @param loc_code      \b STR  Used by $(document).ready bewlow; use some
- *                              speaking name (besides the location abbrevation
- *                              like LS1 etc., currently used: Multi, Magazin, Loaned, Unknown; ext_ill, ext_acqusition; holddirectdl)
- * @param link_title    \b STR  The title displayed on hovering the modal
- * @param modal_title   \b STR  The title displayed in the modal header
- * @param modal_body    \b STR  The modal "body"
- * @param iframe_src    \b STR  optional: if you add an url, it will be loaded in
- *                              an iframe below the modal_body part
- * @param modal_foot    \b STR  ERRRRM - not used really...
- * @param icon_class    \b STR  optional: the link to open a modal has always the
- *                              classes "fa fa-info-circle". If this param is empty
- *                              also "tub_fa-info_p" - add a custom one
- *
- * @return \b STR modal html
- */
-function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_src, modal_foot, icon_class) {
-  // Set function defaults if empty
-  iframe_src = iframe_src || '';
-  modal_foot = modal_foot || '';
-  icon_class = icon_class || 'tub_fa-info_p';
-  var modal;
-  var iframe = '';
-
-  if (iframe_src != '') {
-    iframe = ' data-iframe="'+iframe_src+'" ';
-  }
-
-  modal = '<a href="#" id="info-'+id+'" title="' + link_title + '" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle '+icon_class+'"></i><span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
-
-  return modal;
-}
-
-
-/**
- * Create a button for an action
+ * Create a simple button for an action
  *
  * @param href          \b STR  Link to open on click
  * @param hover         \b STR  Title to show on hovering the link
@@ -550,10 +515,15 @@ function create_button(href, hover, text, icon, css_classes, target, id, custom)
 
 
 /**
- * Very similar to create_modal(), but uses button css class (holdlink) and allows
- * to add a custom icon.
+ * Create a generic "Infomation" modal by function or a button.
  *
- * @todo: make it generic and replace create_modal() finally
+ * @note: It becomes a button if parameter text is supplied, otherwise the "i"-icon is used.
+ *
+ * Creating the modals inline got messy. This function isn't beautiful as well,
+ * but for now the better way.
+ *
+ * @note: 2015-09-29: Argh, only Firefox support default values for paramters
+ * (https://stackoverflow.com/questions/19699257/uncaught-syntaxerror-unexpected-token-in-google-chrome/19699282#19699282)
  *
  * @param id            \b STR  Some unique id for the modal (not used yet)
  * @param loc_code      \b STR  Used by $(document).ready bewlow; use some
@@ -567,80 +537,37 @@ function create_button(href, hover, text, icon, css_classes, target, id, custom)
  * @param modal_foot    \b STR  ERRRRM - not used really...
  * @param icon_class    \b STR  optional: the link to open a modal has always the
  *                              classes "fa fa-info-circle". Add a custom one
- * @param icon          \b STR  Icon before button text
- * @param text          \b STR  Button text
+ * @param icon          \b STR  optional: Icon before button text
+ * @param text          \b STR  optional: Button text
  *
  * @return \b STR modal html
  */
-function create_modal_button(id, loc_code, link_title, modal_title, modal_body, iframe_src, modal_foot, icon_class, icon, text) {
+function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_src, modal_foot, icon_class, icon, text) {
   // Set function defaults if empty
   iframe_src = iframe_src || '';
   modal_foot = modal_foot || '';
   icon_class = icon_class || 'tub_fa-info_p';
   icon = icon || 'fa-info-circle';
   text = text || '';
+
+  var href_class = '';
   var modal;
   var iframe = '';
+
+  // If text is given, add our Button class. Otherwise it's just an info icon
+  if (text != '') href_class = 'holdlink';
+
 
   if (iframe_src != '') {
     iframe = ' data-iframe="'+iframe_src+'" ';
   }
 
-  modal = '<a href="#" id="info-'+id+'" title="' + link_title + '" class="locationInfox holdlink modal-link hidden-print"><i class="fa '+icon+' '+icon_class+'"></i> ' + text + '<span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
+  modal = '<a href="#" id="info-'+id+'" title="' + link_title + '" class="locationInfox '+href_class+' modal-link hidden-print"><i class="fa '+icon+' '+icon_class+'"></i> ' + text + '<span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
 
   return modal;
 }
 
 
-/**
- * Just a backup of create_button() - fiddling around to find a nicer style
- *
- * @param href          \b STR  Link to open on click
- * @param hover         \b STR  Title to show on hovering the link
- * @param text          \b STR  The link text
- * @param icon          \b STR  Some FontAwesome icon
- * @param css_classes   \b STR  All links get the classes "fa holdlink"
- *                              (+ the icon param); add some special class
- * @param target        \b STR  opt: target for link; leave empty for self
- * @param id            \b STR  opt: element id
- * @param custom        \b STR  opt: any other a tag parameter part 
- *
- * @todo: id and custom only added for cart - not too nice
- *
- * @return \b STR link html
- */
-function create_button_org(href, hover, text, icon, css_classes, target, id, custom) {
-  //target = target || '';
-  if (typeof target !== 'undefined') { target = 'target="'+target+'"'; }
-  if (typeof id     !== 'undefined') { id = 'id="'+id+'"'; }
-  custom = custom || '';
-  var button;
-
-  button    = '<a href="'+href+'" '+id+' title="'+hover+'" class="fa holdlink '+icon+' '+css_classes+'" '+target+' '+custom+'> ' + text + '</a>';
-
-  return button;
-}
-
-
-
-function eagerloadVolumeList() {
-  var id = $.map($('.ajaxItem'), function(i) {
-    return $(i).find('.hiddenId')[0].value;
-  });
-  if (!id.length) {
-    return;
-  }
-
-  var currentId;
-  for (var ids in id) {
-    currentId = id[ids];
-    $.ajax({
-        dataType: 'json',
-        url: path + '/AJAX/JSON?method=loadVolumeList',
-        data: {"id":currentId},
-    });
-  }
-}
 
 /**
  * JQuery ready stuff
@@ -654,9 +581,6 @@ $(document).ready(function() {
 //  checkItemStatuses();
   displayHoldingGuide();
 
-  // load volume list
-  eagerloadVolumeList();
-
   //https://stackoverflow.com/questions/1359018/in-jquery-how-to-attach-events-to-dynamic-html-elements
   // Todo: 
   // - Maybe don't use a (skip "(event) {event.preventDefault();...")
@@ -666,7 +590,7 @@ $(document).ready(function() {
 
 // TMP: Test Postloading Holding/Volumes
 // Get full-status only on clicking link; add the result into span with class "data-postload_ajax" (part of modal-body)
-x = $(this).attr('id').replace('info-', ''); // Strip the info that is set in createModal()
+recPPN = $(this).attr('id').replace('info-', ''); // Strip the info that is set in createModal()
 //get_holding_tab(x);
 // END TMP: Test Postloading Holding
 
@@ -696,10 +620,10 @@ x = $(this).attr('id').replace('info-', ''); // Strip the info that is set in cr
       force_logoff_loan4 = false;
     }
     else if (loc == 'Multi') {
-preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
-get_volume_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
+      preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
+      get_volume_tab(recPPN); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
     }
-    else if (loc == 'SO' || loc == 'Multi' || loc == 'ACQ') {
+    else if (loc == 'SO' || loc == 'ACQ') {
       //
     }
     else if (loc === 'Undefined') {
@@ -709,16 +633,11 @@ get_volume_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
       // additional_content = 'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.';
     }
     else {
-preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
-get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
+      preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
+      get_holding_tab(recPPN); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
+
       // Got shelf location
       var roomMap = [];
-      /*
-      roomMap['LS1'] = 'https://www.tub.tuhh.de/wp-content/uploads/2012/08/LS1web_neu1.jpg';
-      roomMap['LS2'] = 'https://www.tub.tuhh.de/wp-content/uploads/2012/08/LS2web_neu1.jpg';
-      roomMap['LBS'] = roomMap['LS1'];
-      roomMap['SEM'] = roomMap['LS2'];
-      */
       roomMap['LS1'] = path + '/themes/bootstrap3-tub/images/tub/LS1_main.jpg';
       roomMap['LS2'] = path + '/themes/bootstrap3-tub/images/tub/LS2_main.jpg';
       roomMap['LBS'] = path + '/themes/bootstrap3-tub/images/tub/LS1_lbs.jpg';
@@ -728,7 +647,7 @@ get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
 
     // TODO: Lightbox has methods to do this?
     $('#modalTitle').html($(this).children('span').attr('data-title'));
-    $('.modal-body').html('<p>'+ $(this).children('span').text() + '</p><span class="data-modal_postload_ajax">'+preload_animation+'</span>' + additional_content + modal_frame);
+    $('.modal-body').html('<p>'+ $(this).children('span').text() + '</p><span class="data-modal_postload_ajax" id="'+recPPN+'">'+preload_animation+'</span>' + additional_content + modal_frame);
 
 
     // Remove iframe - prevents browser history
@@ -744,6 +663,8 @@ get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
       $('#modalIframe').attr("src", 'https://katalog.b.tuhh.de/LBS_WEB/j_spring_security_logout');
       // Argh, with something like alert after the src change it works, timeout
       // etc. does not. Ok, fix this later, already solved this some time ago somewhere else...
+      // Problem is most likely ajax timing like for fix_sfx
+      // correct way would be like https://api.jquery.com/ajaxSuccess/ or https://stackoverflow.com/a/9865124
       alert('Logged off');
     }
 
@@ -772,10 +693,15 @@ get_holding_tab(x); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
  * - Make it simpler, no array needed ever
  * - Finally replace it by the tab view used in themes/bootstrap3-tub/templates/record/view.phtml
  *   (prepared in themes/bootstrap3-tub/templates/record/view-tabs.phtml)
+ *   > Plus add buttons if called from get_volume_tab
+ *
+ * @param recID     The PPN
+ * @param target    Tag with class or id the result shall be appended to
  *
  * @return Populates data-modal_postload_ajax (@see Jquery.document.ready above)
  */
-function get_holding_tab(recID) {
+function get_holding_tab(recID, target) {
+    var target = target || '.data-modal_postload_ajax';
     var currentId;
     var record_number;
     var xhr;
@@ -793,7 +719,7 @@ function get_holding_tab(recID) {
             //var item = $($('.ajaxItem')[xhr.rid]);
             if (typeof(result.full_status) != 'undefined' && result.full_status.length > 0) {
                 // Full status mode is on -- display the HTML and hide extraneous junk:
-                $('.data-modal_postload_ajax').empty().append(result.full_status);
+                $(target).empty().append(result.full_status);
             }
 
             // Prepare location list
@@ -818,7 +744,7 @@ function get_holding_tab(recID) {
                     locationListHTML += '</div>';
                 }
                 // Show location list
-//              $('.data-modal_postload_ajax').append(locationListHTML);
+                //$(target).append(locationListHTML);
             }
         });
       }
@@ -835,6 +761,7 @@ function get_holding_tab(recID) {
  * - This view and the tab view used in themes/bootstrap3-tub/templates/record/view.phtml
  *   (prepared in themes/bootstrap3-tub/templates/record/view-tabs.phtml) should 
  *   just use the same template (most likely best place: themes/bootstrap3-tub/templates/ajax)
+ *   > hmm, just include themes/bootstrap3-tub/templates/record/hold.phtml somehow?
  * - (Multilanguage table header)
  *
  * @note:
@@ -846,11 +773,13 @@ function get_holding_tab(recID) {
  *   > module/VuFind/src/VuFind/RecordDriver/SolrGBV.php    > getMultipartChildren()?
  *   > themes/bootstrap3-tub/templates/RecordTab/tomesvolumes.phtml
  *
+ * @param recID     The PPN (of a multivolume item)
+ *
  * @return Populates data-modal_postload_ajax (@see Jquery.document.ready above)
  */
 function get_volume_tab(recID) {
     ppnlink = recID;
-    var tobi = [""];
+    var volume_rows = [""];
 
     jQuery.ajax({
         //http://lincl1.b.tu-harburg.de:81/vufind2-test/AJAX/JSON?method=getMultipart&id=680310649&start=0&length=10000
@@ -858,26 +787,45 @@ function get_volume_tab(recID) {
         dataType:'json',
         success:function(data, textStatus) {
             var volcount = data.data.length;
-            var visibleCount = Math.min(50, volcount);
+            var visibleCount = Math.min(10, volcount);
+
             if (visibleCount == 0) {
                 return false;
             }
             for (var index = 0; index < visibleCount; index++) {
                 var entry = data.data[index];
-                tobi.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td></tr>');
+                var volume_ajax_row = '<tr><td class="volume_'+entry.id+'" colspan="4"></td></tr>';
+
+                volume_rows.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"> Exemplare</td></tr>'+volume_ajax_row);
             }
             if (volcount > visibleCount) {
                 for (var index = visibleCount; index < data.data.length; index++) {
                     var entry = data.data[index];
-                    tobi.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td></tr>');
+                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td class="btn get_volum_items" id="'+entry.id+'">Exemplare</td></tr>'+volume_ajax_row);
                 }
             }
 
             // Append to modal and return
-            var myreturn = '<table class="datagrid extended"><thead><tr><th>Band</th><th>Titel</th><th>Jahr</th></tr></thead><tbody>' + tobi.join('') + '</tbody></table>';
+            var myreturn = '<table class="datagrid extended"><thead><tr><th>Band</th><th>Titel</th><th>Jahr</th><th>Exemplare</th></tr></thead><tbody>' + volume_rows.join('') + '</tbody></table>';
             $('.data-modal_postload_ajax').empty().append(myreturn);
             return true;
         }
     });
 
 }
+
+
+/**
+ * Another document ready function
+ */
+$(document).ready(function() {
+
+    /**
+     * Listen to clicks on volume button in multivolume modal
+     */
+    $('.modal-content').on('click', '.get_volum_items', function() {
+        multiVolPPN = $(this).attr('id');
+        get_holding_tab(multiVolPPN, '.volume_'+multiVolPPN);
+    });
+
+});
