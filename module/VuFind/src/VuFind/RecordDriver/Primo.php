@@ -696,4 +696,27 @@ class Primo extends SolrDefault
         return true;
     }
 
+    /**
+     * Returns the PPN (ID) of a GBV record.
+     *
+     * @return string
+     */
+    public function getGbvPpn() {
+        $ppn = null;
+        if (substr($this->getUniqueId(), 0, 3) == 'gbv') {
+            $ppn = substr($this->getUniqueId(), 3);
+        }
+        return $ppn;
+    }
+
+    /**
+     * Checks whether this is a GBV record or not.
+     *
+     * @return bool
+     */
+    public function isGbvRecord() {
+        if ($this->getGbvPpn() !== null) return true;
+        return false;
+    }
+
 }
