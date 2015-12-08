@@ -450,10 +450,10 @@ function displayHoldingGuide() {
           // Alway show help if Electronic
           else {
             loc_modal_link = create_modal(id          = result.id,
-                                          loc_code    = loc_abbr,
+                                          loc_code    = 'DIG',
                                           link_title  = vufindString.loc_modal_Title_eonly,
-                                          modal_title = result.bestOptionLocation,
-                                          modal_body  = loc_modal_body,
+                                          modal_title = vufindString.loc_modal_Title_eonly,
+                                          modal_body  = vufindString.loc_modal_Body_eonly,
                                           iframe_src  = '',
                                           modal_foot  = '',
                                           icon_class  = 'tub_fa-info_e');
