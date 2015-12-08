@@ -125,7 +125,7 @@ function displayHoldingGuide() {
             // Create a readin room button (last 5 years) - use same button as for case 'local'
             loc_modal_button_last5years = '';
             if (loc_abbr == 'LS1' || loc_abbr == 'LS2') {
-                loc_modal_button_last5years = create_modal_button(id = result.id,
+                loc_modal_button_last5years = create_modal(id = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = title,
                                             modal_title = loc_modal_title,
@@ -137,7 +137,7 @@ function displayHoldingGuide() {
                                             text        = loc_abbr + ' ' + loc_callno);
             }
             // Add button "See volumes"
-            loc_modal_button_volumes = create_modal_button(id = result.id,
+            loc_modal_button_volumes = create_modal(id = result.id,
                                           loc_code    = 'Multi',
                                           link_title  = vufindString.loc_modal_Title_multi,
                                           modal_title = vufindString.loc_modal_Title_multi,
@@ -221,7 +221,7 @@ function displayHoldingGuide() {
                                             modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
               */
-              loc_modal_button = create_modal_button(id          = result.id,
+              loc_modal_button = create_modal(id          = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = loc_modal_body,
                                             modal_title = loc_modal_title,
@@ -250,7 +250,7 @@ function displayHoldingGuide() {
                                             modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
               */
-              loc_modal_button = create_modal_button(id = result.id,
+              loc_modal_button = create_modal(id = result.id,
                                             loc_code    = 'Magazin',
                                             link_title  = vufindString.loc_btn_Hover_order,
                                             modal_title = vufindString.loc_modal_Title_order,
@@ -282,7 +282,7 @@ function displayHoldingGuide() {
                                             modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
               */
-              loc_modal_button = create_modal_button(id = result.id,
+              loc_modal_button = create_modal(id = result.id,
                                             loc_code    = 'Loaned',
                                             link_title  = title,
                                             modal_title = title,
@@ -312,7 +312,7 @@ function displayHoldingGuide() {
                                             modal_foot  = '');
               bestOption = bestOption + loc_button + ' ' + loc_modal_link;
               */
-              loc_modal_button = create_modal_button(id = result.id,
+              loc_modal_button = create_modal(id = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = title,
                                             modal_title = loc_modal_title,
@@ -340,7 +340,7 @@ function displayHoldingGuide() {
                                             modal_foot  = '');
               bestOption = bestOption + loc_button + ' ' + loc_modal_link;
               */
-              loc_modal_button = create_modal_button(id = result.id,
+              loc_modal_button = create_modal(id = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = vufindString.loc_btn_Hover_acquired,
                                             modal_title = vufindString.loc_modal_Title_acquired,
@@ -368,7 +368,7 @@ function displayHoldingGuide() {
                                             modal_foot  = '');
               bestOption = loc_button + ' ' + loc_modal_link;
               */
-              loc_modal_button = create_modal_button(id = result.id,
+              loc_modal_button = create_modal(id = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = vufindString.loc_modal_Title_service_da,
                                             modal_title = vufindString.loc_modal_Title_service_da,
@@ -483,50 +483,7 @@ function displayHoldingGuide() {
 
 
 /**
- * Create a generic "Infomation" modal by function
- *
- * Creating the modals inline got messy. This function isn't beautiful as well,
- * but for now the better way.
- *
- * @note: 2015-09-29: Argh, only Firefox support default values for paramters
- * (https://stackoverflow.com/questions/19699257/uncaught-syntaxerror-unexpected-token-in-google-chrome/19699282#19699282)
- *
- * @param id            \b STR  Some unique id for the modal (not used yet)
- * @param loc_code      \b STR  Used by $(document).ready bewlow; use some
- *                              speaking name (besides the location abbrevation
- *                              like LS1 etc., currently used: Multi, Magazin, Loaned, Unknown; ext_ill, ext_acqusition; holddirectdl)
- * @param link_title    \b STR  The title displayed on hovering the modal
- * @param modal_title   \b STR  The title displayed in the modal header
- * @param modal_body    \b STR  The modal "body"
- * @param iframe_src    \b STR  optional: if you add an url, it will be loaded in
- *                              an iframe below the modal_body part
- * @param modal_foot    \b STR  ERRRRM - not used really...
- * @param icon_class    \b STR  optional: the link to open a modal has always the
- *                              classes "fa fa-info-circle". If this param is empty
- *                              also "tub_fa-info_p" - add a custom one
- *
- * @return \b STR modal html
- */
-function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_src, modal_foot, icon_class) {
-  // Set function defaults if empty
-  iframe_src = iframe_src || '';
-  modal_foot = modal_foot || '';
-  icon_class = icon_class || 'tub_fa-info_p';
-  var modal;
-  var iframe = '';
-
-  if (iframe_src != '') {
-    iframe = ' data-iframe="'+iframe_src+'" ';
-  }
-
-  modal = '<a href="#" id="info-'+id+'" title="' + link_title + '" class="locationInfox modal-link hidden-print"><i class="fa fa-info-circle '+icon_class+'"></i><span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
-
-  return modal;
-}
-
-
-/**
- * Create a button for an action
+ * Create a simple button for an action
  *
  * @param href          \b STR  Link to open on click
  * @param hover         \b STR  Title to show on hovering the link
@@ -557,10 +514,15 @@ function create_button(href, hover, text, icon, css_classes, target, id, custom)
 
 
 /**
- * Very similar to create_modal(), but uses button css class (holdlink) and allows
- * to add a custom icon.
+ * Create a generic "Infomation" modal by function or a button.
  *
- * @todo: make it generic and replace create_modal() finally
+ * @note: It becomes a button if parameter text is supplied, otherwise the "i"-icon is used.
+ *
+ * Creating the modals inline got messy. This function isn't beautiful as well,
+ * but for now the better way.
+ *
+ * @note: 2015-09-29: Argh, only Firefox support default values for paramters
+ * (https://stackoverflow.com/questions/19699257/uncaught-syntaxerror-unexpected-token-in-google-chrome/19699282#19699282)
  *
  * @param id            \b STR  Some unique id for the modal (not used yet)
  * @param loc_code      \b STR  Used by $(document).ready bewlow; use some
@@ -574,59 +536,37 @@ function create_button(href, hover, text, icon, css_classes, target, id, custom)
  * @param modal_foot    \b STR  ERRRRM - not used really...
  * @param icon_class    \b STR  optional: the link to open a modal has always the
  *                              classes "fa fa-info-circle". Add a custom one
- * @param icon          \b STR  Icon before button text
- * @param text          \b STR  Button text
+ * @param icon          \b STR  optional: Icon before button text
+ * @param text          \b STR  optional: Button text
  *
  * @return \b STR modal html
  */
-function create_modal_button(id, loc_code, link_title, modal_title, modal_body, iframe_src, modal_foot, icon_class, icon, text) {
+function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_src, modal_foot, icon_class, icon, text) {
   // Set function defaults if empty
   iframe_src = iframe_src || '';
   modal_foot = modal_foot || '';
   icon_class = icon_class || 'tub_fa-info_p';
   icon = icon || 'fa-info-circle';
   text = text || '';
+
+  var href_class = '';
   var modal;
   var iframe = '';
+
+  // If text is given, add our Button class. Otherwise it's just an info icon
+  if (text != '') href_class = 'holdlink';
+
 
   if (iframe_src != '') {
     iframe = ' data-iframe="'+iframe_src+'" ';
   }
 
-  modal = '<a href="#" id="info-'+id+'" title="' + link_title + '" class="locationInfox holdlink modal-link hidden-print"><i class="fa '+icon+' '+icon_class+'"></i> ' + text + '<span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
+  modal = '<a href="#" id="info-'+id+'" title="' + link_title + '" class="locationInfox '+href_class+' modal-link hidden-print"><i class="fa '+icon+' '+icon_class+'"></i> ' + text + '<span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
 
   return modal;
 }
 
 
-/**
- * Just a backup of create_button() - fiddling around to find a nicer style
- *
- * @param href          \b STR  Link to open on click
- * @param hover         \b STR  Title to show on hovering the link
- * @param text          \b STR  The link text
- * @param icon          \b STR  Some FontAwesome icon
- * @param css_classes   \b STR  All links get the classes "fa holdlink"
- *                              (+ the icon param); add some special class
- * @param target        \b STR  opt: target for link; leave empty for self
- * @param id            \b STR  opt: element id
- * @param custom        \b STR  opt: any other a tag parameter part 
- *
- * @todo: id and custom only added for cart - not too nice
- *
- * @return \b STR link html
- */
-function create_button_org(href, hover, text, icon, css_classes, target, id, custom) {
-  //target = target || '';
-  if (typeof target !== 'undefined') { target = 'target="'+target+'"'; }
-  if (typeof id     !== 'undefined') { id = 'id="'+id+'"'; }
-  custom = custom || '';
-  var button;
-
-  button    = '<a href="'+href+'" '+id+' title="'+hover+'" class="fa holdlink '+icon+' '+css_classes+'" '+target+' '+custom+'> ' + text + '</a>';
-
-  return button;
-}
 
 
 
