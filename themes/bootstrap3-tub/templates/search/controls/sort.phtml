@@ -6,23 +6,30 @@
     <? if (count($list) == 2): ?>
       <!-- if there are two entries, a toggle will do -->
     <?
+      $toggle_style = '';
+      $x = 0;
       foreach ($list as $sortType => $sortData){
             $class = '';
+            $tclass = '';
             if ($sortData['selected']) {
                 $cur_sort = '<span class="sort_order_hint">Currently: '.$this->transEsc($sortData['desc']).'</span>';
                 $class = 'active';
+                $tclass = 'checked';
             }
 
             $cur_button = '<button type="submit" name="sort" value="'.$this->escapeHtmlAttr($sortType).'"><i class="fa fa-sort-numeric-desc"></i> '.$this->transEsc($sortData['desc']).'</button>';
 
             // Left button for toggle
             if (!isset($buttons)) {
-                $buttons = '<button type="submit" name="sort" value="'.$this->escapeHtmlAttr($sortType).'" class="tub_btn_primary btn-primary '.$class.'"> '.$this->transEsc($sortData['desc']).' </button><span> Sorting </span>';
+                $buttons = '<span> '.$this->transEsc('Sort').' </span><button type="submit" name="sort" value="'.$this->escapeHtmlAttr($sortType).'" class="tub_btn_primary btn-primary '.$class.'"> '.$this->transEsc($sortData['desc']).' </button>';
             }
             // Right button for toggle
             else {
                 $buttons .= '<button type="submit" name="sort" value="'.$this->escapeHtmlAttr($sortType).'" class="tub_btn_def btn-default '.$class.'"> '.$this->transEsc($sortData['desc']).' </button>';
             }
+
+            $toggle_style .= '<input id="st'.$x.'" type="radio" '.$tclass.' name="sort"><label onclick="this.submit();" for="st'.$x.'">'.$this->transEsc($sortData['desc']).'</label>';
+            $x++;
       }
       ?>
       <!-- Version 1: Output only text with sort order hint and one button -->
@@ -32,6 +39,11 @@
         <div class="btn-group tub_btn-group btn-toggle">
             <?=$buttons;?>
         </div>
+      <!-- Version 3: Output toggle
+        <div class="switch-toggle">
+            <?=$toggle_style;?>
+        </div>
+      -->
     <? else: ?>
       <!-- Otherwise do it the old way and add a select box -->
       <select id="sort_options_1" name="sort" class="jumpMenu form-control">
@@ -43,3 +55,4 @@
     <? endif; ?>
   </form>
 <? endif; ?>
+
