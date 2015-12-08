@@ -153,7 +153,8 @@ function displayHoldingGuide() {
             // If something has multiple volumes, our voyage ends here already;
             // @todo: It does, doesn't it? It happens only for print (so no E-Only info icon is needed)
 
-            //preload volume list
+            // preload volume list
+            // @todo: loads too much
             $.ajax({
                 dataType: 'json',
                 url: path + '/AJAX/JSON?method=loadVolumeList',
@@ -568,27 +569,6 @@ function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_
 
 
 
-
-
-function eagerloadVolumeList() {
-  var id = $.map($('.ajaxItem'), function(i) {
-    return $(i).find('.hiddenId')[0].value;
-  });
-  if (!id.length) {
-    return;
-  }
-
-  var currentId;
-  for (var ids in id) {
-    currentId = id[ids];
-    $.ajax({
-        dataType: 'json',
-        url: path + '/AJAX/JSON?method=loadVolumeList',
-        data: {"id":currentId},
-    });
-  }
-}
-
 /**
  * JQuery ready stuff
  *
@@ -640,10 +620,10 @@ recPPN = $(this).attr('id').replace('info-', ''); // Strip the info that is set 
       force_logoff_loan4 = false;
     }
     else if (loc == 'Multi') {
-preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
-get_volume_tab(recPPN); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
+      preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
+      get_volume_tab(recPPN); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
     }
-    else if (loc == 'SO' || loc == 'Multi' || loc == 'ACQ') {
+    else if (loc == 'SO' || loc == 'ACQ') {
       //
     }
     else if (loc === 'Undefined') {
@@ -653,16 +633,11 @@ get_volume_tab(recPPN); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
       // additional_content = 'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.';
     }
     else {
-preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
-get_holding_tab(recPPN); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
+      preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
+      get_holding_tab(recPPN); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
+
       // Got shelf location
       var roomMap = [];
-      /*
-      roomMap['LS1'] = 'https://www.tub.tuhh.de/wp-content/uploads/2012/08/LS1web_neu1.jpg';
-      roomMap['LS2'] = 'https://www.tub.tuhh.de/wp-content/uploads/2012/08/LS2web_neu1.jpg';
-      roomMap['LBS'] = roomMap['LS1'];
-      roomMap['SEM'] = roomMap['LS2'];
-      */
       roomMap['LS1'] = path + '/themes/bootstrap3-tub/images/tub/LS1_main.jpg';
       roomMap['LS2'] = path + '/themes/bootstrap3-tub/images/tub/LS2_main.jpg';
       roomMap['LBS'] = path + '/themes/bootstrap3-tub/images/tub/LS1_lbs.jpg';
@@ -688,6 +663,8 @@ get_holding_tab(recPPN); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvol
       $('#modalIframe').attr("src", 'https://katalog.b.tuhh.de/LBS_WEB/j_spring_security_logout');
       // Argh, with something like alert after the src change it works, timeout
       // etc. does not. Ok, fix this later, already solved this some time ago somewhere else...
+      // Problem is most likely ajax timing like for fix_sfx
+      // correct way would be like https://api.jquery.com/ajaxSuccess/ or https://stackoverflow.com/a/9865124
       alert('Logged off');
     }
 
