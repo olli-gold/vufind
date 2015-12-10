@@ -158,11 +158,17 @@ function displayHoldingGuide() {
 
             // preload volume list
             // @todo: loads too much
-            $.ajax({
-                dataType: 'json',
-                url: path + '/AJAX/JSON?method=loadVolumeList',
-                data: {"id":result.id},
-            });
+            setTimeout(function(){
+                $.ajax({
+                    dataType: 'json',
+                    url: path + '/AJAX/JSON?method=loadVolumeList',
+                    data: {"id":result.id}
+                });
+            }, 500);
+
+            // Just http://lincl1.b.tu-harburg.de:81/vufind2-test/AJAX/JSON?method=loadVolumeList&id=507180135
+            //$.load(path + '/AJAX/JSON?method=loadVolumeList&id=' + result.id);
+
             return true;
           }
           // Future: Here we would like another "early exit" for "e-only"
@@ -584,10 +590,15 @@ $(document).ready(function() {
 //  checkItemStatuses();
   displayHoldingGuide();
 
-  //https://stackoverflow.com/questions/1359018/in-jquery-how-to-attach-events-to-dynamic-html-elements
-  // Todo: 
-  // - Maybe don't use a (skip "(event) {event.preventDefault();...")
-  //$('.tub_holdingguide').on('click', 'a.locationInfox', function(event) { <--- make this better / more useful
+  /* 2015-12-09: Wait until sfx buttons are loaded; makes sfx_fix in
+  // displayHoldingGuide() safer
+  // See comment in openurl.JS with same date
+  // (note: this would maybe require a timeout - if resolving dies)
+  $.when( checkFulltextButtons() ).done(function() {
+    displayHoldingGuide();
+    alert( "We got what we came for!" );
+  });
+  */
 
 
   /**
