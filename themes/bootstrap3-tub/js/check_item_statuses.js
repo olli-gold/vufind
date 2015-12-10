@@ -588,6 +588,15 @@ $(document).ready(function() {
   // Todo: 
   // - Maybe don't use a (skip "(event) {event.preventDefault();...")
   //$('.tub_holdingguide').on('click', 'a.locationInfox', function(event) { <--- make this better / more useful
+
+
+  /**
+   * Listen to clicks on volume button in multivolume modal
+   */
+  $('.modal-content').on('click', '.get_volum_items', function() {
+    multiVolPPN = $(this).attr('id');
+    get_holding_tab(multiVolPPN, '.volume_'+multiVolPPN);
+  });
   $('body').on('click', 'a.locationInfox', function(event) {
     event.preventDefault();
 
@@ -819,19 +828,3 @@ function get_volume_tab(recID) {
     });
 
 }
-
-
-/**
- * Another document ready function
- */
-$(document).ready(function() {
-
-    /**
-     * Listen to clicks on volume button in multivolume modal
-     */
-    $('.modal-content').on('click', '.get_volum_items', function() {
-        multiVolPPN = $(this).attr('id');
-        get_holding_tab(multiVolPPN, '.volume_'+multiVolPPN);
-    });
-
-});
