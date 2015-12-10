@@ -587,7 +587,7 @@ function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_
  * @return void
  */
 $(document).ready(function() {
-//  checkItemStatuses();
+  // Get all the buttons
   displayHoldingGuide();
 
   /* 2015-12-09: Wait until sfx buttons are loaded; makes sfx_fix in
@@ -608,14 +608,21 @@ $(document).ready(function() {
     multiVolPPN = $(this).attr('id');
     get_holding_tab(multiVolPPN, '.volume_'+multiVolPPN);
   });
+
+
+  /**
+   * Show modal on button click
+   *
+   * //https://stackoverflow.com/questions/1359018/in-jquery-how-to-attach-events-to-dynamic-html-elements
+   */
   $('body').on('click', 'a.locationInfox', function(event) {
     event.preventDefault();
 
-// TMP: Test Postloading Holding/Volumes
-// Get full-status only on clicking link; add the result into span with class "data-postload_ajax" (part of modal-body)
-recPPN = $(this).attr('id').replace('info-', ''); // Strip the info that is set in createModal()
-//get_holding_tab(x);
-// END TMP: Test Postloading Holding
+	// TMP: Test Postloading Holding/Volumes
+	// Get full-status only on clicking link; add the result into span with class "data-postload_ajax" (part of modal-body)
+	recPPN = $(this).attr('id').replace('info-', ''); // Strip the info that is set in createModal()
+	//get_holding_tab(x);
+	// END TMP: Test Postloading Holding
 
     var loc = $(this).children('span').attr('data-location');
     var additional_content = '';
@@ -708,6 +715,7 @@ recPPN = $(this).attr('id').replace('info-', ''); // Strip the info that is set 
     $('#modal').modal('show');
 
   });
+
 });
 
 
