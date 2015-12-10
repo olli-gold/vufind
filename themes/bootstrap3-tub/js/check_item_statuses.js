@@ -127,6 +127,7 @@ function displayHoldingGuide() {
             */
             // Create a readin room button (last 5 years) - use same button as for case 'local'
             loc_modal_button_last5years = '';
+            title = loc_modal_body+ '\n' + vufindString.loc_modal_Title_refonly_generic;
             if (loc_abbr == 'LS1' || loc_abbr == 'LS2') {
                 loc_modal_button_last5years = create_modal(id = result.id,
                                             loc_code    = loc_abbr,
@@ -165,9 +166,6 @@ function displayHoldingGuide() {
                     data: {"id":result.id}
                 });
             }, 500);
-
-            // Just http://lincl1.b.tu-harburg.de:81/vufind2-test/AJAX/JSON?method=loadVolumeList&id=507180135
-            //$.load(path + '/AJAX/JSON?method=loadVolumeList&id=' + result.id);
 
             return true;
           }
