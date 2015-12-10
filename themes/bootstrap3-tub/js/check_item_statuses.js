@@ -90,11 +90,14 @@ function displayHoldingGuide() {
             loc_abbr = 'SEM';  loc_modal_body = vufindString.loc_modal_Body_sem + '.';
           }
           /* 2015-10-01 added @see http://redmine.tub.tuhh.de/issues/624 */
-          else if (result.electronic == '1' && result.locHref !== '') {
+          else if (result.electronic == '1' && (result.locHref !== '' && result.locHref !== false)) {
             loc_abbr = 'WEB';  loc_modal_body = vufindString.loc_modal_Body_eMarc21;
           }
+          // Electronic, but without link; pretty special case. It IS electronic, but let's handle it as false
+          // Example case (cd rom): http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/268707642
           else if (result.electronic == '1') {
-            loc_abbr = 'DIG';  loc_modal_body = vufindString.loc_modal_Body_eonly;
+            loc_abbr = 'DIGfail';  loc_modal_body = vufindString.loc_modal_Body_eonly;
+            result.patronBestOption = false;
           }
           else if (result.bestOptionLocation.indexOf('Shipping') > -1) {
             loc_abbr = 'ACQ';  loc_modal_body = vufindString.loc_modal_Body_acquired;
@@ -391,7 +394,7 @@ function displayHoldingGuide() {
                                          icon   = 'fa-frown-o',
                                          css_classes = 'x');
               loc_modal_link = create_modal(id          = result.id,
-                                            loc_code    = 'Unknown',
+                                            loc_code    = 'Undefined',
                                             link_title  = vufindString.loc_modal_Title_service_else,
                                             modal_title = vufindString.loc_modal_Title_service_else,
                                             modal_body  = vufindString.loc_modal_Body_service_else,
@@ -629,7 +632,10 @@ recPPN = $(this).attr('id').replace('info-', ''); // Strip the info that is set 
     else if (loc === 'Undefined') {
       //
     }
-    else if (loc == 'DIG') {
+    else if (loc == 'DIGfail') {
+      // 
+    }
+    else if (loc == 'WEB') {
       // additional_content = 'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.';
     }
     else {
