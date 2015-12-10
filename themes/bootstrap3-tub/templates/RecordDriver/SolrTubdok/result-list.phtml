@@ -103,6 +103,25 @@
 
     </div>
     <div class="col-xs-3 right hidden-print">
+        <span class="tub_holdingguide" record-id="<?=$id?>">
+                <!--@todo: I really don't like it here; it should be in themes/bootstrap3-tub/js/check_item_statuses.js -->
+                <script>
+                  // TUBdok button - TEMPORARILY use loc_modal_XXX_eMarc21 textes;
+                loc_modal_button = create_modal(id          = '<?= $containerID ?>',
+                                            loc_code    = 'TUBdok',
+                                            link_title  = vufindString.loc_modal_Title_tubdok,
+                                            modal_title = vufindString.loc_modal_Title_tubdok,
+                                            modal_body  = vufindString.loc_modal_Body_tubdok,
+                                            iframe_src  = '<?=$this->driver->getTubdokUrl()?>',
+                                            modal_foot  = '',
+                                            icon_class  = 'holdelectronic',
+                                            icon        = 'fa-download',
+                                            text        = 'TUBdok');
+
+                  document.write(loc_modal_button);
+                </script>
+        </span>
+
       <? /* Display qrcode if appropriate: */ ?>
       <? if ($QRCode = $this->record($this->driver)->getQRCode("results")): ?>
         <?

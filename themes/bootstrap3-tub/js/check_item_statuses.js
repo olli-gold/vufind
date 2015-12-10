@@ -663,7 +663,10 @@ $(document).ready(function() {
       // 
     }
     else if (loc == 'WEB') {
-      // additional_content = 'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.';
+      //
+    }
+    else if (loc == 'TUBdok') {
+      //
     }
     else {
       preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
