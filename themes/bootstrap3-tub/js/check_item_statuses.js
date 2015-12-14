@@ -604,7 +604,16 @@ $(document).ready(function() {
    */
   $('.modal-content').on('click', '.get_volum_items', function() {
     multiVolPPN = $(this).attr('id');
-    get_holding_tab(multiVolPPN, '.volume_'+multiVolPPN);
+
+    // hide all other open record lists
+    $('.volumeItems_ajax_loaded').hide();
+    // show current again
+    $('.volume_'+multiVolPPN).show();
+
+    // only load list if not already done (if so, we will find a table)
+    if ($('.volume_'+multiVolPPN+' table').length == 0) {
+        get_holding_tab(multiVolPPN, '.volume_'+multiVolPPN);
+    }
   });
 
 
@@ -830,14 +839,14 @@ function get_volume_tab(recID) {
             }
             for (var index = 0; index < visibleCount; index++) {
                 var entry = data.data[index];
-                var volume_ajax_row = '<tr><td class="volume_'+entry.id+'" colspan="4"></td></tr>';
+                var volume_ajax_row = '<tr><td class="volume_'+entry.id+' volumeItems_ajax_loaded" colspan="4"></td></tr>';
 
-                volume_rows.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"> Exemplare</td></tr>'+volume_ajax_row);
+                volume_rows.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> Exemplare</a></td></tr>'+volume_ajax_row);
             }
             if (volcount > visibleCount) {
                 for (var index = visibleCount; index < data.data.length; index++) {
                     var entry = data.data[index];
-                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td class="btn get_volum_items" id="'+entry.id+'">Exemplare</td></tr>'+volume_ajax_row);
+                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> Exemplare</a></td></tr>'+volume_ajax_row);
                 }
             }
 
