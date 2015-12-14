@@ -1028,6 +1028,8 @@ return $this->output($x, self::STATUS_OK);
      *
      * @todo 2015-10-13
      * - chose a better method name
+     * @todo 2015-12-11
+     * - replace with rendering recordTabs/holdingsils.phtml
      *
      * @return \Zend\Http\Response
      * @author Chris Delis <cedelis@uillinois.edu>
@@ -1042,6 +1044,11 @@ return $this->output($x, self::STATUS_OK);
 
         // Get access to PHP template renderer for partials:
         $renderer = $this->getViewRenderer();
+
+// START This should be enough IF I knew what var is missing for DAIA and where to get it
+    //$current['full_status'] = $renderer->render('recordTabs/holdingsils.phtml', ['statusItems' => $ids]);
+    //return $current;
+// END
 
         // Load messages for response:
         $messages = [
