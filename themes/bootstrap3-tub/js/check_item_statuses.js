@@ -798,6 +798,7 @@ function get_holding_tab(recID, target) {
  *   just use the same template (most likely best place: themes/bootstrap3-tub/templates/ajax)
  *   > hmm, just include themes/bootstrap3-tub/templates/record/hold.phtml somehow?
  * - (Multilanguage table header)
+ * - Add paging (bit overkill - (1000, volcount))
  *
  * @note:
  * - rip off of themes/bootstrap3-tub/js/multipart.js
@@ -822,7 +823,7 @@ function get_volume_tab(recID) {
         dataType:'json',
         success:function(data, textStatus) {
             var volcount = data.data.length;
-            var visibleCount = Math.min(10, volcount);
+            var visibleCount = Math.min(1000, volcount);
 
             if (visibleCount == 0) {
                 return false;
