@@ -1123,7 +1123,7 @@ return $this->output($x, self::STATUS_OK);
             );
         }
         foreach ($ids as $i => $id) {
-            $source = isset($sources[$i]) ? $sources[$i] : 'VuFind';
+            $source = isset($sources[$i]) ? $sources[$i] : DEFAULT_SEARCH_BACKEND;
             $data = $user->getSavedData($id, null, $source);
             if ($data) {
                 // if this item was saved, add it to the list of saved items.
@@ -1267,7 +1267,7 @@ return $this->output($x, self::STATUS_OK);
         try {
             $driver = $this->getRecordLoader()->load(
                 $this->params()->fromPost('id'),
-                $this->params()->fromPost('source', 'VuFind')
+                $this->params()->fromPost('source', DEFAULT_SEARCH_BACKEND)
             );
             $tag = $this->params()->fromPost('tag', '');
             $tagParser = $this->getServiceLocator()->get('VuFind\Tags');
@@ -1301,7 +1301,7 @@ return $this->output($x, self::STATUS_OK);
         $tagTable = $this->getTable('Tags');
         $tags = $tagTable->getForResource(
             $this->params()->fromQuery('id'),
-            $this->params()->fromQuery('source', 'VuFind'),
+            $this->params()->fromQuery('source', DEFAULT_SEARCH_BACKEND),
             0, null, null, 'count', $is_me_id
         );
 
@@ -1610,7 +1610,7 @@ return $this->output($x, self::STATUS_OK);
 
         $table = $this->getTable('Resource');
         $resource = $table->findResource(
-            $id, $this->params()->fromPost('source', 'VuFind')
+            $id, $this->params()->fromPost('source', DEFAULT_SEARCH_BACKEND)
         );
         $id = $resource->addComment($comment, $user);
 
@@ -1652,7 +1652,7 @@ return $this->output($x, self::STATUS_OK);
     {
         $driver = $this->getRecordLoader()->load(
             $this->params()->fromQuery('id'),
-            $this->params()->fromQuery('source', 'VuFind')
+            $this->params()->fromQuery('source', DEFAULT_SEARCH_BACKEND)
         );
         $html = $this->getViewRenderer()
             ->render('record/comments-list.phtml', ['driver' => $driver]);

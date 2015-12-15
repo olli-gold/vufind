@@ -133,7 +133,6 @@ class DAIATest extends \VuFindTest\Unit\ILSDriverTestCase
 
         // exact result for using the DAIA.php with testfile daia.json
 
-
         $this->assertEquals($result, $this->testResult);
     }
 
