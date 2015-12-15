@@ -23,7 +23,6 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
       <div class="col-sm-2 col-xs-3 left"><?=$cover ?></div>
     <? endif ?>
 
-<!-- REMOVE IF BUTTONS FROM DETAILS ARE OK AS REPLACEMENT
     <? if ($cart->isActive()): ?>
       <div id="bookbag-menu">
         <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
@@ -41,7 +40,6 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
         </noscript>
       </div>
     <? endif; ?>
-END REMOVE -->
 
     <?
       $displayTitle = '';
@@ -59,8 +57,6 @@ END REMOVE -->
     ?>
     <div class="col-sm-7 col-xs-6 middle">
       <div>
-        <span class="list_toolbar"><?=$this->record($this->driver)->getToolbar()?></span>
-
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>" title="<?=$displayTitle?>" class="title">
         <?
           echo $this->escapeHtml($this->truncate($displayTitle, 100));
@@ -308,6 +304,35 @@ END REMOVE -->
           </div>
         <? endforeach; ?>
       <? endif; ?>
+
+  <? if($account->isLoggedIn()): ?>
+      <? if ($this->userlist()->getMode() !== 'disabled'): ?>
+        <? /* Add to favorites */ ?>
+        <!--@todo: I really don't like it here; it should be in themes/bootstrap3-tub/js/check_item_statuses.js -->
+        <script>
+          // Save button
+          loc_button3 = create_button(href   = '<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>',
+                               hover  = '<?=$this->transEsc('help_btn_Hover_favsave')?>',
+                               text   = '<?=$this->transEsc('Add to favorites')?>',
+                               icon   = 'fa-plus-square',
+                               css_classes = 'save-record modal-link',
+                               target = '',
+                               id = '<?=$this->driver->getUniqueId() ?>',
+                               custom = 'data-recordid="<?=$cartId ?>"');
+          /*
+          loc3_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
+                                  loc_code    = '',
+                                  link_title  = '<?=$this->transEsc('help_btn_Hover_favsave')?>',
+                                  modal_title = '<?=$this->transEsc('help_modal_Title_favsave')?>',
+                                  modal_body  = '<?=$this->transEsc('help_modal_Body_favsave')?>');
+          */
+          document.write(loc_button3);
+        </script>
+      <noscript>
+        <i class="fa fa-plus"></i> <a href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" class="save-record modal-link" id="<?=$this->driver->getUniqueId() ?>" title="<?=$this->transEsc('Add to favorites')?>"><?=$this->transEsc('Add to favorites')?></a><br/>
+      </noscript>
+      <? endif; ?>
+  <? endif ?>
 
       <?=$this->driver->supportsCoinsOpenUrl()?'<span class="Z3988" title="'.$this->escapeHtmlAttr($this->driver->getCoinsOpenUrl()).'"></span>':''?>
     </div>

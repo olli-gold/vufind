@@ -10,12 +10,12 @@
   $cart = $this->cart();
   $cartId = $this->driver->getResourceSource() . '|' . $id;
 ?>
-<ul class="nav nav-pills hidden-print toolbar">
+<ul class="nav nav-pills hidden-print">
   <? if (count($this->driver->getCitationFormats()) > 0): ?>
-    <li><a id="cite-record" class="cite-record modal-link <?=$controllerClass?>" href="<?=$this->url('record-cite', array('id'=>$id)) ?>" title="<?=$this->transEsc('Cite this')?>" rel="nofollow"><i class="fa fa-asterisk"></i> <?=$this->transEsc('Cite this')?></a></li>
+    <li><a id="cite-record" class="modal-link <?=$controllerClass?>" href="<?=$this->url('record-cite', array('id'=>$id)) ?>" title="<?=$this->transEsc('Cite this')?>" rel="nofollow"><i class="fa fa-asterisk"></i> <?=$this->transEsc('Cite this')?></a></li>
   <? endif; ?>
-  <!--<li><a id="sms-record" class="sms-record modal-link <?=$controllerClass?>" href="<?=$this->url('record-sms', array('id'=>$id)) ?>" title="<?=$this->transEsc('Text this')?>" rel="nofollow"><i class="fa fa-mobile"></i> <?=$this->transEsc('Text this')?></a></li>-->
-  <li><a id="mail-record" class="mail-record modal-link <?=$controllerClass?>" href="<?=$this->url('record-email', array('id'=>$id)) ?>" title="<?=$this->transEsc('Email this')?>" rel="nofollow"><i class="fa fa-envelope"></i> <?=$this->transEsc('Email this')?></a></li>
+  <!--<li><a id="sms-record" class="modal-link <?=$controllerClass?>" href="<?=$this->url('record-sms', array('id'=>$id)) ?>" title="<?=$this->transEsc('Text this')?>" rel="nofollow"><i class="fa fa-mobile"></i> <?=$this->transEsc('Text this')?></a></li>-->
+  <li><a id="mail-record" class="modal-link <?=$controllerClass?>" href="<?=$this->url('record-email', array('id'=>$id)) ?>" title="<?=$this->transEsc('Email this')?>" rel="nofollow"><i class="fa fa-envelope"></i> <?=$this->transEsc('Email this')?></a></li>
 
   <? $exportFormats = $this->export()->getFormatsForRecord($this->driver); ?>
   <? if(count($exportFormats) > 0): ?>
@@ -32,7 +32,7 @@
   <? $account = $this->auth()->getManager(); ?>
   <? if($account->isLoggedIn()): ?>
       <? if ($this->userlist()->getMode() !== 'disabled'): ?>
-          <li><a id="save-record" class="save-record modal-link <?=$controllerClass?>" href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" title="<?=$this->transEsc('Add to favorites')?>" rel="nofollow"><i class="fa fa-plus"></i> <?=$this->transEsc('Add to favorites')?></a></li>
+          <li><a id="save-record" class="modal-link <?=$controllerClass?>" href="<?=$this->recordLink()->getActionUrl($this->driver, 'Save')?>" title="<?=$this->transEsc('Add to favorites')?>" rel="nofollow"><i class="fa fa-plus"></i> <?=$this->transEsc('Add to favorites')?></a></li>
       <? endif; ?>
   <? endif ?>
   <? if (!empty($addThis)): ?>
@@ -40,19 +40,19 @@
   <? endif; ?>
   <? if ($cart->isActive()): ?>
     <li>
-        <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
-        <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden" href="#" data-recordid="<?=$cartId ?>"><i class="tub_lielement"></i> <?=$this->transEsc('Add to Book Bag') ?> </a>
-        <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden" href="#" data-recordid="<?=$cartId ?>"><i class="tub_lielement"></i> <?=$this->transEsc('Remove from Book Bag') ?> </a>
-        <noscript>
-          <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
-            <input type="hidden" name="ids[]" value="<?=$cartId ?>" />
-            <? if ($cart->contains($cartId)): ?>
-              <input class="btn btn-default" type="submit" name="delete" value="<?=$this->transEsc('Remove from Book Bag')?>"/>
-            <? else: ?>
-              <input class="btn btn-default" type="submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
-            <? endif; ?>
-          </form>
-        </noscript>
+      <input id="cartId" type="hidden" name="ids[]" value="<?=$this->escapeHtmlAttr($cartId)?>" />
+      <a id="cart-add" class="<? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden" href="#"><i class="fa fa-plus"></i> <?=$this->transEsc('Add to Book Bag') ?></a>
+      <a id="cart-remove" class="<? if($cart->contains($cartId)): ?>correct <? endif ?>hidden" href="#"><i class="fa fa-minus-circle"></i> <?=$this->transEsc('Remove from Book Bag') ?></a>
+      <noscript>
+        <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
+          <input type="hidden" name="ids[]" value="<?=$this->escapeHtmlAttr($cartId)?>" />
+          <? if ($cart->contains($cartId)): ?>
+            <input class="btn btn-default" type="submit" name="delete" value="<?=$this->transEsc('Remove from Book Bag')?>"/>
+          <? else: ?>
+            <input class="btn btn-default" type="submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
+          <? endif; ?>
+        </form>
+      </noscript>
     </li>
   <? endif; ?>
 </ul>

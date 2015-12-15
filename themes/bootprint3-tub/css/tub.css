@@ -522,36 +522,3 @@ label {
 .doi_link a {
     /*color: #ffffff;*/
 }
-
-
-
-/* Toolbar in result list - dirty overides - just for basic principle for now */
-/* .list_toolbar {position: absolute; top: 6px; left: -8px; background-color: #ffffff;} - Variante links neben cover */
-.list_toolbar {float: right; background-color: #ffffff;}
-.list_toolbar .toolbar {}
-.list_toolbar .toolbar li {width: 36px; max-height: 28px;  clear: both; padding: 0px; margin: 0px; text-align: center;}
-.list_toolbar .toolbar a.modal-link, .list_toolbar .toolbar a.export-toggle, .list_toolbar .toolbar a.save-record,
-.list_toolbar .toolbar a.single-cart-add, .list_toolbar .toolbar a.single-cart-remove {visibility: hidden;}
-
-.list_toolbar .toolbar a.modal-link:after, .list_toolbar .toolbar a.export-toggle:after, .list_toolbar .toolbar a.save-record:after,
-.list_toolbar .toolbar a.single-cart-add:after, .list_toolbar .toolbar a.single-cart-remove:after {
-  content:'';
-  visibility: visible;
-  display: block;
-  padding: 0px;
-  margin: 0;
-  position: absolute;
-  top: 0;
-  color: #6BC1BB;
-  font-style: normal;
-  font-size: 20px;
-  font-family: FontAwesome;
-  z-index: 500;
-}
-.list_toolbar .toolbar a.cite-record:after    {content: "\f0ea";}
-.list_toolbar .toolbar a.sms-record:after     {content: "\f10b";}
-.list_toolbar .toolbar a.mail-record:after    {content: "\f0e0";}
-.list_toolbar .toolbar a.export-toggle:after  {content: "\f0c7";}
-.list_toolbar .toolbar a.single-cart-add:after       {content: "\f006"; color: #6BC1BB;}
-.list_toolbar .toolbar a.single-cart-remove:after    {content: "\f005"; color: #6BC1BB;}
-.list_toolbar .toolbar a.save-record:after    {content: "\f004";}

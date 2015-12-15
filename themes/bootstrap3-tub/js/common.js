@@ -545,39 +545,4 @@ $(document).ready(function() {
     //$(this).find('.tub_btn').toggleClass('btn-default');
   });
 
-
-
-
-
-/* 2015-12-13 FROM record.js
-- just a quick check
-*/
-  /* --- LIGHTBOX --- */
-  // Cite lightbox
-  $('.cite-record').click(function() {
-    var params = extractClassParams(this);
-    id = $(this).closest("ul").attr("id");
-    return Lightbox.get(params['controller'], 'Cite', {id:id});
-  });
-  // Mail lightbox
-  $('.mail-record').click(function() {
-    var params = extractClassParams(this);
-    id = $(this).closest("ul").attr("id");
-    return Lightbox.get(params['controller'], 'Email', {id:id});
-  });
-  // Save lightbox
-  $('.save-record').click(function() {
-    var params = extractClassParams(this);
-    id = $(this).closest("ul").attr("id");
-    return Lightbox.get(params['controller'], 'Save', {id:id});
-  });
-  // SMS lightbox
-  $('.sms-record').click(function() {
-    var params = extractClassParams(this);
-    id = $(this).closest("ul").attr("id");
-    return Lightbox.get(params['controller'], 'SMS', {id:id});
-  });
-
-
-
 });
