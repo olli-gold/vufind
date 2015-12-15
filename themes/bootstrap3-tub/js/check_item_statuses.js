@@ -90,11 +90,14 @@ function displayHoldingGuide() {
             loc_abbr = 'SEM';  loc_modal_body = vufindString.loc_modal_Body_sem + '.';
           }
           /* 2015-10-01 added @see http://redmine.tub.tuhh.de/issues/624 */
-          else if (result.electronic == '1' && result.locHref !== '') {
+          else if (result.electronic == '1' && (result.locHref !== '' && result.locHref !== false)) {
             loc_abbr = 'WEB';  loc_modal_body = vufindString.loc_modal_Body_eMarc21;
           }
+          // Electronic, but without link; pretty special case. It IS electronic, but let's handle it as false
+          // Example case (cd rom): http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/268707642
           else if (result.electronic == '1') {
-            loc_abbr = 'DIG';  loc_modal_body = vufindString.loc_modal_Body_eonly;
+            loc_abbr = 'DIGfail';  loc_modal_body = vufindString.loc_modal_Body_eonly;
+            result.patronBestOption = false;
           }
           else if (result.bestOptionLocation.indexOf('Shipping') > -1) {
             loc_abbr = 'ACQ';  loc_modal_body = vufindString.loc_modal_Body_acquired;
@@ -124,6 +127,7 @@ function displayHoldingGuide() {
             */
             // Create a readin room button (last 5 years) - use same button as for case 'local'
             loc_modal_button_last5years = '';
+            title = loc_modal_body+ '\n' + vufindString.loc_modal_Title_refonly_generic;
             if (loc_abbr == 'LS1' || loc_abbr == 'LS2') {
                 loc_modal_button_last5years = create_modal(id = result.id,
                                             loc_code    = loc_abbr,
@@ -155,11 +159,14 @@ function displayHoldingGuide() {
 
             // preload volume list
             // @todo: loads too much
-            $.ajax({
-                dataType: 'json',
-                url: path + '/AJAX/JSON?method=loadVolumeList',
-                data: {"id":result.id},
-            });
+            setTimeout(function(){
+                $.ajax({
+                    dataType: 'json',
+                    url: path + '/AJAX/JSON?method=loadVolumeList',
+                    data: {"id":result.id}
+                });
+            }, 500);
+
             return true;
           }
           // Future: Here we would like another "early exit" for "e-only"
@@ -391,7 +398,7 @@ function displayHoldingGuide() {
                                          icon   = 'fa-frown-o',
                                          css_classes = 'x');
               loc_modal_link = create_modal(id          = result.id,
-                                            loc_code    = 'Unknown',
+                                            loc_code    = 'Undefined',
                                             link_title  = vufindString.loc_modal_Title_service_else,
                                             modal_title = vufindString.loc_modal_Title_service_else,
                                             modal_body  = vufindString.loc_modal_Body_service_else,
@@ -578,21 +585,51 @@ function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_
  * @return void
  */
 $(document).ready(function() {
-//  checkItemStatuses();
+  // Get all the buttons
   displayHoldingGuide();
 
-  //https://stackoverflow.com/questions/1359018/in-jquery-how-to-attach-events-to-dynamic-html-elements
-  // Todo: 
-  // - Maybe don't use a (skip "(event) {event.preventDefault();...")
-  //$('.tub_holdingguide').on('click', 'a.locationInfox', function(event) { <--- make this better / more useful
+  /* 2015-12-09: Wait until sfx buttons are loaded; makes sfx_fix in
+  // displayHoldingGuide() safer
+  // See comment in openurl.JS with same date
+  // (note: this would maybe require a timeout - if resolving dies)
+  $.when( checkFulltextButtons() ).done(function() {
+    displayHoldingGuide();
+    alert( "We got what we came for!" );
+  });
+  */
+
+
+  /**
+   * Listen to clicks on volume button in multivolume modal
+   */
+  $('.modal-content').on('click', '.get_volum_items', function() {
+    multiVolPPN = $(this).attr('id');
+
+    // hide all other open record lists
+    $('.volumeItems_ajax_loaded').hide();
+    // show current again
+    $('.volume_'+multiVolPPN).show();
+
+    // only load list if not already done (if so, we will find a table)
+    if ($('.volume_'+multiVolPPN+' table').length == 0) {
+        get_holding_tab(multiVolPPN, '.volume_'+multiVolPPN);
+    }
+  });
+
+
+  /**
+   * Show modal on button click
+   *
+   * //https://stackoverflow.com/questions/1359018/in-jquery-how-to-attach-events-to-dynamic-html-elements
+   */
   $('body').on('click', 'a.locationInfox', function(event) {
     event.preventDefault();
 
-// TMP: Test Postloading Holding/Volumes
-// Get full-status only on clicking link; add the result into span with class "data-postload_ajax" (part of modal-body)
-recPPN = $(this).attr('id').replace('info-', ''); // Strip the info that is set in createModal()
-//get_holding_tab(x);
-// END TMP: Test Postloading Holding
+	// TMP: Test Postloading Holding/Volumes
+	// Get full-status only on clicking link; add the result into span with class "data-postload_ajax" (part of modal-body)
+	recPPN = $(this).attr('id').replace('info-', ''); // Strip the info that is set in createModal()
+	//get_holding_tab(x);
+	// END TMP: Test Postloading Holding
 
     var loc = $(this).children('span').attr('data-location');
     var additional_content = '';
@@ -629,8 +666,14 @@ recPPN = $(this).attr('id').replace('info-', ''); // Strip the info that is set 
     else if (loc === 'Undefined') {
       //
     }
-    else if (loc == 'DIG') {
-      // additional_content = 'Angehörige der TU (Mitarbeiter und Studenten) können von zu Hause auf solche Ressourcen via VPN-Client (<a href="https://www.tuhh.de/rzt/vpn/" target="_blank">Informationen des RZ</a>) zugreifen. In eiligen Fällen empfehlen wir das <a href="https://webvpn.rz.tu-harburg.de/" target="_blank">WebVPN</a>. Melden Sie sich dort mit ihrer TU-Kennung an und beginnen dann ihre Suche im Katalog dort.';
+    else if (loc == 'DIGfail') {
+      // 
+    }
+    else if (loc == 'WEB') {
+      //
+    }
+    else if (loc == 'TUBdok') {
+      //
     }
     else {
       preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
@@ -682,6 +725,7 @@ recPPN = $(this).attr('id').replace('info-', ''); // Strip the info that is set 
     $('#modal').modal('show');
 
   });
+
 });
 
 
@@ -763,6 +807,7 @@ function get_holding_tab(recID, target) {
  *   just use the same template (most likely best place: themes/bootstrap3-tub/templates/ajax)
  *   > hmm, just include themes/bootstrap3-tub/templates/record/hold.phtml somehow?
  * - (Multilanguage table header)
+ * - Add paging (bit overkill - (1000, volcount))
  *
  * @note:
  * - rip off of themes/bootstrap3-tub/js/multipart.js
@@ -787,21 +832,21 @@ function get_volume_tab(recID) {
         dataType:'json',
         success:function(data, textStatus) {
             var volcount = data.data.length;
-            var visibleCount = Math.min(10, volcount);
+            var visibleCount = Math.min(1000, volcount);
 
             if (visibleCount == 0) {
                 return false;
             }
             for (var index = 0; index < visibleCount; index++) {
                 var entry = data.data[index];
-                var volume_ajax_row = '<tr><td class="volume_'+entry.id+'" colspan="4"></td></tr>';
+                var volume_ajax_row = '<tr><td class="volume_'+entry.id+' volumeItems_ajax_loaded" colspan="4"></td></tr>';
 
-                volume_rows.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"> Exemplare</td></tr>'+volume_ajax_row);
+                volume_rows.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> Exemplare</a></td></tr>'+volume_ajax_row);
             }
             if (volcount > visibleCount) {
                 for (var index = visibleCount; index < data.data.length; index++) {
                     var entry = data.data[index];
-                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td class="btn get_volum_items" id="'+entry.id+'">Exemplare</td></tr>'+volume_ajax_row);
+                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> Exemplare</a></td></tr>'+volume_ajax_row);
                 }
             }
 
@@ -813,19 +858,3 @@ function get_volume_tab(recID) {
     });
 
 }
-
-
-/**
- * Another document ready function
- */
-$(document).ready(function() {
-
-    /**
-     * Listen to clicks on volume button in multivolume modal
-     */
-    $('.modal-content').on('click', '.get_volum_items', function() {
-        multiVolPPN = $(this).attr('id');
-        get_holding_tab(multiVolPPN, '.volume_'+multiVolPPN);
-    });
-
-});

@@ -106,6 +106,6 @@ $(document).ready(function() {
         return false;
     });
 
-    checkFulltextButtons();
+    checkFulltextButtons(); // 2015-12-09: maybe better move this to check_item_statuses.js
     $('.openUrlEmbed.openUrlEmbedAutoLoad a').trigger("click");
 });
