@@ -602,7 +602,8 @@ $(document).ready(function() {
   /**
    * Listen to clicks on volume button in multivolume modal
    */
-  $('.modal-content').on('click', '.get_volum_items', function() {
+  $('.modal-content').on('click', '.get_volum_items', function(event) {
+    event.preventDefault();
     multiVolPPN = $(this).attr('id');
 
     // hide all other open record lists
