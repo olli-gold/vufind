@@ -790,6 +790,7 @@ class SolrDefault extends AbstractBase
         $params['rft.volume'] = $this->getContainerVolume();
         $params['rft.issue'] = $this->getContainerIssue();
         $params['rft.spage'] = $this->getContainerStartPage();
+        $params['rft.date'] = $this->getPublicationDate();
         // unset default title -- we only want jtitle/atitle here:
         unset($params['rft.title']);
         $params['rft.jtitle'] = $this->getContainerTitle();
