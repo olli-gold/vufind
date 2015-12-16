@@ -176,6 +176,9 @@ table.datagrid td a {
   /* customize Position of buttons span */
 }
 
+/* Small spacing under SFX-Button (if available) */
+.imagebased {margin-bottom: 10px;}
+
 .holdlink, .holdlink:active, .holdlink:hover, .holdlink:visited {
    background-color: #D8F2FC;
    color: #000;
@@ -183,7 +186,7 @@ table.datagrid td a {
    border-radius: 3px;
    opacity: 1;
    display: inline-block;
-   margin: 10px 0 0 2px;
+   margin: 0px 0 10px 2px;
    padding: 0px;
    width: 118px;
    /* font-weight: bold; */
@@ -220,7 +223,7 @@ i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link {background-im
 .fa-info-circle {color: #27827F !important;}
 
 .tub_fa-info_p {
-   margin-top: 14px;
+   margin-top: 4px;
    margin-bottom: 0;
    padding-left: 2px;
    cursor: pointer !important;
