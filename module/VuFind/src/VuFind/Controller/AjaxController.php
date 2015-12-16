@@ -2007,6 +2007,11 @@ return $this->output($x, self::STATUS_OK);
             }
 */
         }
+        else {
+            $this->loadVolumeListAjax();
+            // call this method recursively - now we should have the cached result
+            return $this->getMultipartAjax();
+        }
         return $this->output($retval, self::STATUS_OK);
     }
 
