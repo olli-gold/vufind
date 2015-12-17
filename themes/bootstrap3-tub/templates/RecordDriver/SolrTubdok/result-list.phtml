@@ -106,19 +106,13 @@
         <span class="tub_holdingguide" record-id="<?=$id?>">
                 <!--@todo: I really don't like it here; it should be in themes/bootstrap3-tub/js/check_item_statuses.js -->
                 <script>
-                  // TUBdok button - TEMPORARILY use loc_modal_XXX_eMarc21 textes;
-                loc_modal_button = create_modal(id          = '<?= $containerID ?>',
-                                            loc_code    = 'TUBdok',
-                                            link_title  = vufindString.loc_modal_Title_tubdok,
-                                            modal_title = vufindString.loc_modal_Title_tubdok,
-                                            modal_body  = vufindString.loc_modal_Body_tubdok,
-                                            iframe_src  = '<?=$this->driver->getTubdokUrl()?>',
-                                            modal_foot  = '',
-                                            icon_class  = 'holdelectronic',
-                                            icon        = 'fa-download',
-                                            text        = 'TUBdok');
-
-                  document.write(loc_modal_button);
+                  loc_button = create_button(href   = '<?=$this->driver->getTubdokUrl()?>',
+                                             hover  = vufindString.loc_modal_Title_tubdok,
+                                             text   = 'TUBdok',
+                                             icon   = 'fa-university',
+                                             css_classes = 'holdelectronic',
+                                             target = '_blank');
+                  document.write(loc_button);
                 </script>
         </span>
 
