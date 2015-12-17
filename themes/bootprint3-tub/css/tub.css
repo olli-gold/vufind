@@ -154,16 +154,6 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 }
 */
 
-table.datagrid td {
-   border-left: 1px solid #ffffff;
-   border-right: 1px solid #ffffff;
-   padding: 5px 10px;
-}
-
-table.datagrid td a {
-   color: #003366;
-}
-
 .powered-by {
    background-image: url("../../../themes/bootprint3-tub/images/vufind_logo.png");
    background-size: 100px;
@@ -251,8 +241,13 @@ i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link {background-im
    // Loading icon; always this way: <i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...
 }
 
-/* TZ: z-index: Vufind */
-.modal-dialog{z-index:1050;}
+/* Modal and modal content */
+.modal-dialog {z-index:1050;}
+.data-modal_postload_ajax table td      {border-left: 1px solid #ffffff; border-right: 1px solid #ffffff; padding: 5px 10px 2px 2px;}
+.data-modal_postload_ajax table td  a   {color: #003366;}
+.holding_ajax_table         {background-color: #F8F8F8; width: 90%;}
+.holding_ajax_table th      {font-weight: bolder;}
+.holding_ajax_table_status  {text-align: center;}
 
 .tubbadge {
    float: right;
