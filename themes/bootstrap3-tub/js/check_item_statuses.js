@@ -357,7 +357,7 @@ function displayHoldingGuide(container_source, display_target) {
                                             iframe_src  = 'https://katalog.b.tuhh.de/DB=1/'+vufindString.opclang+'/PPN?PPN='+result.id,
                                             modal_foot  = '',
                                             icon_class  = 'holdacquired',
-                                            icon        = 'fa-plane',
+                                            icon        = 'fa-money',
                                             text        = vufindString.loc_modal_Title_acquired);
               bestOption = loc_modal_button;
               break;
