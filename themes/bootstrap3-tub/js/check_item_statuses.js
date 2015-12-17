@@ -201,7 +201,7 @@ function displayHoldingGuide(container_source, display_target) {
                 loc_button = create_button(href   = result.locHref,
                                            hover  = vufindString.loc_modal_Title_eMarc21,
                                            text   = title,
-                                           icon   = 'fa-download',
+                                           icon   = 'fa-globe',
                                            css_classes = 'holdelectronic');
                 loc_modal_link = create_modal(id          = result.id,
                                               loc_code    = loc_abbr,
