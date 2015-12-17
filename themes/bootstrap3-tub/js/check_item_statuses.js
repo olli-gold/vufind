@@ -331,7 +331,7 @@ function displayHoldingGuide(container_source, display_target) {
                                             icon_class  = 'holdrefonly',
                                             icon        = 'fa-home',
                                             text        = loc_abbr + ' ' + loc_callno);
-              bestOption = loc_modal_button;
+              bestOption = bestOption + loc_modal_button;
               break;
             case 'acquired':
               /* 2015-12-03: only create modal
