@@ -522,3 +522,10 @@ label {
 .doi_link a {
     /*color: #ffffff;*/
 }
+
+a.nolink {
+    color: #000000;
+}
+a.nolink:hover {
+    color: #000000;
+}
