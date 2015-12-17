@@ -63,7 +63,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
           $summSeries = $this->driver->getSeriesShort();
           if (!empty($summSeries)) {
               foreach ($summSeries as $ser) {
-                  echo " (".$ser['name']." ".$ser['number'].")";
+                  echo ' <span>('.$ser['name'].' '.$ser['number'].')</span>';
               }
           }
         ?>
@@ -75,7 +75,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
       <?
         $volumename = $this->driver->getVolumeName();
         if (!empty($volumename)): ?>
-        <div class="resultItemLine2">
+        <div class="resultItemLine2" style="font-size:smaller;">
           <?=$this->transEsc('Volume title')?>:
           <?
           foreach ($volumename as $field) {
