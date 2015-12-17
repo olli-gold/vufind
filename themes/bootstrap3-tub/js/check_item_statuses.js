@@ -103,6 +103,12 @@ function displayHoldingGuide(container_source, display_target) {
           else if (result.bestOptionLocation.indexOf('Shipping') > -1) {
             loc_abbr = 'ACQ';  loc_modal_body = vufindString.loc_modal_Body_acquired;
           }
+          // 2015-12-17: Addes case for periodical supplementals ("Einzelsig." but not multiVols)
+          // @todo: this should be solved more thoroughly finally
+          else if (result.bestOptionLocation == 's. zugeh\u00f6rige Publikationen' && result.multiVols == false) {
+            loc_abbr = 'Supplemental'; // might make it a special button; not used yet anywhere
+            result.patronBestOption = 'false'; // override (always get the default button that is show if everything fails; see switch below)
+          }
           else {
             loc_abbr = 'Undefined';
            // alert('Hier ist ein komischer Fall bei '+loc_callno);
