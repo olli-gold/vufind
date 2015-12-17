@@ -1038,9 +1038,11 @@ class DAIA extends AbstractBase implements
     {
         $return = [];
 
+        /* do not add presence_use_only as a normal message
         if ($this->isPresenceUseOnly($item)) {
             $return[] = 'presence_use_only';
         }
+        */
 
         // Check item for limitations on loan or presentation
         $presLimits = $this->getItemServiceLimitation($item, 'presentation');
