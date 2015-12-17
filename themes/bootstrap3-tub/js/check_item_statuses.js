@@ -602,8 +602,9 @@ $(document).ready(function() {
 
   /**
    * Listen to clicks on volume button in multivolume modal
+   *(2015-12-17: Added #record-tabs so it works in record/view.phtml with multipart tab too)
    */
-  $('.modal-content').on('click', '.get_volum_items', function(event) {
+  $('.modal-content, #record-tabs').on('click', '.get_volum_items', function(event) {
     event.preventDefault();
     multiVolPPN = $(this).attr('id');
 
