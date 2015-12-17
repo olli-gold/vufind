@@ -195,7 +195,7 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
    font-size: 15px;
 }
 /* Reset fa-heart and fa-home - TODO for less cleanup */
-i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
+i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link, i.fa-shopping-cart {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
 
 
 /* Customize button for single option */
