@@ -154,16 +154,6 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
 }
 */
 
-table.datagrid td {
-   border-left: 1px solid #ffffff;
-   border-right: 1px solid #ffffff;
-   padding: 5px 10px;
-}
-
-table.datagrid td a {
-   color: #003366;
-}
-
 .powered-by {
    background-image: url("../../../themes/bootprint3-tub/images/vufind_logo.png");
    background-size: 100px;
@@ -176,6 +166,9 @@ table.datagrid td a {
   /* customize Position of buttons span */
 }
 
+/* Small spacing under SFX-Button (if available) */
+.imagebased {margin-bottom: 10px;}
+
 .holdlink, .holdlink:active, .holdlink:hover, .holdlink:visited {
    background-color: #D8F2FC;
    color: #000;
@@ -183,7 +176,7 @@ table.datagrid td a {
    border-radius: 3px;
    opacity: 1;
    display: inline-block;
-   margin: 10px 0 0 2px;
+   margin: 0px 0 10px 2px;
    padding: 0px;
    width: 118px;
    /* font-weight: bold; */
@@ -202,7 +195,7 @@ table.datagrid td a {
    font-size: 15px;
 }
 /* Reset fa-heart and fa-home - TODO for less cleanup */
-i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
+i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link, i.fa-shopping-cart {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
 
 
 /* Customize button for single option */
@@ -220,7 +213,7 @@ i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link {background-im
 .fa-info-circle {color: #27827F !important;}
 
 .tub_fa-info_p {
-   margin-top: 14px;
+   margin-top: 4px;
    margin-bottom: 0;
    padding-left: 2px;
    cursor: pointer !important;
@@ -248,8 +241,13 @@ i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link {background-im
    // Loading icon; always this way: <i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...
 }
 
-/* TZ: z-index: Vufind */
-.modal-dialog{z-index:1050;}
+/* Modal and modal content */
+.modal-dialog {z-index:1050;}
+.data-modal_postload_ajax table td      {border-left: 1px solid #ffffff; border-right: 1px solid #ffffff; padding: 5px 10px 2px 2px;}
+.data-modal_postload_ajax table td  a   {color: #003366;}
+.holding_ajax_table         {background-color: #F8F8F8; width: 90%;}
+.holding_ajax_table th      {font-weight: bolder;}
+.holding_ajax_table_status  {text-align: center;}
 
 .tubbadge {
    float: right;
@@ -285,8 +283,8 @@ i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link {background-im
 div .left   {width: 17%; position: relative; min-height: 150px;}
 div .middle {width: 59%; position: relative; min-height: 150px;}
 div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15px;}
-.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* 21px/11px trifft genau bildecke */
-.recordcover_fixed_width {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
+.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* Org: 130px; left: 10px; */
+.recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
 #bookbag-menu {position: absolute; bottom: 7px; left: 89px; background-color: #fff; padding: 2px; font-size: 16px;}
 #bookbag-menu .tub_star_on  {color: #EEC429;}
 #bookbag-menu .tub_star_off {color: #FAEFD4;}

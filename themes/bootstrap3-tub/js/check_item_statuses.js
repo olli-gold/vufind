@@ -21,14 +21,6 @@
  * - Call number must be 7 characters long (=reading room), it must be available (else = reserve button, )
  * - https://coderwall.com/p/6uxw7w/simple-multilanguage-with-jquery - might even nearly use the language inis)
  *
- * @todo: Inline way to show options AND show correct record link
- *  - <span class="holdtomes hidden"><a href="<?=$this->recordLink()->getTabUrl($this->driver, 'TomesVolumes')?>#tabnav" class="holdlink fa fa-stack-overflow"> <?=$this->transEsc("See Tomes/Volumes")?></a></span>
- *  - For now stick to generating Buttons and infos here. Decide later to
- *      - either use the template way
- *      - or use stick to the current JS way
- *      - but be consistent, one place to modify css, titles and stuff
- * - Readd the location as part of the bibliographic information somewhere else (if it is a DOI, URN or maybe a publisher direct link)
- *
  * @todo ILL and Acqisition proposal should be here too
  *  - @see templates/RecordDriver/SolrGBV/result-list.phtml
  *  - @see templates/RecordDriver/Primo/result-list.phtml
@@ -36,10 +28,19 @@
  * @note Since 2015-10-12 Daia return the full callnumber with location
  * (xx:xxxx-xxxx)
  *
+ * @note 2015-12-16
+ * - Added way to show buttons also in themes/bootstrap3-tub/templates/ajax/status-full.phtml
+ *   > introduced container_source and display_target as parameters. This way
+ *     the buttons can either be shown in the main result list or in the modal
+ *     "See volumes" - or anywhere else.
+ *
  * @return void
  */
-function displayHoldingGuide() {
-  var id = $.map($('.ajaxItem'), function(i) {
+function displayHoldingGuide(container_source, display_target) {
+  container_source = container_source || '.ajaxItem'; // alternative '.ajaxItem_modal' - so it isn't confused with content "below" modal
+  display_target = display_target || '.holdlocation'; // alternative '.holdlocation_modal'
+
+  var id = $.map($(container_source), function(i) {
     return $(i).find('.hiddenId')[0].value;
   });
   if (!id.length) {
@@ -62,7 +63,7 @@ function displayHoldingGuide() {
 
           //alert( result.id + ':' + xhr.rid );
 
-          var item = $($('.ajaxItem')[xhr.rid]);
+          var item = $($(container_source)[xhr.rid]);
 
           // Here we start figuring out what we have to show on implicit information
           // Some helper variables
@@ -153,7 +154,7 @@ function displayHoldingGuide() {
                                           text        = vufindString.loc_volumes);
             bestOption = loc_modal_button_last5years + loc_modal_button_volumes;
             //item.find('.holdtomes').removeClass('hidden');
-            item.find('.holdlocation').empty().append(bestOption);
+            item.find(display_target).empty().append(bestOption);
             // If something has multiple volumes, our voyage ends here already;
             // @todo: It does, doesn't it? It happens only for print (so no E-Only info icon is needed)
 
@@ -330,7 +331,7 @@ function displayHoldingGuide() {
                                             icon_class  = 'holdrefonly',
                                             icon        = 'fa-home',
                                             text        = loc_abbr + ' ' + loc_callno);
-              bestOption = loc_modal_button;
+              bestOption = bestOption + loc_modal_button;
               break;
             case 'acquired':
               /* 2015-12-03: only create modal
@@ -356,7 +357,7 @@ function displayHoldingGuide() {
                                             iframe_src  = 'https://katalog.b.tuhh.de/DB=1/'+vufindString.opclang+'/PPN?PPN='+result.id,
                                             modal_foot  = '',
                                             icon_class  = 'holdacquired',
-                                            icon        = 'fa-plane',
+                                            icon        = 'fa-money',
                                             text        = vufindString.loc_modal_Title_acquired);
               bestOption = loc_modal_button;
               break;
@@ -437,7 +438,7 @@ function displayHoldingGuide() {
           */
 
           // Show our final result!
-          item.find('.holdlocation').empty().append(bestOption);
+          item.find(display_target).empty().append(bestOption);
 
           // SFX-Hack: If nothing is found, a very small dummy gif is returned.
           // If so, hide the controls (or just the image), so everything else around
@@ -473,13 +474,13 @@ function displayHoldingGuide() {
           // If neither sfx is available and our fulltext hack didn't fill in
           // something, then show our fallback information
           if (sfx_available == false && item.find('.holdlink').length == 0) {
-            item.find('.holdlocation').empty().append(fallbackOption);
+            item.find(display_target).empty().append(fallbackOption);
           }
 
         });
       } else {
         // display the error message on each of the ajax status place holder
-        item.find('.holdlocation').empty().append(response.data);
+        item.find(display_target).empty().append(response.data);
       }
       // (Why?)
       //item.find('.holdlocation').removeClass('holdlocation');
@@ -602,8 +603,10 @@ $(document).ready(function() {
 
   /**
    * Listen to clicks on volume button in multivolume modal
+   *(2015-12-17: Added #record-tabs so it works in record/view.phtml with multipart tab too)
    */
-  $('.modal-content').on('click', '.get_volum_items', function() {
+  $('.modal-content, #record-tabs').on('click', '.get_volum_items', function(event) {
+    event.preventDefault();
     multiVolPPN = $(this).attr('id');
 
     // hide all other open record lists
@@ -667,8 +670,11 @@ $(document).ready(function() {
     else if (loc === 'Undefined') {
       //
     }
+    else if (loc == 'DIG') {
+      //
+    }
     else if (loc == 'DIGfail') {
-      // 
+      //
     }
     else if (loc == 'WEB') {
       //
@@ -761,7 +767,7 @@ function get_holding_tab(recID, target) {
             if(response.status == 'OK') {
             $.each(response.data, function(i, result) {
 
-            //var item = $($('.ajaxItem')[xhr.rid]);
+            //var item = $($(container_source)[xhr.rid]);
             if (typeof(result.full_status) != 'undefined' && result.full_status.length > 0) {
                 // Full status mode is on -- display the HTML and hide extraneous junk:
                 $(target).empty().append(result.full_status);
@@ -793,6 +799,12 @@ function get_holding_tab(recID, target) {
             }
         });
       }
+    }
+  }).done(function(response) {
+    // When fetching copies via ajax is done, fetch the status of each coppy
+    //alert(response.status);
+    if(response.status == 'OK') {
+      displayHoldingGuide('.ajaxItem_modal', '.holdlocation_modal');
     }
   });
 }
@@ -842,12 +854,12 @@ function get_volume_tab(recID) {
                 var entry = data.data[index];
                 var volume_ajax_row = '<tr><td class="volume_'+entry.id+' volumeItems_ajax_loaded" colspan="4"></td></tr>';
 
-                volume_rows.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> Exemplare</a></td></tr>'+volume_ajax_row);
+                volume_rows.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
             }
             if (volcount > visibleCount) {
                 for (var index = visibleCount; index < data.data.length; index++) {
                     var entry = data.data[index];
-                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> Exemplare</a></td></tr>'+volume_ajax_row);
+                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
                 }
             }
 
@@ -857,5 +869,6 @@ function get_volume_tab(recID) {
             return true;
         }
     });
+
 
 }

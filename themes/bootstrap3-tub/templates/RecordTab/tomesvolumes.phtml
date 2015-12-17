@@ -1,47 +1,16 @@
 <?
     // Set page title.
     $this->headTitle($this->translate('Tomes/Volumes') . ': ' . $this->driver->getBreadcrumb());
+
+    // Set up standard record scripts:
+    //$this->headScript()->appendFile("check_item_statuses.js");    // hmm, loading it in record/view.phtml
+    //$this->inlineScript()->appendFile('check_item_statuses.js');
 ?>
+
 <div class="data-modal_postload_ajax">
 <i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...
 </div>
+
 <script type="text/javascript">
-function get_volume_tab(recID) {
-    ppnlink = recID;
-    var volume_rows = [""];
-
-    jQuery.ajax({
-        //http://lincl1.b.tu-harburg.de:81/vufind2-test/AJAX/JSON?method=getMultipart&id=680310649&start=0&length=10000
-        url:path+'/AJAX/JSON?method=getMultipart&id='+ppnlink+'&start=0&length=10000',
-        dataType:'json',
-        success:function(data, textStatus) {
-            var volcount = data.data.length;
-            var visibleCount = Math.min(1000, volcount);
-
-            if (visibleCount == 0) {
-                return false;
-            }
-            for (var index = 0; index < visibleCount; index++) {
-                var entry = data.data[index];
-                var volume_ajax_row = '<tr><td class="volume_'+entry.id+' volumeItems_ajax_loaded" colspan="4"></td></tr>';
-
-                volume_rows.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> Exemplare</a></td></tr>'+volume_ajax_row);
-            }
-            if (volcount > visibleCount) {
-                for (var index = visibleCount; index < data.data.length; index++) {
-                    var entry = data.data[index];
-                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> Exemplare</a></td></tr>'+volume_ajax_row);
-                }
-            }
-
-            // Append to modal and return
-            var myreturn = '<table class="datagrid extended"><thead><tr><th>Band</th><th>Titel</th><th>Jahr</th><th>Exemplare</th></tr></thead><tbody>' + volume_rows.join('') + '</tbody></table>';
-            $('.data-modal_postload_ajax').empty().append(myreturn);
-            return true;
-        }
-    });
-
-}
-
 get_volume_tab(<?=$this->driver->getUniqueId()?>);
 </script>
