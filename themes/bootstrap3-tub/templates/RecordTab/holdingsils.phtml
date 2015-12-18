@@ -44,7 +44,14 @@
 <? $holdingTitleHold = $this->driver->tryMethod('getRealTimeTitleHold'); if (!empty($holdingTitleHold)): ?>
     <a class="placehold modal-link" title="<?=$this->transEsc('request_place_text')?>" href="<?=$this->recordLink()->getRequestUrl($holdingTitleHold)?>"><i class="fa"></i>&nbsp;<?=$this->transEsc('title_hold_place')?></a>
 <? endif; ?>
-
+<? $journal = $this->driver->getSupplementMainJournal(); if ($journal['name']): ?>
+<span><?=$journal['label']?>
+<? if ($journal['id']): ?>
+<a href="<?=$this->recordLink()->getUrl($journal['id'])?>"><?=$journal['name']?></a></span>
+<? else: ?>
+<?=$journal['name']?></span>
+<? endif; ?>
+<? endif; ?>
 <? if ($this->driver->needsLicense() == true && $this->driver->licenseAvailable() == false): ?>
     <span><?=$this->transEsc('no_license')?></span><br/>
 <? endif; ?>

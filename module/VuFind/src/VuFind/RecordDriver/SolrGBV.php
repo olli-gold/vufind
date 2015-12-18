@@ -491,6 +491,32 @@ class SolrGBV extends SolrMarc
     }
 
     /**
+     * Get journal including supplements.
+     *
+     * @access  public
+     * @return  string
+     */
+    public function getSupplementMainJournal()
+    {
+        $vs = null;
+        $journal = [];
+        $vs = $this->marcRecord->getFields('772');
+        if (count($vs) > 0) {
+            $refs = array();
+            foreach($vs as $v) {
+                $journalField = $v->getSubfield('w');
+                $idArr = explode(')', $journalField->getData());
+                if ($idArr[0] == '(DE-601') {
+                    $journal['id'] = $idArr[1];
+                }
+                $journal['name'] = $v->getSubfield('t')->getData();
+                $journal['label'] = $v->getSubfield('i')->getData();
+            }
+        }
+        return $journal;
+    }
+
+    /**
      * TUBHH Enhancement
      * Return the title (period) and the signature of a volume
      * An array will be returned with key=signature, value=title.
