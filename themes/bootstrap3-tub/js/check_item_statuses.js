@@ -103,6 +103,12 @@ function displayHoldingGuide(container_source, display_target) {
           else if (result.bestOptionLocation.indexOf('Shipping') > -1) {
             loc_abbr = 'ACQ';  loc_modal_body = vufindString.loc_modal_Body_acquired;
           }
+          // 2015-12-17: Addes case for periodical supplementals ("Einzelsig." but not multiVols)
+          // @todo: this should be solved more thoroughly finally
+          else if (result.bestOptionLocation == 's. zugeh\u00f6rige Publikationen' && result.multiVols == false) {
+            loc_abbr = 'Supplemental'; // might make it a special button; not used yet anywhere
+            result.patronBestOption = 'false'; // override (always get the default button that is show if everything fails; see switch below)
+          }
           else {
             loc_abbr = 'Undefined';
            // alert('Hier ist ein komischer Fall bei '+loc_callno);
@@ -201,7 +207,7 @@ function displayHoldingGuide(container_source, display_target) {
                 loc_button = create_button(href   = result.locHref,
                                            hover  = vufindString.loc_modal_Title_eMarc21,
                                            text   = title,
-                                           icon   = 'fa-download',
+                                           icon   = 'fa-globe',
                                            css_classes = 'holdelectronic');
                 loc_modal_link = create_modal(id          = result.id,
                                               loc_code    = loc_abbr,
@@ -683,9 +689,6 @@ $(document).ready(function() {
       //
     }
     else {
-      preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
-      get_holding_tab(recPPN); //TEST - reicht für LS-Sachen, wenn überhaupt sinnvoll
-
       // Got shelf location
       var roomMap = [];
       roomMap['LS1'] = path + '/themes/bootstrap3-tub/images/tub/LS1_main.jpg';
@@ -693,11 +696,15 @@ $(document).ready(function() {
       roomMap['LBS'] = path + '/themes/bootstrap3-tub/images/tub/LS1_lbs.jpg';
       roomMap['SEM'] = path + '/themes/bootstrap3-tub/images/tub/LS2_sem.jpg';
       additional_content = (roomMap[loc]) ? '<img src="'+ roomMap[loc] +'" />' : '';
+
+      //This loads a holding list, only really useful for "Multi"-case
+      //preload_animation = '<i class="tub_loading fa fa-circle-o-notch fa-spin"></i> Loading...';
+      //get_holding_tab(recPPN);
     }
 
     // TODO: Lightbox has methods to do this?
     $('#modalTitle').html($(this).children('span').attr('data-title'));
-    $('.modal-body').html('<p>'+ $(this).children('span').text() + '</p><span class="data-modal_postload_ajax" id="'+recPPN+'">'+preload_animation+'</span>' + additional_content + modal_frame);
+    $('.modal-body').html('<p>'+ $(this).children('span').text() + '</p>' + additional_content + '<span class="data-modal_postload_ajax" id="'+recPPN+'">'+preload_animation+'</span>' + modal_frame);
 
 
     // Remove iframe - prevents browser history
