@@ -10,7 +10,6 @@
 <h2><?=$this->transEsc('Export Favorites')?></h2>
 
 <?=$this->flashmessages()?>
-
 <? if (!empty($this->exportOptions)): ?>
   <form class="form-horizontal" method="post" action="<?=$this->url('cart-export')?>" name="exportForm" title="<?=$this->transEsc('Export Items')?>">
     <? foreach ($this->records as $current): ?>

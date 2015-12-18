@@ -3271,4 +3271,23 @@ class SolrGBV extends SolrMarc
         array_multisort($part0, SORT_DESC, $part1, SORT_DESC, $part2, SORT_DESC, $part3, SORT_DESC, $part4, SORT_DESC, $part5, SORT_ASC, $retval );
         return $retval;
     }
+
+    /**
+     * Get the short (pre-subtitle) title of the record.
+     *
+     * @return string
+     */
+    public function getShortTitle()
+    {
+        $ts = parent::getShortTitle();
+        if ($ts == '') {
+            $ts = $this->getTitleAdvanced();
+        }
+        $r = $ts;
+        if (is_array($ts) === true) {
+            $r = $ts[0];
+        }
+        return $r;
+    }
+
 }
