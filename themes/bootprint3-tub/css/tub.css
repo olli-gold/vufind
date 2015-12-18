@@ -12,8 +12,7 @@
 header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EEE) repeat scroll 0% 0%; }
 .navbar-form      {width: 100%;}
 .search-query     {width: 350px !important;}
-.search-submit, .search-retainfilter
-                  {padding: 5px; vertical-align: middle; background-color: #A8DDF0; border: 1px solid #CCC; font-weight: bold;}
+.search-submit    {padding: 5px; vertical-align: middle; background-color: #d8f2fc /*#A8DDF0*/; border: 1px solid #CCC; font-weight: bold;}
 .search-retainfilter {padding: 4px;}
 /*.navbar-form .checkbox {width: 25%; float: right; min-width: 175px;}*/
 .breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
@@ -62,7 +61,7 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EE
 .searchTab.articles   {border-top-left-radius: 35px; border-top-right-radius: 4px;}
 .searchTab.articles i {right: 2px; top: 0px;}
 .searchTab.active {
-   background-color: #A8DDF0; /* #EFF3DC; */
+   background-color: #d8f2fc; /* #A8DDF0; /* #EFF3DC; */
    background-position: 0px -60px;
    position: relative;
    top: 2px;
@@ -116,7 +115,7 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EE
 .tub_btn_primary {border-radius: 30px 0px 0px 30px;}
 .tub_btn_def     {border-radius: 0px 30px 30px 0px;}
 */
-button.active    {background-color: #A8DDF0 !important; color: #000000 !important; font-weight: normal !important;}
+button.active    {background-color: #d8f2fc /*#A8DDF0*/ !important; color: #000000 !important; font-weight: normal !important;}
 
 /*
 #result0, #result2, #result4, #result6, #result8, #result10, #result12, #result14, #result16, #result18 {
