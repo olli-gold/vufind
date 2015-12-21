@@ -408,6 +408,7 @@ http://fortawesome.github.io/Font-Awesome/cheatsheet/ - [&#xf105;]
 .format_info {
     bottom: 0;
     position: absolute;
+    max-width: 300px;
 }
 
 .pager li > a {
