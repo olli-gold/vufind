@@ -594,7 +594,9 @@ function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_
  */
 $(document).ready(function() {
   // Get all the buttons
+$(window).on("load", function() {
   displayHoldingGuide();
+});
 
   /* 2015-12-09: Wait until sfx buttons are loaded; makes sfx_fix in
   // displayHoldingGuide() safer
