@@ -6,92 +6,11 @@
 .main > div:nth-child(1) > div:nth-child(1)   {padding: 0px;}  
 .search-controls  {padding: 0px !important; margin-left: -7px !important; background-image: linear-gradient(to top, #FFF, #EEE); margin-bottom: 10px;}
 .col-sm-6         {width: 100%; padding: 0; margin: -1px 0 0 0; background-image: linear-gradient(to top, #FFF, #EEE);}
-header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EEE) repeat scroll 0% 0%; }
-.search-query     {width: 350px !important;}
-.search-submit    {padding: 5px; vertical-align: middle; background-color: #d8f2fc /*#A8DDF0*/; border: 1px solid #CCC; font-weight: bold;}
-.search-retainfilter {padding: 4px;}
 /*.navbar-form .checkbox {width: 25%; float: right; min-width: 175px;}*/
 .breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
 .btn i {color: #27827F;}
 /* END Modding stuff so sorting button is smoothly aligned */
 
-/* START modding search input 
-   @see themes/bootstrap3-tub/js/common.js --> "// Clearable input (search)" */
-.clearable{
-  background: #fff url(data:image/gif;base64,R0lGODlhBwAHAIAAAP///5KSkiH5BAAAAAAALAAAAAAHAAcAAAIMTICmsGrIXnLxuDMLADs=) no-repeat right -10px center;
-  border: 1px solid #999;
-  padding: 3px 18px 3px 4px; /* Use the same right padding (18) in jQ! */
-  border-radius: 3px;
-  transition: background 0.4s;
-}
-.clearable.x  { background-position: right 5px center; }
-.clearable.onX{ cursor: pointer; }
-/* END modding search input */
-
-/* START Modding Search Tabs */
-.searchTab {
-   font-size: 1.2em;
-   position: relative;
-   left: -24px;
-   margin: 0px 10px 0px 0px;
-   padding-left: 10px;
-   border-width: 1px;
-   border-style: solid;
-   border-color: #DDD;
-   color: #ffffff !important;
-   /*background-color: #F9F9F9;*/
-   /*background-color: #F0D4D4;*/
-   position: relative;
-   top: 1px;
-   width: 169px; /*see also @media (max-width: 530px) */
-}
-
-.searchTab.books    {border-top-right-radius: 35px; border-top-left-radius: 4px;}
-.searchTab.books i   {left: 2px; top: 0px;}
-.searchTab.articles   {border-top-left-radius: 35px; border-top-right-radius: 4px;}
-.searchTab.articles i {right: 2px; top: 0px;}
-.searchTab.active {
-   background-color: #d8f2fc; /* #A8DDF0; /* #EFF3DC; */
-   background-position: 0px -60px;
-   position: relative;
-   top: 2px;
-   border-width: 1px 1px 0px !important;
-   border-style: solid;
-   border-color: #DDD;
-}
-
-.searchTab a {
-   background: transparent none repeat scroll 100% 0px;
-   color: #1E3287;
-   float: left;
-   line-height: 2em;
-   padding-right: 10px;
-   text-decoration: none;
-   width: 100%;
-   text-align: center;
-   border: none !important;
-}
-
-.searchTab.active a {
-   background-position: 100% -60px;
-   /* font-weight: bold; */
-}
-
-
-[name="searchForm"] .nav-tabs li.active a, [name="searchForm"] .nav-tabs li.active a:hover {
-   background: transparent none repeat scroll 0 0;
-   border-bottom: 0 none;
-   border-color: #eff3dc #eff3dc -moz-use-text-color;
-   text-decoration: none;
-   z-index: 5;
-}
-
-.matches {
-   font-size: 14px;
-   padding-top: 12px;
-   font-weight: normal;
-}
-/* END Modding Search Tabs */
 
 
 /* Result sorting; hmm, this toggle looks nicer: http://www.bootply.com/92189 */
@@ -105,13 +24,6 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EE
 button.active    {background-color: #d8f2fc /*#A8DDF0*/ !important; color: #000000 !important; font-weight: normal !important;}
 
 
-
-
-#searchForm_lookfor, #searchForm_type {
-   /*border-color: #eff3dc;*/
-   border: none;
-   padding-right: 20px; /* little space for the "delete"-x */
-}
 
 
 .powered-by {
