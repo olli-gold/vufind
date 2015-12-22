@@ -5,9 +5,8 @@
 /* START Modding stuff so sorting button is smoothly aligned */
 .main > div:nth-child(1) > div:nth-child(1)   {padding: 0px;}  
 .col-sm-6         {width: 100%; padding: 0; margin: -1px 0 0 0; background-image: linear-gradient(to top, #FFF, #EEE);}
-/*.navbar-form .checkbox {width: 25%; float: right; min-width: 175px;}*/
 .breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
-.btn i {color: #27827F;}
+.btn i {color: #27827F;} /* IS IT USED ANYWHERE? */
 /* END Modding stuff so sorting button is smoothly aligned */
 
 
@@ -43,26 +42,28 @@ i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link, i.fa-shopping
    white-space: nowrap;
 }
 
-.tublabel-success {
-   color: #028302;
+/* REPLACE WITH VUFIND-DEFAULT-CLASS IN TEMPLATES */
+.tub_label {
+  /* Just renamed vufind class "label" to tub_label- no formatting needed */
 }
+.tublabel-success {color: #028302;}
+.tublabel-danger  {color: #a41915;}
+.tublabel-info    {color: #1c5f74;}
+/* end REPLACE WITH VUFIND-DEFAULT-CLASS */
 
-.tublabel-danger {
-   color: #a41915;
+.format_info {
+    bottom: 0;
+    position: absolute;
+    max-width: 300px;
 }
-
-.tublabel-info {
-   color: #1c5f74;
-}
-
-.tub_info_topright {width: 118px; margin: 0 0 0 2px; padding: 0;} /* Same length as Volltext-Image and order buttons */
+.tub_info_topright {width: 118px; margin: 0 0 0 2px; padding: 0;} /* IS IT REALLY USED?!? Same length as Volltext-Image and order buttons */
 .tub_resYear { position: absolute; bottom: 0; right:0; }
 
 /* Cover & cols layout - letztlich muss es anders gemacht werden, aber fuers zeigen... */
 div .left   {width: 17%; position: relative; min-height: 150px;}
 div .middle {width: 59%; position: relative; min-height: 150px;}
 div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15px;}
-.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* Org: 130px; left: 10px; */
+.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* PLACE CORRECT IN TEMPLATE! */
 .recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
 #bookbag-menu {background-color: #fff; padding: 2px; font-size: 16px;}
 #bookbag-menu .tub_bookbag_on  {color: #576ca0;}
@@ -118,17 +119,6 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
     display:inline;
 }
 
-
-.nav-tabs {
-    border-bottom: medium none;
-}
-
-.format_info {
-    bottom: 0;
-    position: absolute;
-    max-width: 300px;
-}
-
 .pager li > a {
     display: inline-block;
     padding: 5px 14px;
@@ -139,7 +129,6 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
 label {
     display: inline;
 }
-
 
 .tag {
     font-family: Arial, sans-serif;
