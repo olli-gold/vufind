@@ -73,28 +73,14 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
 
 .col-xs-11 {width: 99% !important;}
 
-/* REPLACE WITH FA-ANGLE-RIGHT - saves 25kb (huge for just a single "letter")
-http://fortawesome.github.io/Font-Awesome/cheatsheet/ - [&#xf105;]
--  todo: replace tub_lielement in code instead of using :before
+/* Finally just use "fa-li fa-angle-right" https://fortawesome.github.io/Font-Awesome/examples/ */
 .tub_lielement {
-   background: rgba(0, 0, 0, 0) url("../../../themes/bootprint3-tub/images/small/sprite-1.png") no-repeat scroll 10px -596px;
-   padding-left: 20px;
-}
-*/
-.tub_lielement:before {
-    content: "\f105";
     color: #6BC1BB;
     font-style: normal;
     font-size: 20px;
     font-family: FontAwesome;
     padding-left: 10px;
-    /*
-    position:absolute;
-    top:0;
-    left:-5px;
-    */
- }
-
+}
 
 /* VEERY nasty hack - rethink layout with proper usage of css bootstrap http://getbootstrap.com/css/ */
 @media (max-width: 530px) {
