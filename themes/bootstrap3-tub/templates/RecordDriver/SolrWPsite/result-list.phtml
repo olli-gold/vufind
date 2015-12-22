@@ -77,6 +77,26 @@
         <? endif; ?>
       </div>
 
+    <? if ($cart->isActive()): ?>
+      <div id="bookbag-menu">
+        <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
+        <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_off" href="#" data-recordid="<?=$cartId ?>"> <span class="bookbag_label"><?=$this->transEsc('Add to Book Bag') ?></span></a>
+        <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_on" href="#" data-recordid="<?=$cartId ?>"> <span class="bookbag_label"><?=$this->transEsc('Remove from Book Bag') ?></span></a>
+        <noscript>
+          <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
+            <input type="hidden" name="ids[]" value="<?=$cartId ?>" />
+            <? if ($cart->contains($cartId)): ?>
+              <input class="btn btn-default" type="submit" name="delete" value="<?=$this->transEsc('Remove from Book Bag')?>"/>
+            <? else: ?>
+              <input class="btn btn-default" type="submit" name="add" value="<?=$this->transEsc('Add to Book Bag')?>"/>
+            <? endif; ?>
+          </form>
+        </noscript>
+      </div>
+    <? endif; ?>
+
+<br/>
+
           <?=!empty($summDate) ? '<span class="tub_resYear">' . $this->escapeHtml($summDate[0]) . '</span>' : ''?>
         <div class="format_info">
           <?=str_replace('class="', 'class="tub_label tublabel-info ', $this->record($this->driver)->getFormatList())?>
