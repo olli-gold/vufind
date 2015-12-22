@@ -848,6 +848,7 @@ else              {
                 && $info['use_unknown_message'] == true
             ) {
                 $use_unknown_status = true;
+                $locations[$info['location']]['status_unknown'] = true;
             }
             // Store call number/location info:
             $locations[$info['location']]['callnumbers'][] = $info['callnumber'];
@@ -869,7 +870,9 @@ else              {
                     ENT_COMPAT, 'UTF-8'
                 ),
                 'callnumbers' =>
-                    htmlentities($locationCallnumbers, ENT_COMPAT, 'UTF-8')
+                    htmlentities($locationCallnumbers, ENT_COMPAT, 'UTF-8'),
+                'status_unknown' => isset($details['status_unknown'])
+                    ? $details['status_unknown'] : false
             ];
             $locationList[] = $locationInfo;
         }

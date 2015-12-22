@@ -432,7 +432,6 @@ $config = [
                     'visualfacets' => 'VuFind\Recommend\Factory::getVisualFacets',
                     'webresults' => 'VuFind\Recommend\Factory::getWebResults',
                     'worldcatidentities' => 'VuFind\Recommend\Factory::getWorldCatIdentities',
-                    'worldcatterms' => 'VuFind\Recommend\Factory::getWorldCatTerms',
                 ],
                 'invokables' => [
                     'alphabrowselink' => 'VuFind\Recommend\AlphaBrowseLink',
@@ -448,6 +447,7 @@ $config = [
                     'summondatabasesdeferred' => 'VuFind\Recommend\SummonDatabasesDeferred',
                     'summonresultsdeferred' => 'VuFind\Recommend\SummonResultsDeferred',
                     'switchtype' => 'VuFind\Recommend\SwitchType',
+                    'worldcatterms' => 'VuFind\Recommend\Deprecated',
                 ],
             ],
             'recorddriver' => [
@@ -507,8 +507,11 @@ $config = [
                     'primofrbr' => 'VuFind\Related\Factory::getPrimoFrbr',
                     'similar' => 'VuFind\Related\Factory::getSimilar',
                     'similarindex' => 'VuFind\Related\Factory::getSimilarIndex',
-                    'worldcateditions' => 'VuFind\Related\Factory::getWorldCatEditions',
                     'worldcatsimilar' => 'VuFind\Related\Factory::getWorldCatSimilar',
+                ],
+                'invokables' => [
+                    'editions' => 'VuFind\Related\Deprecated',
+                    'worldcateditions' => 'VuFind\Related\Deprecated',
                 ],
             ],
             'resolver_driver' => [
