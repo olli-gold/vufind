@@ -503,7 +503,6 @@ $config = [
             'related' => [
                 'abstract_factories' => ['VuFind\Related\PluginFactory'],
                 'factories' => [
-                    'editions' => 'VuFind\Related\Factory::getEditions',
                     'primofrbr' => 'VuFind\Related\Factory::getPrimoFrbr',
                     'similar' => 'VuFind\Related\Factory::getSimilar',
                     'similarindex' => 'VuFind\Related\Factory::getSimilarIndex',
