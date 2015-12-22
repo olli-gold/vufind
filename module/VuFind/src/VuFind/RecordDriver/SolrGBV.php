@@ -1274,6 +1274,7 @@ class SolrGBV extends SolrMarc
                             $desc = $desc->getData();
                         } else {
                             $desc = $address;
+                            $retVal[] = ['url' => $address, 'desc' => $desc];
                         }
 
                         $uselinks = [ 'Inhaltstext', 'Kurzbeschreibung',

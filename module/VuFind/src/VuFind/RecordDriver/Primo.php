@@ -352,7 +352,9 @@ class Primo extends SolrDefault
      */
     public function exportDisabled($format)
     {
-        // Support export for EndNote and RefWorks
+        // Nothing is diabled by default
+        return false;
+        // Only allow export for EndNote and RefWorks
         return !in_array($format, ['EndNote', 'RefWorks']);
     }
 

@@ -66,7 +66,7 @@ function checkImage(currentId) {
                     $(parent).find('.holdlink.fulltext').addClass('hidden');
                     $(parent).find('.holdlink.holddirectdl').addClass('hidden');
                     // optionally display MARC links
-                    $('.marclinks').append('<span class="showmore">Show more links</span> <span class="showless">Show less links</span>');
+                    $('.marclinks').append('<span class="showmore">'+vufindString.show_more_links+'</span> <span class="showless">'+vufindString.show_less_links+'</span>');
                     $('.showless').addClass('hidden');
                     $('.showmore').click( function () {
                         $('.externalurl').removeClass('hidden');
