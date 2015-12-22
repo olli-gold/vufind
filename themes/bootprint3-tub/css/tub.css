@@ -19,92 +19,14 @@
    height: 40px;
 }
 
-.tub_holdingguide {
-  /* customize Position of buttons span */
-}
-
-/* Small spacing under SFX-Button (if available) */
-.imagebased {margin-bottom: 10px;}
-
-.holdlink, .holdlink:active, .holdlink:hover, .holdlink:visited {
-   background-color: #D8F2FC;
-   color: #000;
-   border: thin solid #aaaaaa;
-   border-radius: 3px;
-   opacity: 1;
-   display: inline-block;
-   margin: 0px 0 10px 2px;
-   padding: 0px;
-   width: 118px;
-   /* font-weight: bold; */
-   font-size: 13px;
-   text-align: left;
-   text-decoration: none;
-}
-.holdlink:active  {}
-.holdlink:visited {}
-.holdlink:hover   {text-decoration: none !important; cursor: pointer; }
-
-.holdlink i {
-   padding: 3px;
-   background-color: #D8F2FC;
-   color: #53A1BF;
-   font-size: 15px;
-}
 /* Reset fa-heart and fa-home - TODO for less cleanup */
 i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link, i.fa-shopping-cart, i.fa-globe {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
 
-
-/* Customize button for single option */
-.holdelectronic   {}
-.holdshelf        {}
-.holdorder        {}
-.holdreserve      {}
-.holdrefonly      {}
-.holdil           {}
-.holdwish         {}
-.holdacquired     {}
-
-
-/* info icon print */
-.fa-info-circle {color: #27827F !important;}
-
-.tub_fa-info_p {
-   margin-top: 4px;
-   margin-bottom: 0;
-   padding-left: 2px;
-   cursor: pointer !important;
-}
-/* info icon sfx-volltext (ganz oben) */
-.tub_fa-info_e {
-   margin-top: 4px;
-   padding-left: 4px;
-   vertical-align: middle;
-   cursor: pointer !important;
-}
-/* info icon other (ill & acq proposal - multiline) UNUSED */
-.tub_fa-info_x {
-   margin-top: 20px;
-   padding-left: 2px;
-   cursor: pointer !important;
-}
-/* info icon facet */
-.tub_fa-info_f {
-   padding-left: 2px;
-   cursor: pointer !important;
-}
 
 .tub_loading {
    // Loading icon; always this way: <i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...
 }
 
-/* Modal and modal content */
-.modal-dialog {z-index:1050;}
-.data-modal_postload_ajax table td      {border-left: 1px solid #ffffff; border-right: 1px solid #ffffff; padding: 5px 10px 2px 2px;}
-.data-modal_postload_ajax table td  a   {color: #003366;}
-.holding_ajax_table         {background-color: #F8F8F8; width: 90%;}
-.holding_ajax_table th      {font-weight: bolder;}
-.holding_ajax_table_status  {text-align: center;}
 
 .tubbadge {
    float: right;
@@ -242,29 +164,6 @@ label {
     text-transform: uppercase;
     display: block;
     float: left;
-}
-
-
-
-.doi_outer  {
-    font-size: small;
-}
-.doi_prefix {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    background-color: #53A1BF;
-    color: #ffffff;
-    padding: 3px 8px;
-    border-right: thin solid black;
-}
-.doi_link   {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    background-color: #D6F0FA;
-    padding: 3px 4px;
-}
-.doi_link a {
-    /*color: #ffffff;*/
 }
 
 a.nolink {
