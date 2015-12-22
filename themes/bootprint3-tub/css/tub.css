@@ -18,10 +18,6 @@
    height: 40px;
 }
 
-/* Reset fa-heart and fa-home - TODO for less cleanup */
-i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link, i.fa-shopping-cart, i.fa-globe {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
-
-
 .tub_loading {
    // Loading icon; always this way: <i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...
 }
