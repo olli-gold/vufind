@@ -637,7 +637,7 @@ $config = [
                     'Preview' => 'preview',
                     'Details' => 'StaffViewArray',
                 ],
-                'defaultTab' => null,
+                'defaultTab' => 'Holdings',
             ],
             'VuFind\RecordDriver\SolrAuth' => [
                 'tabs' => [
