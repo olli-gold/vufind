@@ -336,15 +336,6 @@ http://fortawesome.github.io/Font-Awesome/cheatsheet/ - [&#xf105;]
    border-color: #A8DDF0;
 }
 
-/* START Fix WP-Template Bugs */
-  /* Menu width */
-  #access ul ul a   {width: 188px !important;} 
-  /* TZ: z-index: spezifisches Wordpress-Theme (weit über 1000 scheint zmdst. FF zu ignorieren*/
-  .sub-menu {z-index: 1000 !important}
-  #branding {z-index: 1000 !important}
-  /* social images - strange */
-  .social img {width: 33px !important;}
-/* END FIX WP-Template Bugs */
 
 
 
