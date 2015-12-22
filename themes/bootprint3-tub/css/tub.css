@@ -10,18 +10,11 @@
 .sidebar .list-group-item.active {background-color: #7BC2DD !important;}
 .col-sm-6         {width: 100%; padding: 0; margin: -1px 0 0 0; background-image: linear-gradient(to top, #FFF, #EEE);}
 header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EEE) repeat scroll 0% 0%; }
-.navbar-form      {width: 100%;}
 .search-query     {width: 350px !important;}
 .search-submit    {padding: 5px; vertical-align: middle; background-color: #d8f2fc /*#A8DDF0*/; border: 1px solid #CCC; font-weight: bold;}
 .search-retainfilter {padding: 4px;}
 /*.navbar-form .checkbox {width: 25%; float: right; min-width: 175px;}*/
 .breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
-.btn-primary {
-   background-color: #A8DDF0;
-   border-color: #000;
-   color: #000;
-   min-width: 165px;
-}
 .btn i {color: #27827F;}
 /* END Modding stuff so sorting button is smoothly aligned */
 
@@ -103,9 +96,6 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EE
 }
 /* END Modding Search Tabs */
 
-.searchbox, .breadcrumbs, .footer {
-   background-color: #fff;
-}
 
 /* Result sorting; hmm, this toggle looks nicer: http://www.bootply.com/92189 */
 .sort_order_hint {color: #A8DDF0;}
@@ -117,20 +107,11 @@ header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EE
 */
 button.active    {background-color: #d8f2fc /*#A8DDF0*/ !important; color: #000000 !important; font-weight: normal !important;}
 
-/*
-#result0, #result2, #result4, #result6, #result8, #result10, #result12, #result14, #result16, #result18 {
-   /* background-color: #eff3dc;* /
-   background-color: #ffffff;
-}
-*/
 
 .result         {background-color: #ffffff !important; border-bottom: 2px dotted #CCC;}
 .result a       {color: #576CA0;}
 .result a:hover {text-decoration: none; color: #09f;}
 
-.record {
-   background: none repeat scroll 0 0 #ffffff !important;
-}
 
 #searchForm_lookfor, #searchForm_type {
    /*border-color: #eff3dc;*/
@@ -147,11 +128,6 @@ header .navbar .navbar-brand {
    width: 195px;
 }
 
-/*
-tbody tr:nth-child(2n) td, tbody tr.even td {
-   background: #e5ecf9 none repeat scroll 0 0;
-}
-*/
 
 .powered-by {
    background-image: url("../../../themes/bootprint3-tub/images/vufind_logo.png");
@@ -289,27 +265,11 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
 #bookbag-menu .tub_bookbag_off {color: #a8ddf0;}
 #bookbag-menu .bookbag_label {font-family: Helvetica,Arial,"Lucida Sans Unicode","Lucida Grande",sans-serif; font-size:small;}
 
-.tub_bbplus {
-   background-image: url("../../../themes/bootprint3-tub/images/icons/star_faded.png");
-   background-position: left top;
-   background-repeat: no-repeat;
-   padding-right: 30px;
-}
 
-.tub_bbminus {
-   background-image: url("../../../themes/bootprint3-tub/images/icons/star.png");
-   background-position: left top;
-   background-repeat: no-repeat;
-   padding-right: 30px;
-}
-
-.tub_label {
-  /* Just renamed vufind class "label" to tub_label- no formatting needed */
-}
 
 .col-xs-11 {width: 99% !important;}
 
-/* replace with fa-angle-right - saves 25kb (huge for just a single "letter")
+/* REPLACE WITH FA-ANGLE-RIGHT - saves 25kb (huge for just a single "letter")
 http://fortawesome.github.io/Font-Awesome/cheatsheet/ - [&#xf105;]
 -  todo: replace tub_lielement in code instead of using :before
 .tub_lielement {
@@ -375,10 +335,6 @@ http://fortawesome.github.io/Font-Awesome/cheatsheet/ - [&#xf105;]
     display:inline;
 }
 
-.tubtable {
-    margin-bottom: 18px;
-    max-width: 100%;
-}
 
 .tab-content {
     -moz-border-bottom-colors: none;
@@ -413,49 +369,6 @@ label {
     display: inline;
 }
 
-.sg-replace-icons {
-    display: none;
-}
-
-.sg-replace-icons + label {
-    background-color: #fafafa;
-    border: 1px solid #cacece;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
-    padding: 9px;
-    border-radius: 3px;
-    display: inline-block;
-    position: relative;
-}
-
-.sg-replace-icons + label:active, .sg-replace-icons:checked + label:active {
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
-}
-
-.sg-replace-icons:checked + label {
-    background-color: #e9ecee;
-    border: 1px solid #adb8c0;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
-    color: #99a1a7;
-}
-
-.sg-replace-icons:checked + label:after {
-    content: '\2714';
-    font-size: 14px;
-    position: absolute;
-    top: 0px;
-    left: 3px;
-    color: #99a1a7;
-}
-
-
-.big-checkbox + label {
-    padding: 18px;
-}
-
-.big-checkbox:checked + label:after {
-    font-size: 28px;
-    left: 6px;
-}
 
 .tag {
     font-family: Arial, sans-serif;
@@ -468,29 +381,7 @@ label {
     float: left;
 }
 
-.radio-1 {
-    width: 193px;
-}
 
-.button-holder {
-    float: left;
-}
-
-/*
-.sg-replace-icons input[type="checkbox"] {
-    display:none;
-}
-*/
-/* Option 5 */
-/*.sg-replace-icons .sg-rating-scale .sg-cell-5 input[type=checkbox] + label:before { */
-    /* Happy */
-/*    content: "\E606";
-}*/
-/*.sg-replace-icons .sg-rating-scale .sg-cell-5 input[type=checkbox]:checked + label:before {*/
-    /* Happy Selected */
-/*    content: "\E607"; */
-/*    color: #77A60F;
-}*/
 
 .doi_outer  {
     font-size: small;
