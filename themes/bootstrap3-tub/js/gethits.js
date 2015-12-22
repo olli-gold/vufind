@@ -45,8 +45,8 @@ function Trenner(number) {
             if ((mod == 0) && (i == 0))
                 output += number.substring(mod+ 3 * i, mod + 3 * i + 3);
             else
-                // hier wird das Trennzeichen festgelegt mit ','
-                output+= ',' + number.substring(mod + 3 * i, mod + 3 * i + 3);
+                // hier wird das Trennzeichen festgelegt mit '.'
+                output+= '.' + number.substring(mod + 3 * i, mod + 3 * i + 3);
         }
         return (output);
     }
