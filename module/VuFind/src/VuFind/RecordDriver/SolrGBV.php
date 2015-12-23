@@ -1697,6 +1697,26 @@ class SolrGBV extends SolrMarc
     }
 
     /**
+     * checks if this item needs interlibrary loan
+     *
+     * @access protected
+     * @return string
+     */
+    public function checkAcquisitionProposal()
+    {
+        // Is this item in local stock?
+        if ($this->checkLocalStockInIndex() === true) {
+            return '0';
+        }
+        // Is this item an e-ressource?
+        if (in_array('eJournal', $this->getFormats()) === true || $this->isNLZ() === true || in_array('Journal', $this->getFormats()) === true || in_array('Serial Volume', $this->getFormats()) === true) {
+            return '0';
+        }
+
+        return '1';
+    }
+
+    /**
      * checks if this item is licensed
      *
      * @access protected

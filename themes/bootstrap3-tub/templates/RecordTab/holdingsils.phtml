@@ -198,11 +198,15 @@
 
 <? if ($this->driver->checkInterlibraryLoan() == '1'): ?>
     <span><a href="https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>" target="_blank"><?=$this->transEsc('interlibrary loan')?></a></span>
-    <span> | <a href="<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>" target="_blank"><?=$this->transEsc('Erwerbungsvorschlag')?></a></span>
-<? else: ?>
-    <? if ($hasVols === true): ?>
-      <a href="<?=$this->recordLink()->getTabUrl($this->driver, 'TomesVolumes')?>#tabnav"><?=$this->transEsc("See Tomes/Volumes")?></a>
-    <? endif; ?>
+<? endif; ?>
+<? if ($this->driver->checkInterlibraryLoan() == '1' && $this->driver->checkAcquisitionProposal() == '1'): ?>
+ |
+<? endif; ?>
+<? if ($this->driver->checkAcquisitionProposal() == '1'): ?>
+    <span><a href="<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>" target="_blank"><?=$this->transEsc('Erwerbungsvorschlag')?></a></span>
+<? endif; ?>
+<? if ($hasVols === true): ?>
+  <a href="<?=$this->recordLink()->getTabUrl($this->driver, 'TomesVolumes')?>#tabnav"><?=$this->transEsc("See Tomes/Volumes")?></a>
 <? endif; ?>
 
 <? $history = $this->driver->getRealTimeHistory(); ?>
