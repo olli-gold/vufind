@@ -1,0 +1,84 @@
+/**
+ * TUB: Override for defaults
+ *
+ * This file contains only classes that override existing vufind clases from
+ * bootprint.less
+ * 
+ */
+
+/* --- Pagination --- */
+.pagination {
+    & > .active {
+        & > a, & > span, & > a:hover, & > span:hover, & > a:focus, & > span:focus {
+            background:@tub-active-color none repeat scroll 0 0;
+            border-color:@tub-active-color;
+        }
+    }
+}
+
+
+
+/* --- Result row entry --- */
+.row {
+    &.result {
+        border-bottom: 2px dotted #CCC;
+        &:nth-child(even) {
+            background:#ffffff;
+        }
+        a {
+            color: #576CA0;
+            &:hover {
+                text-decoration: none; color: #09f;
+            }
+        }
+    }
+}
+
+
+
+/* --- Tabs in record detail (?) --- */
+.tab-content {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: #ddd;
+    border-color: -moz-use-text-color #ddd #ddd;
+    border-image: none;
+    border-style: solid;
+    border-width: 1px;
+    padding: 6px 8px;
+}
+
+
+
+/* --- Logo --- */
+header {
+    .navbar {
+        .navbar-brand {
+            background-image: url("../../../bootprint3-tub/images/tubfind_logo.jpg");
+            height: 53px;
+            width: 195px;
+        }
+    }
+    .searchbox {
+        background: transparent linear-gradient(to bottom, #FFF, #EEE) repeat scroll 0% 0%;
+    }
+}
+
+
+
+/* --- Sidebar ---*/
+.sidebar {
+    background: transparent linear-gradient(to top, #FFF, #EEE) repeat scroll 0% 0%;
+    .list-group-item {
+        &.active {
+            background:@tub-active-color;
+            border-color:@tub-active-color;
+            &:hover {background:@tub-active-color;border-color:@tub-active-color;}
+            .badge {color:@tub-active-color;}
+        }
+    }
+    label {
+        margin-left: 0;
+    }
+}

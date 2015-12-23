@@ -21,11 +21,11 @@
 
             // Left button for toggle
             if (!isset($buttons)) {
-                $buttons = '<span> '.$this->transEsc('Sort').' </span><button type="submit" name="sort" value="'.$this->escapeHtmlAttr($sortType).'" class="tub_btn_primary btn-primary '.$class.'"> '.$this->transEsc($sortData['desc']).' </button>';
+                $buttons = '<span> '.$this->transEsc('Sort').' </span><button type="submit" name="sort" value="'.$this->escapeHtmlAttr($sortType).'" class="btn-primary '.$class.'"> '.$this->transEsc($sortData['desc']).' </button>';
             }
             // Right button for toggle
             else {
-                $buttons .= '<button type="submit" name="sort" value="'.$this->escapeHtmlAttr($sortType).'" class="tub_btn_def btn-default '.$class.'"> '.$this->transEsc($sortData['desc']).' </button>';
+                $buttons .= '<button type="submit" name="sort" value="'.$this->escapeHtmlAttr($sortType).'" class="btn-default '.$class.'"> '.$this->transEsc($sortData['desc']).' </button>';
             }
 
             $toggle_style .= '<input id="st'.$x.'" type="radio" '.$tclass.' name="sort"><label onclick="this.submit();" for="st'.$x.'">'.$this->transEsc($sortData['desc']).'</label>';

@@ -4,154 +4,11 @@
 
 /* START Modding stuff so sorting button is smoothly aligned */
 .main > div:nth-child(1) > div:nth-child(1)   {padding: 0px;}  
-.search-controls  {padding: 0px !important; margin-left: -7px !important; background-image: linear-gradient(to top, #FFF, #EEE); margin-bottom: 10px;}
-.sidebar          {background: transparent linear-gradient(to top, #FFF, #EEE) repeat scroll 0% 0%;}
-.sidebar h4       {padding-top: 0px;}
-.sidebar .list-group-item.active {background-color: #7BC2DD !important;}
 .col-sm-6         {width: 100%; padding: 0; margin: -1px 0 0 0; background-image: linear-gradient(to top, #FFF, #EEE);}
-header .searchbox { background: transparent linear-gradient(to bottom, #FFF, #EEE) repeat scroll 0% 0%; }
-.navbar-form      {width: 100%;}
-.search-query     {width: 350px !important;}
-.search-submit    {padding: 5px; vertical-align: middle; background-color: #d8f2fc /*#A8DDF0*/; border: 1px solid #CCC; font-weight: bold;}
-.search-retainfilter {padding: 4px;}
-/*.navbar-form .checkbox {width: 25%; float: right; min-width: 175px;}*/
 .breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
-.btn-primary {
-   background-color: #A8DDF0;
-   border-color: #000;
-   color: #000;
-   min-width: 165px;
-}
-.btn i {color: #27827F;}
+.btn i {color: #27827F;} /* IS IT USED ANYWHERE? */
 /* END Modding stuff so sorting button is smoothly aligned */
 
-/* START modding search input 
-   @see themes/bootstrap3-tub/js/common.js --> "// Clearable input (search)" */
-.clearable{
-  background: #fff url(data:image/gif;base64,R0lGODlhBwAHAIAAAP///5KSkiH5BAAAAAAALAAAAAAHAAcAAAIMTICmsGrIXnLxuDMLADs=) no-repeat right -10px center;
-  border: 1px solid #999;
-  padding: 3px 18px 3px 4px; /* Use the same right padding (18) in jQ! */
-  border-radius: 3px;
-  transition: background 0.4s;
-}
-.clearable.x  { background-position: right 5px center; }
-.clearable.onX{ cursor: pointer; }
-/* END modding search input */
-
-/* START Modding Search Tabs */
-.searchTab {
-   font-size: 1.2em;
-   position: relative;
-   left: -24px;
-   margin: 0px 10px 0px 0px;
-   padding-left: 10px;
-   border-width: 1px;
-   border-style: solid;
-   border-color: #DDD;
-   color: #ffffff !important;
-   /*background-color: #F9F9F9;*/
-   /*background-color: #F0D4D4;*/
-   position: relative;
-   top: 1px;
-   width: 169px; /*see also @media (max-width: 530px) */
-}
-
-.searchTab.books    {border-top-right-radius: 35px; border-top-left-radius: 4px;}
-.searchTab.books i   {left: 2px; top: 0px;}
-.searchTab.articles   {border-top-left-radius: 35px; border-top-right-radius: 4px;}
-.searchTab.articles i {right: 2px; top: 0px;}
-.searchTab.active {
-   background-color: #d8f2fc; /* #A8DDF0; /* #EFF3DC; */
-   background-position: 0px -60px;
-   position: relative;
-   top: 2px;
-   border-width: 1px 1px 0px !important;
-   border-style: solid;
-   border-color: #DDD;
-}
-
-.searchTab a {
-   background: transparent none repeat scroll 100% 0px;
-   color: #1E3287;
-   float: left;
-   line-height: 2em;
-   padding-right: 10px;
-   text-decoration: none;
-   width: 100%;
-   text-align: center;
-   border: none !important;
-}
-
-.searchTab.active a {
-   background-position: 100% -60px;
-   /* font-weight: bold; */
-}
-
-
-[name="searchForm"] .nav-tabs li.active a, [name="searchForm"] .nav-tabs li.active a:hover {
-   background: transparent none repeat scroll 0 0;
-   border-bottom: 0 none;
-   border-color: #eff3dc #eff3dc -moz-use-text-color;
-   text-decoration: none;
-   z-index: 5;
-}
-
-.matches {
-   font-size: 14px;
-   padding-top: 12px;
-   font-weight: normal;
-}
-/* END Modding Search Tabs */
-
-.searchbox, .breadcrumbs, .footer {
-   background-color: #fff;
-}
-
-/* Result sorting; hmm, this toggle looks nicer: http://www.bootply.com/92189 */
-.sort_order_hint {color: #A8DDF0;}
-.tub_btn-group   {position: relative; display: inline-block; vertical-align: middle; background-color: #fff; padding: 3px 15px;  border-bottom: 2px dotted #CCC; } /*width: 50%*/
-.tub_btn_primary, .btn-default {min-width: 30px !important; margin: 0; padding: 4px; border: 1px solid #CCC; background-color: #fff;}
-/*
-.tub_btn_primary {border-radius: 30px 0px 0px 30px;}
-.tub_btn_def     {border-radius: 0px 30px 30px 0px;}
-*/
-button.active    {background-color: #d8f2fc /*#A8DDF0*/ !important; color: #000000 !important; font-weight: normal !important;}
-
-/*
-#result0, #result2, #result4, #result6, #result8, #result10, #result12, #result14, #result16, #result18 {
-   /* background-color: #eff3dc;* /
-   background-color: #ffffff;
-}
-*/
-
-.result         {background-color: #ffffff !important; border-bottom: 2px dotted #CCC;}
-.result a       {color: #576CA0;}
-.result a:hover {text-decoration: none; color: #09f;}
-
-.record {
-   background: none repeat scroll 0 0 #ffffff !important;
-}
-
-#searchForm_lookfor, #searchForm_type {
-   /*border-color: #eff3dc;*/
-   border: none;
-   padding-right: 20px; /* little space for the "delete"-x */
-}
-
-header .navbar .navbar-brand {
-   background-image: url("../../../themes/bootprint3-tub/images/tubfind_logo.jpg");
-   background-repeat: no-repeat;
-   color: transparent;
-   height: 53px;
-   margin-top: 5px;
-   width: 195px;
-}
-
-/*
-tbody tr:nth-child(2n) td, tbody tr.even td {
-   background: #e5ecf9 none repeat scroll 0 0;
-}
-*/
 
 .powered-by {
    background-image: url("../../../themes/bootprint3-tub/images/vufind_logo.png");
@@ -161,92 +18,10 @@ tbody tr:nth-child(2n) td, tbody tr.even td {
    height: 40px;
 }
 
-.tub_holdingguide {
-  /* customize Position of buttons span */
-}
-
-/* Small spacing under SFX-Button (if available) */
-.imagebased {margin-bottom: 10px;}
-
-.holdlink, .holdlink:active, .holdlink:hover, .holdlink:visited {
-   background-color: #D8F2FC;
-   color: #000;
-   border: thin solid #aaaaaa;
-   border-radius: 3px;
-   opacity: 1;
-   display: inline-block;
-   margin: 0px 0 10px 2px;
-   padding: 0px;
-   width: 118px;
-   /* font-weight: bold; */
-   font-size: 13px;
-   text-align: left;
-   text-decoration: none;
-}
-.holdlink:active  {}
-.holdlink:visited {}
-.holdlink:hover   {text-decoration: none !important; cursor: pointer; }
-
-.holdlink i {
-   padding: 3px;
-   background-color: #D8F2FC;
-   color: #53A1BF;
-   font-size: 15px;
-}
-/* Reset fa-heart and fa-home - TODO for less cleanup */
-i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link, i.fa-shopping-cart, i.fa-globe {background-image: url('none'); width: auto; height: auto; vertical-align: baseline;}
-
-
-/* Customize button for single option */
-.holdelectronic   {}
-.holdshelf        {}
-.holdorder        {}
-.holdreserve      {}
-.holdrefonly      {}
-.holdil           {}
-.holdwish         {}
-.holdacquired     {}
-
-
-/* info icon print */
-.fa-info-circle {color: #27827F !important;}
-
-.tub_fa-info_p {
-   margin-top: 4px;
-   margin-bottom: 0;
-   padding-left: 2px;
-   cursor: pointer !important;
-}
-/* info icon sfx-volltext (ganz oben) */
-.tub_fa-info_e {
-   margin-top: 4px;
-   padding-left: 4px;
-   vertical-align: middle;
-   cursor: pointer !important;
-}
-/* info icon other (ill & acq proposal - multiline) UNUSED */
-.tub_fa-info_x {
-   margin-top: 20px;
-   padding-left: 2px;
-   cursor: pointer !important;
-}
-/* info icon facet */
-.tub_fa-info_f {
-   padding-left: 2px;
-   cursor: pointer !important;
-}
-
 .tub_loading {
    // Loading icon; always this way: <i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...
 }
 
-/* Modal and modal content */
-.modal-dialog {z-index:1050;}
-.data-modal_postload_ajax table td      {border-left: 1px solid #ffffff; border-right: 1px solid #ffffff; padding: 5px 10px 2px 2px;}
-.data-modal_postload_ajax table td  a   {color: #003366;}
-.holding_ajax_table         {background-color: #F8F8F8; width: 90%;}
-.holding_ajax_table th      {font-weight: bolder;}
-.holding_ajax_table_status  {text-align: center;}
 
 .tubbadge {
    float: right;
@@ -263,90 +38,46 @@ i.fa-heart, i.fa-home, i.fa-search, i.fa-book, i.fa-external-link, i.fa-shopping
    white-space: nowrap;
 }
 
-.tublabel-success {
-   color: #028302;
+/* REPLACE WITH VUFIND-DEFAULT-CLASS IN TEMPLATES */
+.tub_label {
+  /* Just renamed vufind class "label" to tub_label- no formatting needed */
 }
+.tublabel-success {color: #028302;}
+.tublabel-danger  {color: #a41915;}
+.tublabel-info    {color: #1c5f74;}
+/* end REPLACE WITH VUFIND-DEFAULT-CLASS */
 
-.tublabel-danger {
-   color: #a41915;
+.format_info {
+    bottom: 0;
+    position: absolute;
+    max-width: 300px;
 }
-
-.tublabel-info {
-   color: #1c5f74;
-}
-
-.tub_info_topright {width: 118px; margin: 0 0 0 2px; padding: 0;} /* Same length as Volltext-Image and order buttons */
+.tub_info_topright {width: 118px; margin: 0 0 0 2px; padding: 0;} /* IS IT REALLY USED?!? Same length as Volltext-Image and order buttons */
 .tub_resYear { position: absolute; bottom: 0; right:0; }
 
 /* Cover & cols layout - letztlich muss es anders gemacht werden, aber fuers zeigen... */
 div .left   {width: 17%; position: relative; min-height: 150px;}
 div .middle {width: 59%; position: relative; min-height: 150px;}
 div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15px;}
-.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* Org: 130px; left: 10px; */
+.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* PLACE CORRECT IN TEMPLATE! */
 .recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
 #bookbag-menu {background-color: #fff; padding: 2px; font-size: 16px;}
 #bookbag-menu .tub_bookbag_on  {color: #576ca0;}
 #bookbag-menu .tub_bookbag_off {color: #a8ddf0;}
 #bookbag-menu .bookbag_label {font-family: Helvetica,Arial,"Lucida Sans Unicode","Lucida Grande",sans-serif; font-size:small;}
 
-.tub_bbplus {
-   background-image: url("../../../themes/bootprint3-tub/images/icons/star_faded.png");
-   background-position: left top;
-   background-repeat: no-repeat;
-   padding-right: 30px;
-}
 
-.tub_bbminus {
-   background-image: url("../../../themes/bootprint3-tub/images/icons/star.png");
-   background-position: left top;
-   background-repeat: no-repeat;
-   padding-right: 30px;
-}
-
-.tub_label {
-  /* Just renamed vufind class "label" to tub_label- no formatting needed */
-}
 
 .col-xs-11 {width: 99% !important;}
 
-/* replace with fa-angle-right - saves 25kb (huge for just a single "letter")
-http://fortawesome.github.io/Font-Awesome/cheatsheet/ - [&#xf105;]
--  todo: replace tub_lielement in code instead of using :before
+/* Finally just use "fa-li fa-angle-right" https://fortawesome.github.io/Font-Awesome/examples/ */
 .tub_lielement {
-   background: rgba(0, 0, 0, 0) url("../../../themes/bootprint3-tub/images/small/sprite-1.png") no-repeat scroll 10px -596px;
-   padding-left: 20px;
-}
-*/
-.tub_lielement:before {
-    content: "\f105";
     color: #6BC1BB;
     font-style: normal;
     font-size: 20px;
     font-family: FontAwesome;
     padding-left: 10px;
-    /*
-    position:absolute;
-    top:0;
-    left:-5px;
-    */
- }
-
-.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
-   background: #A8DDF0 none repeat scroll 0 0;
-   border-color: #A8DDF0;
 }
-
-/* START Fix WP-Template Bugs */
-  /* Menu width */
-  #access ul ul a   {width: 188px !important;} 
-  /* TZ: z-index: spezifisches Wordpress-Theme (weit über 1000 scheint zmdst. FF zu ignorieren*/
-  .sub-menu {z-index: 1000 !important}
-  #branding {z-index: 1000 !important}
-  /* social images - strange */
-  .social img {width: 33px !important;}
-/* END FIX WP-Template Bugs */
-
-
 
 /* VEERY nasty hack - rethink layout with proper usage of css bootstrap http://getbootstrap.com/css/ */
 @media (max-width: 530px) {
@@ -384,33 +115,6 @@ http://fortawesome.github.io/Font-Awesome/cheatsheet/ - [&#xf105;]
     display:inline;
 }
 
-.tubtable {
-    margin-bottom: 18px;
-    max-width: 100%;
-}
-
-.tab-content {
-    -moz-border-bottom-colors: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: #ddd;
-    border-color: -moz-use-text-color #ddd #ddd;
-    border-image: none;
-    border-style: solid;
-    border-width: 1px;
-    padding: 6px 8px;
-}
-
-.nav-tabs {
-    border-bottom: medium none;
-}
-
-.format_info {
-    bottom: 0;
-    position: absolute;
-    max-width: 300px;
-}
-
 .pager li > a {
     display: inline-block;
     padding: 5px 14px;
@@ -422,50 +126,6 @@ label {
     display: inline;
 }
 
-.sg-replace-icons {
-    display: none;
-}
-
-.sg-replace-icons + label {
-    background-color: #fafafa;
-    border: 1px solid #cacece;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
-    padding: 9px;
-    border-radius: 3px;
-    display: inline-block;
-    position: relative;
-}
-
-.sg-replace-icons + label:active, .sg-replace-icons:checked + label:active {
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
-}
-
-.sg-replace-icons:checked + label {
-    background-color: #e9ecee;
-    border: 1px solid #adb8c0;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
-    color: #99a1a7;
-}
-
-.sg-replace-icons:checked + label:after {
-    content: '\2714';
-    font-size: 14px;
-    position: absolute;
-    top: 0px;
-    left: 3px;
-    color: #99a1a7;
-}
-
-
-.big-checkbox + label {
-    padding: 18px;
-}
-
-.big-checkbox:checked + label:after {
-    font-size: 28px;
-    left: 6px;
-}
-
 .tag {
     font-family: Arial, sans-serif;
     width: 200px;
@@ -475,51 +135,6 @@ label {
     text-transform: uppercase;
     display: block;
     float: left;
-}
-
-.radio-1 {
-    width: 193px;
-}
-
-.button-holder {
-    float: left;
-}
-
-/*
-.sg-replace-icons input[type="checkbox"] {
-    display:none;
-}
-*/
-/* Option 5 */
-/*.sg-replace-icons .sg-rating-scale .sg-cell-5 input[type=checkbox] + label:before { */
-    /* Happy */
-/*    content: "\E606";
-}*/
-/*.sg-replace-icons .sg-rating-scale .sg-cell-5 input[type=checkbox]:checked + label:before {*/
-    /* Happy Selected */
-/*    content: "\E607"; */
-/*    color: #77A60F;
-}*/
-
-.doi_outer  {
-    font-size: small;
-}
-.doi_prefix {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    background-color: #53A1BF;
-    color: #ffffff;
-    padding: 3px 8px;
-    border-right: thin solid black;
-}
-.doi_link   {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    background-color: #D6F0FA;
-    padding: 3px 4px;
-}
-.doi_link a {
-    /*color: #ffffff;*/
 }
 
 a.nolink {
