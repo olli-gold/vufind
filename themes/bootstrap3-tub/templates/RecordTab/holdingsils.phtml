@@ -137,7 +137,7 @@
               <? if (isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
                 <a class="<?=$checkILLRequest ? 'checkILLRequest ' : ''?>inlineblock modal-link placeILLRequest" href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"  title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
               <? endif; ?>
-              <? if (isset($row['presence_use_only'])): ?>
+              <? if ($row['presence_use_only'] == true): ?>
                 <span><?=$this->transEsc('presence_use_only')?></span>
               <? endif; ?>
             <? else: ?>
