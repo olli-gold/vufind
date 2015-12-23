@@ -50,7 +50,7 @@ function addItemToCart(id,source) {
     cartItems[cartItems.length] = String.fromCharCode(65+sIndex) + id;
   }
   Cookies.setItem(_CART_COOKIE, $.unique(cartItems).join(_CART_COOKIE_DELIM), false, '/', cartCookieDomain);
-  $('#cartItems strong').html(parseInt($('#cartItems strong').html(), 10)+1);
+  $('#cartItems .cartItemsCount').html(parseInt($('#cartItems .cartItemsCount').html(), 10)+1);
   return true;
 }
 function uniqueArray(op) {
@@ -100,7 +100,7 @@ function removeItemFromCart(id,source) {
       Cookies.removeItem(_CART_COOKIE, '/', cartCookieDomain);
       Cookies.removeItem(_CART_COOKIE_SOURCES, '/', cartCookieDomain);
     }
-    $('#cartItems strong').html(parseInt($('#cartItems strong').html(), 10)-1);
+    $('#cartItems cartItemsCount').html(parseInt($('#cartItems .cartItemsCount').html(), 10)-1);
     return true;
   }
   return false;
