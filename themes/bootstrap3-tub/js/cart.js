@@ -100,7 +100,7 @@ function removeItemFromCart(id,source) {
       Cookies.removeItem(_CART_COOKIE, '/', cartCookieDomain);
       Cookies.removeItem(_CART_COOKIE_SOURCES, '/', cartCookieDomain);
     }
-    $('#cartItems cartItemsCount').html(parseInt($('#cartItems .cartItemsCount').html(), 10)-1);
+    $('#cartItems .cartItemsCount').html(parseInt($('#cartItems .cartItemsCount').html(), 10)-1);
     return true;
   }
   return false;
