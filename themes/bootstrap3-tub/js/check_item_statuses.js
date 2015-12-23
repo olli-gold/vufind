@@ -516,13 +516,13 @@ function displayHoldingGuide(container_source, display_target) {
  * @return \b STR link html
  */
 function create_button(href, hover, text, icon, css_classes, target, id, custom) {
-  //target = target || '';
-  if (typeof target !== 'undefined') { target = 'target="'+target+'"'; }
-  if (typeof id     !== 'undefined') { id = 'id="'+id+'"'; }
+  //target = target || 'undefined';
+  target = (typeof target !== 'undefined') ? 'target="'+target+'"' : '';
+  id     = (typeof id     !== 'undefined') ? 'id="'+id+'"' : '';
   custom = custom || '';
   var button;
 
-  button    = '<a href="'+href+'" '+id+' title="'+hover+'" class="fa holdlink '+css_classes+'" '+target+' '+custom+'><i class="fa '+icon+'"></i> <span class="btn_text">' + text + '<span></a>';
+  button    = '<a href="'+href+'" '+id+' title="'+hover+'" class="fa holdlink '+css_classes+'" '+target+' '+custom+'><i class="fa '+icon+'"></i> ' + text + '</a>';
 
   return button;
 }
