@@ -37,6 +37,10 @@ header {
 
 /* --- Result row entry --- */
 .row {
+    &:not(.top-row, .search-controls) {
+        padding:6px 4px;
+        margin: 0;
+    }
     /* Perfectly dock between search area and result/filter area a) */
     &.search-controls {
         padding: 0 0 3px 4px;

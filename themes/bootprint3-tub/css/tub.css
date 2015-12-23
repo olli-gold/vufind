@@ -1,5 +1,123 @@
+/**
+ * TUB: Override for existing classes
+ *
+ *
+ */
+
+/* Cover & cols layout - letztlich muss es anders gemacht werden, aber fuers zeigen... */
+div .left, div .middle, div .right {min-height: 150px;}
+/* div .left   {position: relative; width: 17%;}
+div .middle {position: relative; width: 59%;}
+div .right  {position: relative; width: 24%; padding-left: 15px;} */
+.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* PLACE CORRECT IN TEMPLATE! */
+.recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
+
+.col-xs-11 {width: 99% !important;}
+
+.pager li > a {
+    display: inline-block;
+    padding: 5px 14px;
+    background-color: #fff;
+    border: none;
+}
+
+label {display: inline;}
+
+
+/**
+ * TUB: TESTING MOBILE BREAKINGS 767
+ *
+ * Vufind only uses 767; a second might be smoother
+ */
+@media (max-width: 767px) {
+    /*.container {
+        width: 708px !important;
+        / * Org: 734px * /
+    }
+    */
+
+    /* Tabs */
+    .nav-tabs {
+        width:300px !important;
+    }
+    .searchTab {
+        width: 145px; /* 2*145 + 1* 10px padding = 300px; */
+    }
+
+    /* Search, select and button */
+    .navbar-left .twitter-typeahead,
+    .navbar-left .twitter-typeahead input.search-query {
+        width:300px !important;
+    }
+    /* let select (and search button) stay right */
+    .navbar-left select {
+        display: inline !important;
+        width: auto !important;
+    }
+
+    /* Searchtools (sorting) */
+    .main .container > .row > div {
+        margin: 0 !important;
+    }
+
+   .recordcover {min-width: 50px; min-height: 140px;}
+   div .left, div .middle, div .right {position: relative; min-height: 140px;} /* 140 is size of "no-image"-image */
+}
+
+/**
+ * TUB: TESTING MOBILE BREAKINGS 584
+ *
+ * At 380px the search button goes beyond the input field
+ * NOTE: On tablet/handy one clicks usually "Enter" on keyboard anyway; so just hide search button?!?!!
+ */
+@media (max-width: 584px) {
+    .navbar-left select {
+        display: inline !important;
+        width: 300px !important;
+    }
+
+   .right {
+      padding-top: 10px !important;
+      min-height: auto !important;
+      width: 140px !important;
+      display: block !important;
+      margin-left: 140px;
+   }
+
+    /* Wordpress social */
+    #supplementary #third {display: inline-block !important;}
+    .social img {width: auto !important;}
+}
+
+
+/**
+ * TUB: Custom classes
+ *
+ */
+a.nolink        {color: #000000;}
+a.nolink:hover  {color: #000000;}
+
+/* Bookbag toogle inline */
+#bookbag-menu {padding: 2px; clear: both;}
+#bookbag-menu .tub_bookbag_on  {color: #576ca0;}
+#bookbag-menu .tub_bookbag_off {color: #a8ddf0;}
+#bookbag-menu .bookbag_label {font-family: Helvetica,Arial,"Lucida Sans Unicode","Lucida Grande",sans-serif; font-size:small;}
+
 .clear {
    clear: both;
+}
+
+/** class to make stuff "invisible" but still readable by screen readers
+ * maybe use .offcanvas ?!?
+ **/
+.offscreen {
+    position:absolute;
+    left:-10000px;
+    top:auto;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    display:inline;
 }
 
 .powered-by {
@@ -9,6 +127,18 @@
    background-repeat: no-repeat;
    height: 40px;
 }
+
+.tag {
+    font-family: Arial, sans-serif;
+    width: 200px;
+    position: relative;
+    top: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: block;
+    float: left;
+}
+
 
 .tub_loading {
    // Loading icon; always this way: <i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...
@@ -39,29 +169,6 @@
 .tublabel-info    {color: #1c5f74;}
 /* end REPLACE WITH VUFIND-DEFAULT-CLASS */
 
-.format_info {
-    bottom: 0;
-    position: absolute;
-    max-width: 300px;
-}
-.tub_info_topright {width: 118px; margin: 0 0 0 2px; padding: 0;} /* IS IT REALLY USED?!? Same length as Volltext-Image and order buttons */
-.tub_resYear { position: absolute; bottom: 0; right:0; }
-
-/* Cover & cols layout - letztlich muss es anders gemacht werden, aber fuers zeigen... */
-div .left   {width: 17%; position: relative; min-height: 150px;}
-div .middle {width: 59%; position: relative; min-height: 150px;}
-div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15px;}
-.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* PLACE CORRECT IN TEMPLATE! */
-.recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
-#bookbag-menu {background-color: #fff; padding: 2px; font-size: 16px;}
-#bookbag-menu .tub_bookbag_on  {color: #576ca0;}
-#bookbag-menu .tub_bookbag_off {color: #a8ddf0;}
-#bookbag-menu .bookbag_label {font-family: Helvetica,Arial,"Lucida Sans Unicode","Lucida Grande",sans-serif; font-size:small;}
-
-
-
-.col-xs-11 {width: 99% !important;}
-
 /* Finally just use "fa-li fa-angle-right" https://fortawesome.github.io/Font-Awesome/examples/ */
 .tub_lielement {
     color: #6BC1BB;
@@ -71,67 +178,10 @@ div .right  {width: 24%; position: relative; min-height: 150px; padding-left: 15
     padding-left: 10px;
 }
 
-/* VEERY nasty hack - rethink layout with proper usage of css bootstrap http://getbootstrap.com/css/ */
-@media (max-width: 530px) {
-   .right {
-      min-height: auto !important;
-      width: 140px !important;
-      display: block !important;
-      margin-left: 130px;
-   }
-
-   #bookbag-menu {
-      position: relative;
-      bottom: auto;
-   }
-   
-   .nav-tabs ul, .search-query, .twitter-typeahead, #searchForm_type {
-     width:320px !important;
-   }
-   .searchTab {
-     width: 145px;
-   }
-
-   .recordcover {min-width: 50px; min-height: 25px;}
-
+.format_info {
+    bottom: 0;
+    position: absolute;
+    max-width: 300px;
 }
-
-/** class to make stuff "invisible" but still readable by screen readers */
-.offscreen {
-    position:absolute;
-    left:-10000px;
-    top:auto;
-    width:1px;
-    height:1px;
-    overflow:hidden;
-    display:inline;
-}
-
-.pager li > a {
-    display: inline-block;
-    padding: 5px 14px;
-    background-color: #fff;
-    border: none;
-}
-
-label {
-    display: inline;
-}
-
-.tag {
-    font-family: Arial, sans-serif;
-    width: 200px;
-    position: relative;
-    top: 5px;
-    font-weight: bold;
-    text-transform: uppercase;
-    display: block;
-    float: left;
-}
-
-a.nolink {
-    color: #000000;
-}
-a.nolink:hover {
-    color: #000000;
-}
+.tub_info_topright {width: 118px; margin: 0 0 0 2px; padding: 0;} /* IS IT REALLY USED?!? Same length as Volltext-Image and order buttons */
+.tub_resYear { position: absolute; bottom: 0; right:0; }

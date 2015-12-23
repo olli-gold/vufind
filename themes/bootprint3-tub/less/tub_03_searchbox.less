@@ -10,16 +10,11 @@
 /* --- START Modding Search Tabs --- */
 .searchTab {
     font-size: 1.2em;
-    position: relative;
-    left: -24px;
-    margin: 0px 10px 0px 0px;
     padding-left: 10px;
     border-width: 1px;
     border-style: solid;
     border-color: #DDD;
-    color: #ffffff !important;
-    position: relative;
-    top: 1px;
+    color: #ffffff;
     width: 169px; /*see also @media (max-width: 530px) */
     > a {
         background: transparent none repeat scroll 100% 0px;
@@ -30,7 +25,7 @@
         text-decoration: none;
         width: 100%;
         text-align: center;
-        border: none !important;
+        border: none!important;
         > .matches {
            font-size: 14px;
            padding-top: 12px;
@@ -38,6 +33,7 @@
         }
     }
     &.books {
+        margin-right: 10px;
         border-top-right-radius: 35px;
         border-top-left-radius: 4px;
     }
@@ -47,15 +43,6 @@
     }
     &.active {
         background-color: #d8f2fc;
-        background-position: 0px -60px;
-        position: relative;
-        top: 2px;
-        border-width: 1px 1px 0px;
-        border-style: solid;
-        border-color: #DDD;
-        > a {
-            background-position: 100% -60px;
-        }
     }
 }
 
@@ -117,8 +104,9 @@
     }
   }
   .nav-tabs {
-/*--    border-bottom:0;
---    padding:0 6px; */
+    border-bottom:0;
+    padding: 0;
+    margin: 0;
     li {
 /*--      a {
 --        margin-bottom:-1px;
