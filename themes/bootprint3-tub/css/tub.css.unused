@@ -11,6 +11,7 @@
  */
 
 /* START Modding stuff so sorting button is smoothly aligned */
+.breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
 .navbar-form      {width: 100%;}
 .btn-primary {
    background-color: #A8DDF0;
@@ -18,6 +19,7 @@
    color: #000;
    min-width: 165px;
 }
+.btn i {color: #27827F;}
 /* END Modding stuff so sorting button is smoothly aligned */
 
 

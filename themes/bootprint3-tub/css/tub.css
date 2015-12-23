@@ -2,14 +2,6 @@
    clear: both;
 }
 
-/* START Modding stuff so sorting button is smoothly aligned */
-.main > div:nth-child(1) > div:nth-child(1)   {padding: 0px;}  
-.col-sm-6         {width: 100%; padding: 0; margin: -1px 0 0 0; background-image: linear-gradient(to top, #FFF, #EEE);}
-.breadcrumbs, .main, .footer {padding: 0 0.8em 0.8em 0.8em;}
-.btn i {color: #27827F;} /* IS IT USED ANYWHERE? */
-/* END Modding stuff so sorting button is smoothly aligned */
-
-
 .powered-by {
    background-image: url("../../../themes/bootprint3-tub/images/vufind_logo.png");
    background-size: 100px;

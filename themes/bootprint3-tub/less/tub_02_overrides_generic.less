@@ -6,51 +6,6 @@
  * 
  */
 
-/* --- Pagination --- */
-.pagination {
-    & > .active {
-        & > a, & > span, & > a:hover, & > span:hover, & > a:focus, & > span:focus {
-            background:@tub-active-color none repeat scroll 0 0;
-            border-color:@tub-active-color;
-        }
-    }
-}
-
-
-
-/* --- Result row entry --- */
-.row {
-    &.result {
-        border-bottom: 2px dotted #CCC;
-        &:nth-child(even) {
-            background:#ffffff;
-        }
-        a {
-            color: #576CA0;
-            &:hover {
-                text-decoration: none; color: #09f;
-            }
-        }
-    }
-}
-
-
-
-/* --- Tabs in record detail (?) --- */
-.tab-content {
-    -moz-border-bottom-colors: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: #ddd;
-    border-color: -moz-use-text-color #ddd #ddd;
-    border-image: none;
-    border-style: solid;
-    border-width: 1px;
-    padding: 6px 8px;
-}
-
-
-
 /* --- Logo --- */
 header {
     .navbar {
@@ -62,6 +17,41 @@ header {
     }
     .searchbox {
         background: transparent linear-gradient(to bottom, #FFF, #EEE) repeat scroll 0% 0%;
+    }
+}
+
+
+/* --- Logo --- */
+.main .container {
+    padding: 0 1px 18px 1px;
+    /* Perfectly dock between search area and result/filter area a) */
+    >.row {
+        padding: 0;
+        margin: 0 -4px;
+        >div {
+            margin: 0px -3px 0 0;
+        }
+    }
+}
+
+
+/* --- Result row entry --- */
+.row {
+    /* Perfectly dock between search area and result/filter area a) */
+    &.search-controls {
+        padding: 0 0 3px 4px;
+    }
+    &.result {
+        border-bottom: 2px dotted #CCC;
+        &:nth-child(even) {
+            background:#ffffff;
+        }
+        a {
+            color: #576CA0;
+            &:hover {
+                text-decoration: none; color: #09f;
+            }
+        }
     }
 }
 
@@ -81,4 +71,31 @@ header {
     label {
         margin-left: 0;
     }
+}
+
+
+
+/* --- Pagination --- */
+.pagination {
+    & > .active {
+        & > a, & > span, & > a:hover, & > span:hover, & > a:focus, & > span:focus {
+            background:@tub-active-color none repeat scroll 0 0;
+            border-color:@tub-active-color;
+        }
+    }
+}
+
+
+
+/* --- Tabs in record detail (?) --- */
+.tab-content {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: #ddd;
+    border-color: -moz-use-text-color #ddd #ddd;
+    border-image: none;
+    border-style: solid;
+    border-width: 1px;
+    padding: 6px 8px;
 }
