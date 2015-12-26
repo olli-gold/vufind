@@ -8,28 +8,38 @@
 
 
 /* --- START Modding Search Tabs --- */
+/* searchTab == .nav-tabs li below */
 .searchTab {
     font-size: 1.2em;
     padding-left: 10px;
     border-width: 1px;
     border-style: solid;
-    border-color: #DDD;
+    border-color: @tub-border;
     color: #ffffff;
-    width: 169px; /*see also @media (max-width: 530px) */
+    width: 169px;
     > a {
         background: transparent none repeat scroll 100% 0px;
-        color: #1E3287;
+        color: @tub-link;
         float: left;
         line-height: 2em;
         padding-right: 10px;
         text-decoration: none;
         width: 100%;
         text-align: center;
-        border: none!important;
+        border: none !important;
         > .matches {
            font-size: 14px;
            padding-top: 12px;
            font-weight: normal;
+        }
+    }
+    &:not(.active) {
+        &:hover {
+            cursor: pointer;
+            background-color: @tub-hover-color;
+            >a {
+                color: #ffffff;
+            }
         }
     }
     &.books {
@@ -42,7 +52,7 @@
         border-top-right-radius: 4px;
     }
     &.active {
-        background-color: #d8f2fc;
+        background-color: @tub-active-color;
     }
 }
 
@@ -58,7 +68,7 @@
 /* --- Clearable icon ---   @see themes/bootstrap3-tub/js/common.js --> "// Clearable input (search)" */
 .clearable{
     background: #fff url(data:image/gif;base64,R0lGODlhBwAHAIAAAP///5KSkiH5BAAAAAAALAAAAAAHAAcAAAIMTICmsGrIXnLxuDMLADs=) no-repeat right -10px center;
-    border: 1px solid #999;
+    border: 1px solid @tub-border;
     border-radius: 3px;
     padding: 3px 18px 3px 4px; /* Use the same right padding (18) in jQ! */
     transition: background 0.4s;
@@ -77,8 +87,8 @@
 .search-submit {
     padding: 5px;
     vertical-align: middle;
-    background-color: #d8f2fc;
-    border: 1px solid #CCC;
+    background-color: @tub-selectable-color;
+    border: 1px solid @tub-border;
     font-weight: bold;
 }
 .search-retainfilter {
@@ -98,33 +108,33 @@
 --    padding:5px 8px;
 --    &[multiple] {height:auto} 
 --  } */
-  .search-query {
-    @media (min-width: 768px) {
-      width:350px;
+    .search-query {
+        @media (min-width: 768px) {
+            width:350px;
+        }
     }
-  }
-  .nav-tabs {
-    border-bottom:0;
-    padding: 0;
-    margin: 0;
-    li {
-/*--      a {
---        margin-bottom:-1px;
---        border-bottom:0;
---        padding-bottom:6px;
---        &:hover {
---          background:none;
---          border-color:transparent;
---          text-decoration:underline;
---        }
---      } */
-      &.active a,&.active a:hover {
-            background: transparent none repeat scroll 0 0;
-            border-bottom: 0 none;
-            border-color: #eff3dc #eff3dc -moz-use-text-color;
-      }
+    .nav-tabs {
+        border-bottom:0;
+        padding: 0;
+        margin: 0;
+        li {
+            a {
+/*              margin-bottom:-1px;
+                border-bottom:0;
+                padding-bottom:6px; */
+                &:hover {
+/*                  background:none;
+                    border-color:transparent; */
+                    text-decoration:none;
+                }
+            }
+            &.active a, &.active a:hover {
+                background: transparent none repeat scroll 0 0;
+                border-bottom: 0 none;
+                border-color: none;
+            }
+        }
     }
-  }
 }
 /* --- END Modding Search Tabs --- */
 

@@ -67,7 +67,14 @@ h3 {
     content: "@{breadcrumb-separator}\00a0";
   }
 }
-.tab-content {padding:4px}
+.tab-content {padding: 4px;}
+@media (max-width: 991px) {
+  header .container.navbar {margin-bottom: 0;}
+  .searchForm {margin-top: 0;}
+}
+@media (max-width: 767px) {
+  .searchForm {padding-top: 0;}
+}
 
 /* --- Advanced Search --- */
 .group {
@@ -307,13 +314,17 @@ h3 {
     .middle,
     .right {padding: 0;}
   }
+  /* TUB remove; very evil - breaks whole bootstrap concept
   @media (max-width: 530px) {
     .checkbox {display: none !important;}
     .left {width: 40%;}
     .middle {width: 60%;}
     .right {display: none;}
   }
+  */
 }
+.search-controls .alert {margin-bottom: 0;}
+.searchtools a {padding: 0 .5em;}
 .title-in-heading {
   font-size: inherit;
   font-style: italic;

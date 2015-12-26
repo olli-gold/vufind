@@ -2,23 +2,27 @@
 <? $showCheckboxes = (isset($this->showCartControls) && $this->showCartControls)
   || (isset($this->showBulkOptions) && $this->showBulkOptions); ?>
 <? $i = $this->indexStart; foreach ($this->results->getResults() as $current):
-  $recordNumber = $this->results->getStartRecord()+$i-$this->indexStart; ?>
+  //$recordNumber = $this->results->getStartRecord()+$i-$this->indexStart; 
+  $this->recordNumber = $this->results->getStartRecord()+$i-$this->indexStart; ?>
   <div id="result<?=$i++ ?>" class="row result clearfix">
 <?
 /* Disabled: custum bookbag template
     <div style="col-xs-1" style="float:right;">
           <?=$this->record($current)->getCustomCheckbox()?>
     </div>
-*/
-?>
+
+// Disabled:  Cart checkboxes - on enable: set col-xs-12 to col-xs-11 in
+//            themes/bootstrap3-tub/templates/RecordDriver/XXX/result-list.phtml
     <div class="col-xs-1 hidden-print<? if ($showCheckboxes): ?> checkbox<? endif; ?>">
       <label>
         <? if ($showCheckboxes): ?>
-<!--          <?=$this->record($current)->getCheckbox()?>   -->
+          <?=$this->record($current)->getCheckbox()?>
         <? endif; ?>
         <?=$recordNumber?>
       </label>
     </div>
+*/
+?>
     <?=$this->record($current)->getSearchResult('list')?>
   </div>
 <? endforeach; ?>

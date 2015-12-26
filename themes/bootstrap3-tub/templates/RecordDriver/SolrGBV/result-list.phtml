@@ -15,12 +15,15 @@ $openUrlActive = $openUrl->isActive();
 // Account for replace_other_urls setting
 $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
 ?>
-<div class="<?=$this->driver->supportsAjaxStatus()?'ajaxItem ':''?>col-xs-11">
+<div class="<?=$this->driver->supportsAjaxStatus()?'ajaxItem ':''?>col-xs-12">
   <div class="row">
     <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
     <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" class="hiddenSource" />
     <? if ($cover = $this->record($this->driver)->getCover('result-list', 'medium', $this->recordLink()->getUrl($this->driver))): ?>
-      <div class="col-sm-2 col-xs-3 left"><?=$cover ?></div>
+      <div class="col-md-2 col-sm-3 col-xs-4 left">
+      <?=$cover ?>
+      <span class="tub-resultnumber"><?=$this->recordNumber?></span>
+      </div>
     <? endif ?>
 
 
@@ -38,7 +41,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
         $displayTitle = $this->transEsc('Title not available');
       }
     ?>
-    <div class="col-sm-7 col-xs-6 middle">
+    <div class="col-md-7 col-sm-9 col-xs-8 middle"> <!-- version for not breaking already at 991 (sm): col-md-7 col-sm-6 col-xs-8 middle -->
       <div>
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>" title="<?=$displayTitle?>" class="title">
         <?
@@ -122,8 +125,8 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
     <? if ($cart->isActive()): ?>
       <div id="bookbag-menu">
         <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
-        <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_off" href="#" data-recordid="<?=$cartId ?>"> <span class="bookbag_label"><?=$this->transEsc('Add to Book Bag') ?></span></a>
-        <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_on" href="#" data-recordid="<?=$cartId ?>"> <span class="bookbag_label"><?=$this->transEsc('Remove from Book Bag') ?></span></a>
+        <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_off" href="#" data-recordid="<?=$cartId ?>"> <?=$this->transEsc('Add to Book Bag') ?></a>
+        <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_on" href="#" data-recordid="<?=$cartId ?>"> <?=$this->transEsc('Remove from Book Bag') ?></a>
         <noscript>
           <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
             <input type="hidden" name="ids[]" value="<?=$cartId ?>" />
@@ -225,7 +228,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
           <?=str_replace('class="', 'class="tub_label tublabel-info ', $this->record($this->driver)->getFormatList())?>
         </div>
     </div>
-    <div class="col-xs-3 right">
+    <div class="col-md-3 col-sm-0 col-xs-0 col-md-offset-0 col-sm-offset-3 col-xs-offset-4 right"> <!-- version for not breaking already at 991 (sm): col-md-3 col-sm-3 col-xs-0 col-sm-offset-0 col-xs-offset-4 right -->
         <span class="tub_holdingguide" record-id="<?=$id?>">
             <? if ($openUrlActive || !empty($urls)): ?>
                 <? if ($openUrlActive): ?>

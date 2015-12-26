@@ -47,12 +47,12 @@ header {
         padding: 0 0 3px 4px;
     }
     &.result {
-        border-bottom: 2px dotted #CCC;
+        border-bottom: 2px dotted @tub-border;
         &:nth-child(even) {
             background:#ffffff;
         }
         a {
-            color: #576CA0;
+            color: @tub-link;
             &:hover {
                 text-decoration: none; color: #09f;
             }
@@ -64,12 +64,12 @@ header {
 
 /* --- Sidebar ---*/
 .sidebar {
-    background: transparent linear-gradient(to top, #FFF, #EEE) repeat scroll 0% 0%;
+    background: transparent linear-gradient(to top, @tub-gradient-from, @tub-gradient-to) repeat scroll 0% 0%;
     .list-group-item {
         &.active {
-            background:@tub-active-color;
-            border-color:@tub-active-color;
-            &:hover {background:@tub-active-color;border-color:@tub-active-color;}
+            background: @tub-active-color;
+            border-color: @tub-active-color;
+            &:hover {background: @tub-active-color; border-color: @tub-active-color;}
             .badge {color:@tub-active-color;}
         }
     }
@@ -84,8 +84,8 @@ header {
 .pagination {
     & > .active {
         & > a, & > span, & > a:hover, & > span:hover, & > a:focus, & > span:focus {
+            color: #000000;
             background:@tub-active-color none repeat scroll 0 0;
-            border-color:@tub-active-color;
         }
     }
 }
@@ -103,8 +103,8 @@ footer {
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
-    -moz-border-top-colors: #ddd;
-    border-color: -moz-use-text-color #ddd #ddd;
+    -moz-border-top-colors: @tub-border;
+    border-color: -moz-use-text-color @tub-border @tub-border;
     border-image: none;
     border-style: solid;
     border-width: 1px;

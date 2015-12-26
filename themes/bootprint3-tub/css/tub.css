@@ -1,18 +1,18 @@
 /**
  * TUB: Override for existing classes
  *
- *
+ * @todo    keep sidebar on top with sth. like "col-md-pull-0 col-xs-pull-9"?
  */
 
 /* Cover & cols layout - letztlich muss es anders gemacht werden, aber fuers zeigen... */
-div .left, div .middle, div .right {min-height: 150px;}
 /* div .left   {position: relative; width: 17%;}
 div .middle {position: relative; width: 59%;}
 div .right  {position: relative; width: 24%; padding-left: 15px;} */
-.result .checkbox label {position: absolute; top: 130px; left: 10px; font-weight: normal; padding: 3px; background-color: #ffffff; color: #000000; z-index: 1; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; text-align: center;} /* PLACE CORRECT IN TEMPLATE! */
-.recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
+.result .left {text-align: left;}
+.tub-resultnumber {position: absolute; bottom: 1px; left: 8px; padding: 3px; background-color: #ffffff; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; } /* PLACE CORRECT IN TEMPLATE! */
 
-.col-xs-11 {width: 99% !important;}
+.recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
+div .left, div .middle, div .right {min-height: 150px;}
 
 .pager li > a {
     display: inline-block;
@@ -24,69 +24,130 @@ div .right  {position: relative; width: 24%; padding-left: 15px;} */
 label {display: inline;}
 
 
+header .navbar {
+    border-radius: 5px 5px 0px 0px;
+    padding: 0px 20px 0px 0px;
+    width: 98%;
+}
+
+
+/* TODO: hide opc message - might work with jquery on live system because it
+         wouldn't be cross domain */
+div.topbox      {display: none;}
+div.lrmargin    {margin: 0;}
+
+/**
+ * Temporarily nasty override
+ *
+ * @todo    Between width 767 and 991px (this are Bootstrap sm classes) there is
+ *          a lot padding/margin.
+ *          .container (Bootstrap class) is set to 734px, but this is to early
+ *          BUT WHERE?
+ *
+ * @note    Maybe the problem is, that instead of .container .container-fluid
+ *          should be used?
+ */
+@media (max-width: 991px) {
+   .recordcover {width: 80px; min-width: 80px; min-height: 120px; max-height: 120px; }
+   div .left, div .middle {min-height: 120px;} /* 140 is size of "no-image"-image */
+
+    /* right column breaks below cover/metadata */
+   .right {
+        min-height: auto !important;
+        margin-top: 10px;
+        display: inline-block;
+    }
+    .tub_holdingguide {
+        /* white-space: nowrap;*/
+    }
+    .tub_holdingguide img {
+        /* height: 22px; */
+    }
+    .tub_holdingguide .locationInfox {
+        margin-right: 20px;
+    }
+
+    .container {
+        width: 95%;
+    }
+}
+
 /**
  * TUB: TESTING MOBILE BREAKINGS 767
  *
  * Vufind only uses 767; a second might be smoother
  */
 @media (max-width: 767px) {
-    /*.container {
-        width: 708px !important;
-        / * Org: 734px * /
-    }
-    */
-
     /* Tabs */
-    .nav-tabs {
-        width:300px !important;
-    }
-    .searchTab {
-        width: 145px; /* 2*145 + 1* 10px padding = 300px; */
-    }
+    .nav-tabs   {width:350px !important;}
+    .searchTab  {width: 170px;}
 
     /* Search, select and button */
     .navbar-left .twitter-typeahead,
-    .navbar-left .twitter-typeahead input.search-query {
-        width:300px !important;
+    .navbar-left .twitter-typeahead input.search-query,
+    .navbar-left #searchForm_lookfor {
+        width:350px !important;
     }
     /* let select (and search button) stay right */
     .navbar-left select {
         display: inline !important;
-        width: auto !important;
+        width: 350px !important;
     }
 
     /* Searchtools (sorting) */
     .main .container > .row > div {
-        margin: 0 !important;
+        margin: 0;
     }
 
-   .recordcover {min-width: 50px; min-height: 140px;}
-   div .left, div .middle, div .right {position: relative; min-height: 140px;} /* 140 is size of "no-image"-image */
+    /* Sidebar */
+    .sidebar {background: none;}
 }
 
+
 /**
- * TUB: TESTING MOBILE BREAKINGS 584
+ * TUB: TESTING MOBILE BREAKINGS 480
  *
- * At 380px the search button goes beyond the input field
- * NOTE: On tablet/handy one clicks usually "Enter" on keyboard anyway; so just hide search button?!?!!
+ * This is the minimum size - works for everything down to 320 (old iphone)
+ *
+ * NOTE:    On tablet/handy one clicks usually "Enter" on keyboard anyway;
+ *          So just hide search button, might look much better with not changes
+ *          to select (just same size as input)?!?!!
  */
-@media (max-width: 584px) {
+@media (max-width: 479px) {
+    /* Tabs */
+    .nav-tabs   {width:300px !important;}
+    .searchTab  {width: 145px;} /* 2*145 + 1* 10px padding = 300px; */
+
+    /* Search, select and button */
+    .navbar-left .twitter-typeahead,
+    .navbar-left .twitter-typeahead input.search-query,
+    .navbar-left #searchForm_lookfor {
+        width:300px !important;
+    }
+    /* let select (and search button) stay right */
     .navbar-left select {
-        display: inline !important;
-        width: 300px !important;
+        width: auto !important;
     }
 
-   .right {
-      padding-top: 10px !important;
-      min-height: auto !important;
-      width: 140px !important;
-      display: block !important;
-      margin-left: 140px;
-   }
 
-    /* Wordpress social */
-    #supplementary #third {display: inline-block !important;}
-    .social img {width: auto !important;}
+   .recordcover {width: 70px; min-width: 70px; min-height: 100px; max-height: 100px; }
+   div .left, div .middle {min-height: 100px;} /* 140 is size of "no-image"-image */
+
+    .navbar-left select {
+        margin-top: 4px;
+        width: 259px !important;
+        display: inline !important;
+    }
+    .navbar-left .search-submit {
+        margin-top: -2px;
+    }
+    .navbar-left .search-submit .search-submit-collapse {
+        display: none;
+    }
+
+    .tub_holdingguide .holdlink {
+        margin-left: 0px;
+    }
 }
 
 
@@ -98,10 +159,8 @@ a.nolink        {color: #000000;}
 a.nolink:hover  {color: #000000;}
 
 /* Bookbag toogle inline */
-#bookbag-menu {padding: 2px; clear: both;}
-#bookbag-menu .tub_bookbag_on  {color: #576ca0;}
-#bookbag-menu .tub_bookbag_off {color: #a8ddf0;}
-#bookbag-menu .bookbag_label {font-family: Helvetica,Arial,"Lucida Sans Unicode","Lucida Grande",sans-serif; font-size:small;}
+#bookbag-menu .tub_bookbag_on  {color: #576ca0; font-size:small;}
+#bookbag-menu .tub_bookbag_off {color: #a8ddf0; font-size:small;}
 
 .clear {
    clear: both;

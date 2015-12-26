@@ -22,5 +22,13 @@
 .textwidget > div {padding: 0 !important;}
 .linklist    {padding: 0 !important;}
 .linklist ul {margin-left: 0 !important;}
-.social     {margin-top: 10px;}
-.social img {width: 33px !important;}
+.social     {
+    margin-top: 10px;
+    >img {
+        width: 33px !important;
+    }
+    @media (max-width: 479px) {
+        float: right !important;
+    }
+}
+
