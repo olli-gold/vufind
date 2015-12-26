@@ -1,0 +1,26 @@
+/**
+ * BOOTSTRAP-TUB-Override for "Vanilla Vufind" overrides in
+ * themes/bootstrap3-tub/less/bootstrap.less
+ *
+ * This file contains only classes that override existing vufind clases from
+ * bootstrap.less
+ *
+ */
+
+a.fa {
+    cursor: pointer;
+}
+
+
+/* --- Search --- */
+.result {
+  @media (max-width: 767px) {
+    a {text-decoration: none;}
+  }
+  @media (max-width: 530px) {
+    .checkbox {display: none !important;}
+    .left {width: 40%;}
+    .middle {width: 60%;}
+    .right {display: none;}
+  }
+}
