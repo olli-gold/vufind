@@ -27,19 +27,17 @@ header {
     padding: 0 1px 18px 1px;
     /* Perfectly dock between search area and result/filter area a) */
     >.row {
-    padding: 0;
-    margin: 0 -4px;
-    >div {
-        margin: 0px -3px 0 0;
+        padding-top: 0;
+        /*margin: 0 -4px;*/
     }
 }
 
 
 /* --- Result row entry --- */
 .row {
-    &:not(.top-row, .search-controls) {
-        padding:6px 4px;
-        margin: 0;
+    &:not(.top-row) {
+        padding: 6px 3px 6px 0;
+        margin: 0 -4px;
     }
     /* Perfectly dock between search area and result/filter area a) */
     &.search-controls {
