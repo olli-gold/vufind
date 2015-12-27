@@ -88,6 +88,7 @@ div.lrmargin    {margin: 0;}
     }
     /* let select (and search button) stay right */
     .navbar-left select {
+        margin-top: 4px;
         display: inline !important;
         width: 350px !important;
     }
@@ -140,9 +141,7 @@ div.lrmargin    {margin: 0;}
    div .left, div .middle {min-height: 100px;} /* 140 is size of "no-image"-image */
 
     .navbar-left select {
-        margin-top: 4px;
         width: 259px !important;
-        display: inline !important;
     }
     .navbar-left .search-submit {
         margin-top: -2px;
