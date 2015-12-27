@@ -99,8 +99,14 @@ div.lrmargin    {margin: 0;}
         margin: 0;
     }
 
-    /* Sidebar */
-    .sidebar {background: none;}
+    /* Sidebar: 2015-12-26: move it to top */
+    #filter-button {border-color: #AAA; background: transparent; margin-left: 7px !important; height: 34px;}
+    #filter-button:hover {background-color: #53A1BF;}
+    .sidebar {
+        position: absolute;
+        z-index: 5;
+        background: none;
+    }
 }
 
 

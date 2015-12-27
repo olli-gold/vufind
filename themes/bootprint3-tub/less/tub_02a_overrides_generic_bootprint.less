@@ -27,11 +27,10 @@ header {
     padding: 0 1px 18px 1px;
     /* Perfectly dock between search area and result/filter area a) */
     >.row {
-        padding: 0;
-        margin: 0 -4px;
-        >div {
-            margin: 0px -3px 0 0;
-        }
+    padding: 0;
+    margin: 0 -4px;
+    >div {
+        margin: 0px -3px 0 0;
     }
 }
 
@@ -65,6 +64,10 @@ header {
 /* --- Sidebar ---*/
 .sidebar {
     background: transparent linear-gradient(to top, @tub-gradient-from, @tub-gradient-to) repeat scroll 0% 0%;
+    >#filter-sidebar {
+        /* (if collapsed to nav menu it looks bad otherwise) */
+        background: transparent linear-gradient(to top, @tub-gradient-from, @tub-gradient-to) repeat scroll 0% 0%;
+    }
     .list-group-item {
         &.active {
             background: @tub-active-color;
