@@ -66,7 +66,7 @@ div.lrmargin    {margin: 0;}
     .tub_holdingguide .locationInfox {
         margin-right: 20px;
     }
-    .imagebased, .holdlocation {padding-left: 7px;}
+    .tub_holdingguide, .openUrlControls, .holdlocation {padding-left: 3px;}
 
     .container {width: 95%;}
 }
@@ -154,9 +154,11 @@ div.lrmargin    {margin: 0;}
         display: none;
     }
 
-    .tub_holdingguide .holdlink {
+    .tub_holdingguide {
         margin-left: 0px;
     }
+
+    .tub-doi .doi_outer span {font-size: x-small;}
 }
 
 
@@ -259,5 +261,5 @@ a.nolink:hover  {color: #000000;}
     width: 100%;
 }
     .tub-format {}
-    .tub-doi    {}
+    .tub-doi    {overflow: hidden;}
     .tub-year   {}

@@ -157,13 +157,13 @@
         <div class="col-xs-1 tub-FUTURE"></div>
       </div> <!-- end tub-middle-top -->
       <div class="row tub-middle-bottom">
-        <div class="col-xs-6 col-sm-2 tub-format">
+        <div class="col-xs-10 col-sm-3 tub-format">
          <?=str_replace('class="', 'class="tub_label tublabel-info ', $this->record($this->driver)->getFormatList())?>
         </div>
-        <div class="col-xs-6 col-sm-2 col-sm-push-8 tub-year text-right">
+        <div class="col-xs-2 col-sm-2 col-sm-push-7 tub-year text-right">
           <?=!empty($summDate) ? $this->escapeHtml($summDate) : ''?>
         </div>
-        <div class="col-xs-12 col-sm-8 col-sm-pull-1 tub-doi">
+        <div class="col-xs-12 col-sm-7 col-sm-pull-2 tub-doi">
           <? $doi = $this->driver->getContainerDoi(); ?>
             <? if (!empty($doi)): ?>
               <!-- DOI: <a href="http://dx.doi.org/<?=$doi?>"><?=$doi?></a> -->

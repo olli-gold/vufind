@@ -429,7 +429,7 @@ function displayHoldingGuide(container_source, display_target) {
                                           modal_body  = vufindString.loc_modal_Body_printEdAvailable,
                                           iframe_src  = '',
                                           modal_foot  = '');
-            bestOption = loc_button + loc_modal_link;
+            bestOption = loc_button + ' ' + loc_modal_link;
             // Change the link to article container into parentlink (the journal this article has been published in)
             item.find('.parentlink').attr('href', result.parentlink);
             item.find('.parentlink').removeClass('nolink');
