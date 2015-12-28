@@ -66,6 +66,7 @@ div.lrmargin    {margin: 0;}
     .tub_holdingguide .locationInfox {
         margin-right: 20px;
     }
+    .imagebased, .holdlocation {padding-left: 7px;}
 
     .container {width: 95%;}
 }
@@ -99,7 +100,7 @@ div.lrmargin    {margin: 0;}
     }
 
     /* Sidebar: 2015-12-26: move it to top */
-    #filter-button {border-color: #AAA; background: transparent; margin-left: 7px !important; height: 34px;}
+    #filter-button {border-color: #AAA; background: transparent; margin-left: 2px !important; height: 34px;}
     #filter-button:hover {background-color: #53A1BF;}
     .sidebar {
         position: absolute;
@@ -108,6 +109,9 @@ div.lrmargin    {margin: 0;}
     }
 
     .container {width: 100%;}
+
+    .tub-doi {margin-top: 5px;}
+    .tub-middle-top {margin-bottom: 45px !important;}
 }
 
 
@@ -242,10 +246,18 @@ a.nolink:hover  {color: #000000;}
     padding-left: 10px;
 }
 
-.format_info {
-    bottom: 0;
-    position: absolute;
-    max-width: 300px;
+
+/* new for result middle */
+.tub-middle-top {
+    margin-bottom: 40px !important; /* add enough margin, so .tub-middle-bottom is never overflowed */
 }
-.tub_info_topright {width: 118px; margin: 0 0 0 2px; padding: 0;} /* IS IT REALLY USED?!? Same length as Volltext-Image and order buttons */
-.tub_resYear { position: absolute; bottom: 0; right:0; }
+    .tub-bibliographic {}
+    .tub-FUTURE {}
+.tub-middle-bottom {
+    position:absolute;
+    bottom: 0px;
+    width: 100%;
+}
+    .tub-format {}
+    .tub-doi    {}
+    .tub-year   {}

@@ -21,7 +21,8 @@
     </div>
 
     <div class="col-md-7 col-sm-9 col-xs-8 middle"> <!-- version for not breaking already at 991 (sm): col-md-7 col-sm-6 col-xs-8 middle -->
-      <div>
+      <div class="row tub-middle-top">
+        <div class="col-xs-11 tub-bibliographic">
         <a href="<?=$this->recordLink()->getUrl($this->driver)?>" class="title">
         <?
           $summHighlightedTitle = $this->driver->getHighlightedTitle();
@@ -39,7 +40,6 @@
           }
         ?>
         </a>
-      </div>
 
       <div>
         <? if($this->driver->isCollection()): ?>
@@ -136,19 +136,6 @@
       </div>
     <? endif; ?>
 
-<br/>
-
-            <?=!empty($summDate) ? '<span class="tub_resYear">' . $this->escapeHtml($summDate) . '</span>' : ''?>
-        <div class="format_info">
-            <?=str_replace('class="', 'class="tub_label tublabel-info ', $this->record($this->driver)->getFormatList())?>&nbsp;
-
-            <? $doi = $this->driver->getContainerDoi(); ?>
-            <? if (!empty($doi)): ?>
-      <!--        DOI: <a href="http://dx.doi.org/<?=$doi?>"><?=$doi?></a>     -->
-              <span class="doi_outer"><span class="doi_prefix">DOI</span><span class="doi_link"><a href="https://dx.doi.org/<?=$doi?>"><?=$doi?></a></span></span>
-            <? endif; ?>
-
-        </div>
       <? $account = $this->auth()->getManager(); ?>
       <? if($account->isLoggedIn()): ?>
       <? if ($this->userlist()->getMode() !== 'disabled'): ?>
@@ -158,8 +145,35 @@
         </div>
       <? endif; ?>
       <? endif ?>
-    </div>
-    <div class="col-md-3 col-sm-0 col-xs-0 col-md-offset-0 col-sm-offset-3 col-xs-offset-4 right"> <!-- version for not breaking already at 991 (sm): col-md-3 col-sm-3 col-xs-0 col-sm-offset-0 col-xs-offset-4 right -->
+
+<!--
+<p>Lorem ipsum dolor sit amet consectetuer Integer et Sed ut fringilla. Id urna Morbi Maecenas mauris id ornare consequat tempus id ut. Et Vestibulum elit nec id pede diam auctor nisl Aenean auctor. Tincidunt dolor porta non egestas ante quis in mi sit et. Tempor Aenean tincidunt Morbi interdum Lorem sodales ipsum natoque urna hac. Nisl.</p>
+<p>Consequat condimentum hendrerit urna tellus eros pede Phasellus justo orci est. Fermentum metus justo ut at convallis Integer sem interdum vitae ac. Curabitur sollicitudin nisl malesuada magna neque habitasse sit et lobortis Aenean. Felis at est diam leo ut Integer euismod quis est suscipit. Diam Aenean in Pellentesque dictumst sed vitae Nam orci tempor tortor. Nam convallis tincidunt nulla libero pellentesque congue hendrerit augue tortor Ut. Urna montes ac.</p>
+<p>Ipsum et tempor elit orci feugiat ultrices at mauris in Nam. Morbi sagittis eget Proin ultrices id nibh lacinia dolor tellus vitae. Porttitor eu facilisi quis tempus mauris fermentum elit sollicitudin malesuada molestie. Eros molestie ridiculus Nullam pretium consequat mattis Vestibulum Nullam suscipit lorem. Tempus cursus porta et et semper ligula nec Integer Proin.</p>
+<p>Vitae Lorem nisl id auctor nunc augue Duis rutrum gravida pede. Ut vel pretium Quisque consequat convallis a wisi libero et accumsan. Facilisis lorem Vestibulum in amet faucibus condimentum nec egestas vitae In. Nibh Ut nibh amet aliquam tincidunt Curabitur et justo Sed malesuada. At semper nibh non dolor rutrum Lorem ut fringilla.</p>
+<p>Vivamus est neque amet Nullam enim egestas Integer eleifend dolor In. Convallis et Pellentesque magnis ut Curabitur laoreet lacinia nisl cursus Nulla. Vivamus vel Nam Vestibulum nibh Nunc enim pretium Nam malesuada semper. Non sollicitudin augue eros et nulla a nonummy urna sed urna. Ante Phasellus leo facilisi orci nulla hendrerit habitant.</p>
+-->
+        </div> <!-- end tub-bibliographic -->
+        <div class="col-xs-1 tub-FUTURE"></div>
+      </div> <!-- end tub-middle-top -->
+      <div class="row tub-middle-bottom">
+        <div class="col-xs-6 col-sm-2 tub-format">
+         <?=str_replace('class="', 'class="tub_label tublabel-info ', $this->record($this->driver)->getFormatList())?>
+        </div>
+        <div class="col-xs-6 col-sm-2 col-sm-push-8 tub-year text-right">
+          <?=!empty($summDate) ? $this->escapeHtml($summDate) : ''?>
+        </div>
+        <div class="col-xs-12 col-sm-8 col-sm-pull-1 tub-doi">
+          <? $doi = $this->driver->getContainerDoi(); ?>
+            <? if (!empty($doi)): ?>
+              <!-- DOI: <a href="http://dx.doi.org/<?=$doi?>"><?=$doi?></a> -->
+              <span class="doi_outer"><span class="doi_prefix">DOI</span><span class="doi_link"><a href="https://dx.doi.org/<?=$doi?>"><?=$doi?></a></span></span>
+            <? endif; ?>
+        </div>
+      </div> <!-- end tub-middle-bottom -->
+    </div> <!-- end middle -->
+
+    <div class="col-md-3 col-sm-9 col-xs-8 col-md-offset-0 col-sm-offset-3 col-xs-offset-4 right"> <!-- version for not breaking already at 991 (sm): col-md-3 col-sm-3 col-xs-0 col-sm-offset-0 col-xs-offset-4 right -->
       <span class="tub_holdingguide" record-id="<?=$id?>">
       <? /* We need to find out if we're supposed to display an OpenURL link ($openUrlActive),
             but even if we don't plan to display the link, we still want to get the $openUrl
