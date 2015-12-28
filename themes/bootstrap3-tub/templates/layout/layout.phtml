@@ -233,7 +233,6 @@
     <footer role="contentinfo" class="hidden-print">
       <div class="container">
         <?=$this->render('footer.phtml')?>
-        <?=$this->layout()->poweredBy ?>
       </div>
     </footer>
 
@@ -249,6 +248,9 @@
         </div>
       </div>
     </div>
+    <div class="offcanvas-toggle" data-toggle="offcanvas"><i class="fa"></i></div>
+    <div class="offcanvas-overlay" data-toggle="offcanvas"></div>
+
     <?=$this->googleanalytics()?>
     <?=$this->piwik()?>
   <!-- START close Wordpress (?) -->

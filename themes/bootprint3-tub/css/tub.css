@@ -12,7 +12,7 @@ div .right  {position: relative; width: 24%; padding-left: 15px;} */
 .tub-resultnumber {position: absolute; bottom: 1px; left: 8px; padding: 3px; background-color: #ffffff; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; } /* PLACE CORRECT IN TEMPLATE! */
 
 .recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: thin solid lightgrey}
-div .left, div .middle, div .right {min-height: 150px;}
+.result .left, .result .middle, .result .right {min-height: 150px;}
 
 .pager li > a {
     display: inline-block;
@@ -49,10 +49,10 @@ div.lrmargin    {margin: 0;}
  */
 @media (max-width: 991px) {
    .recordcover {width: 80px; min-width: 80px; min-height: 120px; max-height: 120px; }
-   div .left, div .middle {min-height: 120px;} /* 140 is size of "no-image"-image */
+   .result .left, .result .middle {min-height: 120px;} /* 140 is size of "no-image"-image */
 
     /* right column breaks below cover/metadata */
-   .right {
+   .result .right {
         min-height: auto !important;
         margin-top: 10px;
         display: inline-block;
@@ -142,7 +142,7 @@ div.lrmargin    {margin: 0;}
 
 
    .recordcover {width: 70px; min-width: 70px; min-height: 100px; max-height: 100px; }
-   div .left, div .middle {min-height: 100px;} /* 140 is size of "no-image"-image */
+   .result .left, .result .middle {min-height: 100px;} /* 140 is size of "no-image"-image */
 
     .navbar-left select {
         width: 259px !important;
