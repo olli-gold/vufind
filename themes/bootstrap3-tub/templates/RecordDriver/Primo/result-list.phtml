@@ -214,7 +214,7 @@
             <? if (!is_array($urls)) $urls = array();
               if(!$this->driver->isCollection()):
                 foreach ($urls as $current): ?>
-                  <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fa holdlink fulltext" target="new"><i class="fa fa-external-link"></i> <?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?></a><br/>
+                  <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" class="fa holdlink fulltext" target="new"><i class="fa fa-external-link"></i> <?=($current['url'] == $current['desc']) ? $this->transEsc('Get full text') : $this->escapeHtml($current['desc'])?></a>
               <? endforeach; ?>
             <? endif; ?>
           <? endif; ?>
