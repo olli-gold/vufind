@@ -24,7 +24,7 @@ header {
 
 /* --- Logo --- */
 .main .container {
-    padding: 0 1px 18px 1px;
+    padding: 0;
     /* Perfectly dock between search area and result/filter area a) */
     >.row {
         padding-top: 0;
@@ -35,15 +35,18 @@ header {
 
 /* --- Result row entry --- */
 .row {
+    /* this is all rows, there is no class top-row anyway?! */
     &:not(.top-row) {
-        padding: 6px 3px 6px 0;
-        margin: 0 -4px;
+        padding: 0;
+        margin: 0;
     }
     /* Perfectly dock between search area and result/filter area a) */
     &.search-controls {
         padding: 0 0 3px 4px;
     }
     &.result {
+        padding: 12px 6px;
+        margin: 0 4px;
         border-bottom: 2px dotted @tub-border-strong;
         &:nth-child(even) {
             background:#ffffff;
