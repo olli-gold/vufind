@@ -453,7 +453,7 @@ function displayHoldingGuide(container_source, display_target) {
           // correct way would be like https://api.jquery.com/ajaxSuccess/ or https://stackoverflow.com/a/9865124
           sfx_fix = item.find('.imagebased');
           sfx_available = true;
-          if (sfx_fix.innerWidth() < 10) {
+          if (sfx_fix.innerWidth() < 15) {
             sfx_fix.hide();
             sfx_available = false;
 
