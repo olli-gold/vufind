@@ -473,7 +473,7 @@ function displayHoldingGuide(container_source, display_target) {
                                           iframe_src  = '',
                                           modal_foot  = '',
                                           icon_class  = 'tub_fa-info_e');
-            item.find('.imagebased').after(loc_modal_link);
+            item.find('.imagebased').after(' ' + loc_modal_link);
           }
 
           // Final cleanup

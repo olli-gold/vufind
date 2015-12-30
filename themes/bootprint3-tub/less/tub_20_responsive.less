@@ -19,7 +19,7 @@
     @media (max-width: 991px) {
         /*  Between width 767 and 991px (this are Bootstrap sm classes) there is
             a lot padding/margin.
-            .container (Bootstrap class) is set to 734px, but this is to early
+            .container (Bootstrap class) is set to 734px, but this is too early
             BUT WHERE? */
         width: 95%;
     }
@@ -33,6 +33,15 @@
 header .navbar {
     padding: 0px 20px 0px 0px;
     width: 98%;
+    @media (max-width: 991px) {
+        width: 95%;
+    }
+    .navbar-brand {
+        @media (max-width: 991px) {
+            height: 35px;
+            width: 130px;
+        }
+    }
 }
 
 
@@ -41,44 +50,32 @@ header .navbar {
     .navbar-left { /* same as #searchForm, but I think it changed in vanilla Vufind already */
         .nav-tabs {
             @media (max-width: 767px) {
-                width: 350px !important;
+                width: 350px;
                 .searchTab  {
                     width: 170px;
                 }
             }
             @media (max-width: 479px) {
-                width:300px !important;
+                width:300px;
                 .searchTab  {
                     width: 145px;
                 } /* 2*145 + 1* 10px padding = 300px; */
             }
         }
-        .twitter-typeahead {
-            width:350px !important;
+        .twitter-typeahead, .search-query {
+            width:350px;
             @media (max-width: 479px) {
-                width:300px !important;
-            }
-            input.search-query {
-                width:350px !important;
-                @media (max-width: 479px) {
-                    width:300px !important;
-                }
-            }
-        }
-        #searchForm_lookfor {
-            width:350px !important;
-            @media (max-width: 479px) {
-                width:300px !important;
+                width:300px;
             }
         }
         select {
             @media (max-width: 767px) {
                 margin-top: 4px;
-                display: inline !important;
-                width: 350px !important;
+                display: inline;
+                width: 350px;
             }
             @media (max-width: 479px) {
-                width: 259px !important;
+                width: 270px;
             }
         }
         .search-submit {
@@ -107,12 +104,12 @@ header .navbar {
         position: absolute;
         z-index: 5;
         #filter-button {
-            border-color: #AAA;
+            border-color: @tub-border-strong;
             background: transparent;
-            margin-left: 2px !important;
+            margin-left: 2px;
             height: 34px;
             &:hover {
-                background-color: #53A1BF;
+                background-color: @tub-hover-color;
             }
         }
     }
@@ -160,13 +157,13 @@ header .navbar {
     .middle {
         min-height: 151px;
         .tub-middle-top {
-            margin-bottom: 40px !important; /* add enough margin, so .tub-middle-bottom is never overflowed */
+            margin-bottom: 40px; /* add enough margin, so .tub-middle-bottom is never overflowed */
             .tub-bibliographic {
             }
             .tub-FUTURE {
             }
             @media (max-width: 767px) {
-                margin-bottom: 45px !important;
+                margin-bottom: 45px;
             }
         }
         .tub-middle-bottom {
@@ -197,7 +194,7 @@ header .navbar {
     .right {
         min-height: 151px;
         @media (max-width: 991px) {
-            min-height: auto !important;
+            min-height: auto;
             margin-top: 20px;
             display: inline-block;
             .tub_holdingguide {
@@ -215,7 +212,7 @@ header .navbar {
                     /* height: 22px; -weird, there is some check for height? Info i appears */
                 }
                 .locationInfox {
-                    margin-right: 25px;
+                    margin-right: 25px; /* for if button is shown in a row */
                 }
                 @media (max-width: 479px) {
                     margin-left: 0px;
