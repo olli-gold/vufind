@@ -831,7 +831,7 @@ function get_holding_tab(recID, target) {
       }
     }
   }).done(function(response) {
-    // When fetching copies via ajax is done, fetch the status of each coppy
+    // When fetching copies via ajax is done, fetch the status of each copy
     //alert(response.status);
     if(response.status == 'OK') {
       displayHoldingGuide('.ajaxItem_modal', '.holdlocation_modal');
@@ -882,19 +882,19 @@ function get_volume_tab(recID) {
             }
             for (var index = 0; index < visibleCount; index++) {
                 var entry = data.data[index];
-                var volume_ajax_row = '<tr><td class="volume_'+entry.id+' volumeItems_ajax_loaded" colspan="4"></td></tr>';
+                var volume_ajax_row = '<tr><td class="volume_'+entry.id+' volumeItems_ajax_loaded" colspan="3"></td></tr>';
 
-                volume_rows.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
+                volume_rows.push('<tr class="volume_entry"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a> ('+entry.date+')</td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
             }
             if (volcount > visibleCount) {
                 for (var index = visibleCount; index < data.data.length; index++) {
                     var entry = data.data[index];
-                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
+                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a> ('+entry.date+')</td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
                 }
             }
 
             // Append to modal and return
-            var myreturn = '<table class="datagrid extended"><thead><tr><th>Band</th><th>Titel</th><th>Jahr</th><th>Exemplare</th></tr></thead><tbody>' + volume_rows.join('') + '</tbody></table>';
+            var myreturn = '<table class="datagrid extended"><thead><tr><th>'+vufindString.volume_number+' ('+vufindString.year+')</th><th>'+vufindString.volume_title+'</th><th>'+vufindString.copies+'</th></tr></thead><tbody>' + volume_rows.join('') + '</tbody></table>';
             $('.data-modal_postload_ajax').empty().append(myreturn);
             return true;
         }

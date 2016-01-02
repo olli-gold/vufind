@@ -61,7 +61,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
         $volumename = $this->driver->getVolumeName();
         if (!empty($volumename)): ?>
         <div class="resultItemLine2" style="font-size:smaller;">
-          <?=$this->transEsc('Volume title')?>:
+          <?=$this->transEsc('volume_title')?>:
           <?
           foreach ($volumename as $field) {
             echo $field;
