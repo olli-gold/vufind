@@ -594,9 +594,9 @@ function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_
  */
 $(document).ready(function() {
   // Get all the buttons
-$(window).on("load", function() {
-  displayHoldingGuide();
-});
+  $(window).on("load", function() {
+    displayHoldingGuide();
+  });
 
   /* 2015-12-09: Wait until sfx buttons are loaded; makes sfx_fix in
   // displayHoldingGuide() safer
@@ -650,21 +650,42 @@ $(window).on("load", function() {
     var preload_animation = '';
     var force_logoff_loan4 = false;
 
-    // @todo: Errm, if there's a lot text above, well then this matters ;)
-    var frameMaxHeight = window.innerHeight - 250;
-    if (frameMaxHeight > 550) frameMaxHeight = 550;
-    modal_iframe_href = $(this).children('span').attr('data-iframe');
-
     // Create iframe if available
+    modal_iframe_href = $(this).children('span').attr('data-iframe');
     if (modal_iframe_href !== undefined && modal_iframe_href.length > 0) {
-      modal_frame = '<iframe id="modalIframe" name="modalIframe" src="' + modal_iframe_href + '" width="100%" min-height="465px" height="'+frameMaxHeight+'px"/>';
+      // @todo: Errm, if there's a lot text above, well then this matters ;)
+      var frameMaxHeight = window.innerHeight - 250;
+      if (frameMaxHeight > 550) frameMaxHeight = 550;
+
+      modal_frame = '<iframe id="modalIframe" name="modalIframe" src="' + modal_iframe_href + '" width="100%" min-height="250px" />';
+      //height="'+frameMaxHeight+'px"
+
+      // Note 2015-01-02
+      // - The loan4 header is removed if loaded in iframe
+      // - Add event listener for cross domain resizing of iframe (from Loan4)
+      // > See lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/screen/layout.jsp
+      if (loc == 'Loaned' || loc == 'Magazin') {
+        var iframe_resize = function (event) {
+          if (event.origin !== "https://katalog.b.tuhh.de") {
+            return;
+          }
+          var iframe_to_resize = document.getElementById('modalIframe');
+          if (iframe_to_resize) {
+            iframe_to_resize.style.height = event.data + "px";
+          }
+        };
+        // Listener for FF, Chrome etc.
+        if (window.addEventListener) {
+          window.addEventListener("message", iframe_resize, false);
+        }
+        // Listener for (old?) IE
+        else if (window.attachEvent) {
+          window.attachEvent("onmessage", iframe_resize);
+        }
+      }
     }
 
-    if (loc == 'Loaned') {
-      additional_content = '';
-      force_logoff_loan4 = false;
-    }
-    else if (loc == 'Magazin') {
+    if (loc == 'Loaned' || loc == 'Magazin') {
       additional_content = '';
       force_logoff_loan4 = false;
     }
@@ -742,8 +763,8 @@ $(window).on("load", function() {
 
   });
 
-});
 
+});
 
 
 /**
