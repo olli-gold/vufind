@@ -522,7 +522,7 @@ function create_button(href, hover, text, icon, css_classes, target, id, custom)
   custom = custom || '';
   var button;
 
-  button    = '<a href="'+href+'" '+id+' title="'+hover+'" class="fa holdlink '+css_classes+'" '+target+' '+custom+'><i class="fa '+icon+'"></i> ' + text + '</a>';
+  button    = '<a href="'+href+'" '+id+' rel="tooltip" title="'+hover+'" class="fa holdlink '+css_classes+'" '+target+' '+custom+'><i class="fa '+icon+'"></i> ' + text + '</a>';
 
   return button;
 }
@@ -577,7 +577,7 @@ function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_
     iframe = ' data-iframe="'+iframe_src+'" ';
   }
 
-  modal = '<a href="#" id="info-'+id+'" title="' + link_title + '" class="locationInfox '+href_class+' modal-link hidden-print"><i class="fa '+icon+' '+icon_class+'"></i> ' + text + '<span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
+  modal = '<a href="#" id="info-'+id+'" rel="tooltip" title="' + link_title + '" class="locationInfox '+href_class+' modal-link hidden-print"><i class="fa '+icon+' '+icon_class+'"></i> ' + text + '<span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
 
   return modal;
 }
@@ -764,7 +764,18 @@ $(document).ready(function() {
   });
 
 
+  /**
+   * Activate nice tooltips for create_modal() buttons
+   *
+   * https://getbootstrap.com/javascript/#tooltips
+   */
+  $('body').tooltip({
+    selector: '[rel=tooltip]',
+    placement : 'bottom'
+  });
+
 });
+
 
 
 /**

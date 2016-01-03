@@ -22,6 +22,11 @@ div.lrmargin    {margin: 0;}
     padding-top: 0.15rem;;
 }
 
+/* tooltips (buttons) font, color... */
+.tooltip {}
+
+
+
 /**
  * TUB: Overrides & custom classes
  *
