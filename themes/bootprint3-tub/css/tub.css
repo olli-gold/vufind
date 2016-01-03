@@ -1,7 +1,8 @@
 /* TODO: hide opc message - might work with jquery on live system because it
-         wouldn't be cross domain */
+         wouldn't be cross domain * /
 div.topbox      {display: none;}
 div.lrmargin    {margin: 0;}
+*/
 
 /*  Basically very (!) nice way for cover resizing IF they were initialy the
     same (ratio) size: https://stackoverflow.com/a/26573319
@@ -15,6 +16,11 @@ div.lrmargin    {margin: 0;}
         <?=$cover ?>
     </div>
 */
+
+.tub-bibliographic > div {
+    line-height: 1.35rem;
+    padding-top: 0.15rem;;
+}
 
 /**
  * TUB: Overrides & custom classes
