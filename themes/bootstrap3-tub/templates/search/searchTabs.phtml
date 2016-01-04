@@ -4,7 +4,7 @@
 <? if (count($searchTabs) > 0): ?>
     <ul class="nav nav-tabs">
     <? foreach ($searchTabs as $tab): ?>
-        <li<?=$tab['label']=="tab_articles" ? ' title="'.$this->transEsc('tab_articles_title').'" class="searchTab articles' : ' title="'.$this->transEsc('tab_books_title').'" class="searchTab books'?> <?=$tab['selected'] ? ' active"' : '"'?>>
+        <li<?=$tab['label']=="tab_articles" ? ' rel="tooltip" title="'.$this->transEsc('tab_articles_title').'" class="searchTab articles' : ' title="'.$this->transEsc('tab_books_title').'" class="searchTab books'?> <?=$tab['selected'] ? ' active"' : '"'?>>
             <a href="<?=$tab['selected'] ? '' : $this->escapeHtmlAttr($tab['url'])?>">
                 <?=$this->transEsc($tab['label']); ?>
             </a>
