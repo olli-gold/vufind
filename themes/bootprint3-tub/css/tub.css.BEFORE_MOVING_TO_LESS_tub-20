@@ -1,0 +1,266 @@
+/**
+ * TUB: Override for existing classes
+ *
+ * @todo    keep sidebar on top with sth. like "col-md-pull-0 col-xs-pull-9"?
+ */
+
+/* Cover & cols layout - letztlich muss es anders gemacht werden, aber fuers zeigen... */
+/* div .left   {position: relative; width: 17%;}
+div .middle {position: relative; width: 59%;}
+div .right  {position: relative; width: 24%; padding-left: 15px;} */
+.result .left {text-align: left;}
+.tub-resultnumber {position: absolute; bottom: 1px; left: 8px; padding: 3px; background-color: #ffffff; -moz-border-top-right-radius: 10px; border-top-right-radius: 10px; opacity:0.95; min-width: 25px; } /* PLACE CORRECT IN TEMPLATE! */
+
+.result .left .recordcover {width: 100px; min-width: 100px; min-height: 150px; max-height: 150px; padding: 0; margin:0; border: 1px solid lightgrey}
+.result .middle, .result .right {min-height: 151px;}
+
+.pager li > a {
+    display: inline-block;
+    padding: 5px 14px;
+    background-color: #fff;
+    border: none;
+}
+
+label {display: inline;}
+
+
+header .navbar {
+    border-radius: 5px 5px 0px 0px;
+    padding: 0px 20px 0px 0px;
+    width: 98%;
+}
+
+
+/* TODO: hide opc message - might work with jquery on live system because it
+         wouldn't be cross domain */
+div.topbox      {display: none;}
+div.lrmargin    {margin: 0;}
+
+/**
+ * Temporarily nasty override
+ *
+ * @todo    Between width 767 and 991px (this are Bootstrap sm classes) there is
+ *          a lot padding/margin.
+ *          .container (Bootstrap class) is set to 734px, but this is to early
+ *          BUT WHERE?
+ *
+ * @note    Maybe the problem is, that instead of .container .container-fluid
+ *          should be used?
+ */
+@media (max-width: 991px) {
+   .result .left .recordcover {width: 80px; min-width: 80px; min-height: 120px; max-height: 120px; }
+   .result .middle {min-height: 121px;} /* 140 is size of "no-image"-image */
+
+    /* right column breaks below cover/metadata */
+   .result .right {
+        min-height: auto !important;
+        margin-top: 20px;
+        display: inline-block;
+    }
+    .tub_holdingguide {
+        /* white-space: nowrap;*/
+    }
+    .tub_holdingguide img {
+        /* height: 22px; -weird, there is some check for height? Info i appears */
+    }
+    .tub_holdingguide .locationInfox {
+        margin-right: 25px;
+    }
+    .tub_holdingguide, .openUrlControls {padding-left: 3px; vertical-align: top;}
+    .holdlink.holdprinted {margin-left: 5px;} /* bad */
+
+    .container {width: 95%;}
+}
+
+/**
+ * TUB: TESTING MOBILE BREAKINGS 767
+ *
+ * Vufind only uses 767; a second might be smoother
+ */
+@media (max-width: 767px) {
+    /* Tabs */
+    .nav-tabs   {width:350px !important;}
+    .searchTab  {width: 170px;}
+
+    /* Search, select and button */
+    .navbar-left .twitter-typeahead,
+    .navbar-left .twitter-typeahead input.search-query,
+    .navbar-left #searchForm_lookfor {
+        width:350px !important;
+    }
+    /* let select (and search button) stay right */
+    .navbar-left select {
+        margin-top: 4px;
+        display: inline !important;
+        width: 350px !important;
+    }
+
+    /* Searchtools (sorting) */
+    .main .container > .row > div {
+        margin: 0;
+    }
+
+    /* Sidebar: 2015-12-26: move it to top */
+    #filter-button {border-color: #AAA; background: transparent; margin-left: 2px !important; height: 34px;}
+    #filter-button:hover {background-color: #53A1BF;}
+    .sidebar {
+        position: absolute;
+        z-index: 5;
+        background: none;
+    }
+
+    .container {width: 100%;}
+
+    .tub-doi .doi_outer {padding-top: 5px;}
+    .tub-middle-top {margin-bottom: 45px !important;}
+}
+
+
+/**
+ * TUB: TESTING MOBILE BREAKINGS 480
+ *
+ * This is the minimum size - works for everything down to 320 (old iphone)
+ *
+ * NOTE:    On tablet/handy one clicks usually "Enter" on keyboard anyway;
+ *          So just hide search button, might look much better with not changes
+ *          to select (just same size as input)?!?!!
+ */
+@media (max-width: 479px) {
+    /* Tabs */
+    .nav-tabs   {width:300px !important;}
+    .searchTab  {width: 145px;} /* 2*145 + 1* 10px padding = 300px; */
+
+    /* Search, select and button */
+    .navbar-left .twitter-typeahead,
+    .navbar-left .twitter-typeahead input.search-query,
+    .navbar-left #searchForm_lookfor {
+        width:300px !important;
+    }
+    /* let select (and search button) stay right */
+    .navbar-left select {
+        width: auto !important;
+    }
+
+
+   .result .left .recordcover {width: 70px; min-width: 70px; min-height: 100px; max-height: 100px; }
+   .result .middle {min-height: 101px;} /* 140 is size of "no-image"-image */
+
+    .navbar-left select {
+        width: 259px !important;
+    }
+    .navbar-left .search-submit {
+        margin-top: -2px;
+    }
+    .navbar-left .search-submit .search-submit-collapse {
+        display: none;
+    }
+
+    .tub_holdingguide {
+        margin-left: 0px;
+    }
+
+    .tub-doi .doi_outer span {font-size: x-small;}
+}
+
+
+/**
+ * TUB: Custom classes
+ *
+ */
+a.nolink        {color: #000000;}
+a.nolink:hover  {color: #000000;}
+
+/* Bookbag toogle inline */
+#bookbag-menu .tub_bookbag_on  {color: #576ca0; font-size:small;}
+#bookbag-menu .tub_bookbag_off {color: #a8ddf0; font-size:small;}
+
+.clear {
+   clear: both;
+}
+
+/** class to make stuff "invisible" but still readable by screen readers
+ * maybe use .offcanvas ?!?
+ **/
+.offscreen {
+    position:absolute;
+    left:-10000px;
+    top:auto;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    display:inline;
+}
+
+.powered-by {
+   background-image: url("../../../themes/bootprint3-tub/images/vufind_logo.png");
+   background-size: 100px;
+   background-position: right;
+   background-repeat: no-repeat;
+   height: 40px;
+}
+
+.tag {
+    font-family: Arial, sans-serif;
+    width: 200px;
+    position: relative;
+    top: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: block;
+    float: left;
+}
+
+
+.tub_loading {
+   // Loading icon; always this way: <i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...
+}
+
+
+.tubbadge {
+   float: right;
+   font-size: 85%;
+   margin-top: 1px;
+   display: inline-block;
+   font-size: 12px;
+   font-weight: bold;
+   line-height: 1;
+   min-width: 10px;
+   padding: 3px 7px;
+   text-align: center;
+   vertical-align: baseline;
+   white-space: nowrap;
+}
+
+/* REPLACE WITH VUFIND-DEFAULT-CLASS IN TEMPLATES */
+.tub_label {
+  /* Just renamed vufind class "label" to tub_label- no formatting needed */
+}
+.tublabel-success {color: #028302;}
+.tublabel-danger  {color: #a41915;}
+.tublabel-info    {color: #1c5f74;}
+/* end REPLACE WITH VUFIND-DEFAULT-CLASS */
+
+/* Finally just use "fa-li fa-angle-right" https://fortawesome.github.io/Font-Awesome/examples/ */
+.tub_lielement {
+    color: #6BC1BB;
+    font-style: normal;
+    font-size: 20px;
+    font-family: FontAwesome;
+    padding-left: 10px;
+}
+
+
+/* new for result middle */
+.tub-middle-top {
+    margin-bottom: 40px !important; /* add enough margin, so .tub-middle-bottom is never overflowed */
+}
+    .tub-bibliographic {}
+    .tub-FUTURE {}
+.tub-middle-bottom {
+    position:absolute;
+    bottom: 0px;
+    width: 100%;
+}
+    .tub-format {}
+    .tub-doi    {overflow: hidden;}
+    .tub-year   {}

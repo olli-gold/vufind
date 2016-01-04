@@ -8,22 +8,18 @@
 
 
 /* --- START Modding Search Tabs --- */
+/* searchTab == .nav-tabs li below */
 .searchTab {
     font-size: 1.2em;
-    position: relative;
-    left: -24px;
-    margin: 0px 10px 0px 0px;
-    padding-left: 10px;
     border-width: 1px;
     border-style: solid;
-    border-color: #DDD;
-    color: #ffffff !important;
-    position: relative;
-    top: 1px;
-    width: 169px; /*see also @media (max-width: 530px) */
+    border-color: @tub-border-faint;
+    color: #ffffff;
+    white-space: nowrap;
+    width: 170px;
     > a {
         background: transparent none repeat scroll 100% 0px;
-        color: #1E3287;
+        color: @tub-link;
         float: left;
         line-height: 2em;
         padding-right: 10px;
@@ -37,7 +33,17 @@
            font-weight: normal;
         }
     }
+    &:not(.active) {
+        &:hover {
+            cursor: pointer;
+            background-color: @tub-hover-color;
+            >a {
+                color: #ffffff;
+            }
+        }
+    }
     &.books {
+        margin-right: 10px;
         border-top-right-radius: 35px;
         border-top-left-radius: 4px;
     }
@@ -46,16 +52,7 @@
         border-top-right-radius: 4px;
     }
     &.active {
-        background-color: #d8f2fc;
-        background-position: 0px -60px;
-        position: relative;
-        top: 2px;
-        border-width: 1px 1px 0px;
-        border-style: solid;
-        border-color: #DDD;
-        > a {
-            background-position: 100% -60px;
-        }
+        background-color: @tub-active-color;
     }
 }
 
@@ -64,21 +61,23 @@
 /* --- START modding search input --- */
 /* --- Search input --- */
 #searchForm_lookfor, #searchForm_type {
-    border: none;
+    border-color: @tub-border-faint;
+    border-width: 0 1px 1px 1px;
+    border-style: solid;
     padding-right: 20px; /* little space for the "delete"-x */
 }
 
 /* --- Clearable icon ---   @see themes/bootstrap3-tub/js/common.js --> "// Clearable input (search)" */
 .clearable{
     background: #fff url(data:image/gif;base64,R0lGODlhBwAHAIAAAP///5KSkiH5BAAAAAAALAAAAAAHAAcAAAIMTICmsGrIXnLxuDMLADs=) no-repeat right -10px center;
-    border: 1px solid #999;
+    border: 1px solid @tub-border-faint;
     border-radius: 3px;
     padding: 3px 18px 3px 4px; /* Use the same right padding (18) in jQ! */
     transition: background 0.4s;
-    .x {
+    &.x {
         background-position: right 5px center;
     }
-    .onX {
+    &.onX {
         cursor: pointer;
     }
 }
@@ -90,8 +89,8 @@
 .search-submit {
     padding: 5px;
     vertical-align: middle;
-    background-color: #d8f2fc;
-    border: 1px solid #CCC;
+    background-color: @tub-selectable-color;
+    border: 1px solid @tub-border-strong;
     font-weight: bold;
 }
 .search-retainfilter {
@@ -111,32 +110,28 @@
 --    padding:5px 8px;
 --    &[multiple] {height:auto} 
 --  } */
-  .search-query {
-    @media (min-width: 768px) {
-      width:350px;
+    .nav-tabs {
+        border-bottom:0;
+        padding: 0;
+        margin: 0;
+        li {
+            a {
+/*              margin-bottom:-1px;
+                border-bottom:0;
+                padding-bottom:6px; */
+                &:hover {
+/*                  background:none;
+                    border-color:transparent; */
+                    text-decoration:none;
+                }
+            }
+            &.active a, &.active a:hover {
+                background: transparent none repeat scroll 0 0;
+                border-bottom: 0 none;
+                border-color: none;
+            }
+        }
     }
-  }
-  .nav-tabs {
-/*--    border-bottom:0;
---    padding:0 6px; */
-    li {
-/*--      a {
---        margin-bottom:-1px;
---        border-bottom:0;
---        padding-bottom:6px;
---        &:hover {
---          background:none;
---          border-color:transparent;
---          text-decoration:underline;
---        }
---      } */
-      &.active a,&.active a:hover {
-            background: transparent none repeat scroll 0 0;
-            border-bottom: 0 none;
-            border-color: #eff3dc #eff3dc -moz-use-text-color;
-      }
-    }
-  }
 }
 /* --- END Modding Search Tabs --- */
 

@@ -73,6 +73,11 @@
             'lost' => $this->transEsc('status_lost'),
             'hold_place' => $this->transEsc('hold_place'),
             'recall_this' => $this->transEsc('Recall This'),
+            'show_less_links' => $this->translate('show_less_links'),
+            'show_more_links' => $this->translate('show_more_links'),
+            'volume_number' => $this->translate('volume_number'),
+            'volume_title' => $this->translate('volume_title'),
+            'year' => $this->translate('year'),
 
             'loc_modal_Title_shelf_generic' => $this->translate('loc_modal_Title_shelf_generic'),
             'loc_modal_Title_refonly_generic' => $this->translate('loc_modal_Title_refonly_generic'),
@@ -147,10 +152,7 @@
             'loc_btn_Hover_service_else' => $this->transEsc('loc_btn_Hover_service_else'),
             'loc_modal_Title_service_else' => $this->translate('loc_modal_Title_service_else'),
             'loc_modal_Body_service_else' => $this->translate('loc_modal_Body_service_else'),
-            'loc_modal_Foot_service_else' => $this->translate('loc_modal_Foot_service_else'),
-
-            'show_less_links' => $this->translate('show_less_links'),
-            'show_more_links' => $this->translate('show_more_links')
+            'loc_modal_Foot_service_else' => $this->translate('loc_modal_Foot_service_else')
           )
         );
         $this->headScript()->appendScript($this->jsTranslations()->getScript());
@@ -167,7 +169,7 @@
 
     <?
     // Get Wordpress-Theme head
-    echo file_get_contents('https://www.tub.tuhh.de/ext/wp-frame/index.php?blog_element=head&mylang='.$this->layout()->userLang);
+    echo file_get_contents('https://www.tub.tuhh.de/ext/wp-frame/index.php?blog_element=head_noTwentyElven&mylang='.$this->layout()->userLang);
     ?>
   </head>
 <!--
@@ -233,7 +235,6 @@
     <footer role="contentinfo" class="hidden-print">
       <div class="container">
         <?=$this->render('footer.phtml')?>
-        <?=$this->layout()->poweredBy ?>
       </div>
     </footer>
 
@@ -249,6 +250,9 @@
         </div>
       </div>
     </div>
+    <div class="offcanvas-toggle" data-toggle="offcanvas"><i class="fa"></i></div>
+    <div class="offcanvas-overlay" data-toggle="offcanvas"></div>
+
     <?=$this->googleanalytics()?>
     <?=$this->piwik()?>
   <!-- START close Wordpress (?) -->

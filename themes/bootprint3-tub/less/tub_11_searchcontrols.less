@@ -5,10 +5,14 @@
 
 /* --- Area below search form --- */
 .search-controls  {
-    padding: 0px;
-    margin-left: -7px;
     background-image: linear-gradient(to top, @tub-gradient-from, @tub-gradient-to);
-    margin-bottom: 10px;
+    >.col-sm-6 {
+        width: 100%;
+        padding: 0;
+    }
+    &.row {
+        margin: 0px -7px;
+    }
 }
 
 
@@ -19,15 +23,15 @@
     vertical-align: middle;
     background-color: #fff;
     padding: 3px 15px;
-    border-bottom: 2px dotted #CCC;
+    border-bottom: 2px dotted @tub-border-strong;
     button {
         min-width: 30px;
         margin: 0;
         padding: 4px;
-        border: 1px solid #CCC;
+        border: 1px solid @tub-border-strong;
         background-color: #fff;
         &.active {
-            background-color: #d8f2fc;
+            background-color: @tub-active-color;
             color: #000000;
             font-weight: normal;
         }

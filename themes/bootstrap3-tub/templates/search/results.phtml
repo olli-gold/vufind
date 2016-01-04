@@ -7,6 +7,8 @@
       $this->headTitle($this->translate('Search Results') . (empty($lookfor) ? '' : " - {$lookfor}"));
   }
 
+  $userFilters = count($this->params->getFilters()) - $this->params->hasDefaultsApplied();
+
   // Set up search box:
   $this->layout()->searchbox = $this->context($this)->renderInContext(
       'search/searchbox.phtml',
@@ -46,7 +48,19 @@
 ?>
 
 <div class="row">
-  <div class="<?=$this->layoutClass('mainbody')?>">
+  <? /* Narrow Search Options */ ?>
+  <div class="<?=$this->layoutClass('sidebar')?> col-sm-push-9 col-xs-6">
+        <button id="filter-button" data-toggle="collapse" data-target="#filter-sidebar" class="visible-xs-block"><i class="fa fa-filter"></i> Filter <?=($userFilters > 0) ? '('.$userFilters.')' : '' ?></button>
+        <div id="filter-sidebar" class="collapse navbar-collapse">
+            <? foreach ($this->results->getRecommendations('side') as $current): ?>
+              <?=$this->recommend($current)?>
+            <? endforeach; ?>
+        </div>
+  </div>
+  <? /* End Narrow Search Options */ ?>
+
+
+  <div class="<?=$this->layoutClass('mainbody')?> col-sm-pull-3">
     <? if (($recordTotal = $this->results->getResultTotal()) > 0): // only display these at very top if we have results ?>
       <? foreach ($this->results->getRecommendations('top') as $current): ?>
         <?=$this->recommend($current)?>
@@ -107,7 +121,7 @@
       ); */ ?>
         <?=$this->render('search/list-' . $this->params->getView() . '.phtml')?>
 <!--        <?=$this->context($this)->renderInContext('search/bulk-action-buttons.phtml', array('idPrefix' => 'bottom_'))?> -->
-        <?=$this->paginationControl($this->results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results))?>
+        <?=$this->paginationControl($this->results->getPaginator(), 'Sliding', 'search/pagination.phtml', array('results' => $this->results, 'options' => isset($this->paginationOptions) ? $this->paginationOptions : []))?>
       </form>
 
       <div class="searchtools hidden-print">
@@ -143,11 +157,4 @@
   </div>
   <? /* End Main Listing */ ?>
 
-  <? /* Narrow Search Options */ ?>
-  <div class="<?=$this->layoutClass('sidebar')?>">
-    <? foreach ($this->results->getRecommendations('side') as $current): ?>
-      <?=$this->recommend($current)?>
-    <? endforeach; ?>
-  </div>
-  <? /* End Narrow Search Options */ ?>
 </div>

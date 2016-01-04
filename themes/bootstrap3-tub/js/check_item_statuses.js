@@ -429,7 +429,7 @@ function displayHoldingGuide(container_source, display_target) {
                                           modal_body  = vufindString.loc_modal_Body_printEdAvailable,
                                           iframe_src  = '',
                                           modal_foot  = '');
-            bestOption = loc_button + loc_modal_link;
+            bestOption = loc_button + ' ' + loc_modal_link;
             // Change the link to article container into parentlink (the journal this article has been published in)
             item.find('.parentlink').attr('href', result.parentlink);
             item.find('.parentlink').removeClass('nolink');
@@ -453,7 +453,7 @@ function displayHoldingGuide(container_source, display_target) {
           // correct way would be like https://api.jquery.com/ajaxSuccess/ or https://stackoverflow.com/a/9865124
           sfx_fix = item.find('.imagebased');
           sfx_available = true;
-          if (sfx_fix.innerWidth() < 10) {
+          if (sfx_fix.innerWidth() < 15) {
             sfx_fix.hide();
             sfx_available = false;
 
@@ -473,7 +473,7 @@ function displayHoldingGuide(container_source, display_target) {
                                           iframe_src  = '',
                                           modal_foot  = '',
                                           icon_class  = 'tub_fa-info_e');
-            item.find('.imagebased').after(loc_modal_link);
+            item.find('.imagebased').after(' ' + loc_modal_link);
           }
 
           // Final cleanup
@@ -516,13 +516,13 @@ function displayHoldingGuide(container_source, display_target) {
  * @return \b STR link html
  */
 function create_button(href, hover, text, icon, css_classes, target, id, custom) {
-  //target = target || '';
-  if (typeof target !== 'undefined') { target = 'target="'+target+'"'; }
-  if (typeof id     !== 'undefined') { id = 'id="'+id+'"'; }
+  //target = target || 'undefined';
+  target = (typeof target !== 'undefined') ? 'target="'+target+'"' : '';
+  id     = (typeof id     !== 'undefined') ? 'id="'+id+'"' : '';
   custom = custom || '';
   var button;
 
-  button    = '<a href="'+href+'" '+id+' title="'+hover+'" class="fa holdlink '+css_classes+'" '+target+' '+custom+'><i class="fa '+icon+'"></i> <span class="btn_text">' + text + '<span></a>';
+  button    = '<a href="'+href+'" '+id+' rel="tooltip" title="'+hover+'" class="fa holdlink '+css_classes+'" '+target+' '+custom+'><i class="fa '+icon+'"></i> ' + text + '</a>';
 
   return button;
 }
@@ -577,9 +577,146 @@ function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_
     iframe = ' data-iframe="'+iframe_src+'" ';
   }
 
-  modal = '<a href="#" id="info-'+id+'" title="' + link_title + '" class="locationInfox '+href_class+' modal-link hidden-print"><i class="fa '+icon+' '+icon_class+'"></i> ' + text + '<span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
+  modal = '<a href="#" id="info-'+id+'" rel="tooltip" title="' + link_title + '" class="locationInfox '+href_class+' modal-link hidden-print"><i class="fa '+icon+' '+icon_class+'"></i> ' + text + '<span data-title="' + modal_title + '" data-location="' + loc_code +'" '+iframe+' class="modal-dialog hidden">'+modal_body+modal_foot+'</span></a>';
 
   return modal;
+}
+
+
+
+/**
+ * Load full status (per copy information) into a modal on request
+ *
+ * @todo
+ * - Make it simpler, no array needed ever
+ * - Finally replace it by the tab view used in themes/bootstrap3-tub/templates/record/view.phtml
+ *   (prepared in themes/bootstrap3-tub/templates/record/view-tabs.phtml)
+ *   > Plus add buttons if called from get_volume_tab
+ *
+ * @param recID     The PPN
+ * @param target    Tag with class or id the result shall be appended to
+ *
+ * @return Populates data-modal_postload_ajax (@see Jquery.document.ready above)
+ */
+function get_holding_tab(recID, target) {
+    var target = target || '.data-modal_postload_ajax';
+    var currentId;
+    var record_number;
+    var xhr;
+
+    currentId = recID;
+    $.ajax({
+        dataType: 'json',
+        url: path + '/AJAX/JSON?method=getItemStatusTUBFull',
+        data: {"id[]":currentId, "record_number":currentId},
+        beforeSend: function(xhr, settings) { xhr.rid = currentId; },
+        success: function(response, status, xhr) {
+            if(response.status == 'OK') {
+            $.each(response.data, function(i, result) {
+
+            //var item = $($(container_source)[xhr.rid]);
+            if (typeof(result.full_status) != 'undefined' && result.full_status.length > 0) {
+                // Full status mode is on -- display the HTML and hide extraneous junk:
+                $(target).empty().append(result.full_status);
+            }
+
+            // Prepare location list
+            // @note: getItemStatusTUBFullAjax always returns locationList; still
+            // here as part of refactoring
+            if (result.locationList) {
+                var locationListHTML = "";
+                for (var x=0; x<result.locationList.length; x++) {
+                    locationListHTML += '<div class="groupLocation">';
+
+                    if (result.locationList[x].availability) {
+                        locationListHTML += '<i class="fa fa-ok text-success"></i> <span class="text-success">'
+                            + result.locationList[x].location + '</span> ';
+                    } else {
+                        locationListHTML += '<i class="fa fa-remove text-error"></i> <span class="text-error"">'
+                        + result.locationList[x].location + '</span> ';
+                    }
+
+                    locationListHTML += '</div>';
+                    locationListHTML += '<div class="groupCallnumber">';
+                    locationListHTML += (result.locationList[x].callnumbers) ?  result.locationList[x].callnumbers : '';
+                    locationListHTML += '</div>';
+                }
+                // Show location list
+                //$(target).append(locationListHTML);
+            }
+        });
+      }
+    }
+  }).done(function(response) {
+    // When fetching copies via ajax is done, fetch the status of each copy
+    //alert(response.status);
+    if(response.status == 'OK') {
+      displayHoldingGuide('.ajaxItem_modal', '.holdlocation_modal');
+    }
+  });
+}
+
+
+
+/**
+ * Load volume list into a modal on request
+ *
+ * @todo
+ * - This view and the tab view used in themes/bootstrap3-tub/templates/record/view.phtml
+ *   (prepared in themes/bootstrap3-tub/templates/record/view-tabs.phtml) should 
+ *   just use the same template (most likely best place: themes/bootstrap3-tub/templates/ajax)
+ *   > hmm, just include themes/bootstrap3-tub/templates/record/hold.phtml somehow?
+ * - (Multilanguage table header)
+ * - Add paging (bit overkill - (1000, volcount))
+ *
+ * @note:
+ * - rip off of themes/bootstrap3-tub/js/multipart.js
+ * - Related
+ *   > module/VuFind/src/VuFind/Controller/AjaxController.php
+ *   > module/VuFind/src/VuFind/MultipartList.php
+ *   > module/VuFind/src/VuFind/RecordTab/TomesVolumes.php
+ *   > module/VuFind/src/VuFind/RecordDriver/SolrGBV.php    > getMultipartChildren()?
+ *   > themes/bootstrap3-tub/templates/RecordTab/tomesvolumes.phtml
+ *
+ * @param recID     The PPN (of a multivolume item)
+ *
+ * @return Populates data-modal_postload_ajax (@see Jquery.document.ready above)
+ */
+function get_volume_tab(recID) {
+    ppnlink = recID;
+    var volume_rows = [""];
+
+    jQuery.ajax({
+        //http://lincl1.b.tu-harburg.de:81/vufind2-test/AJAX/JSON?method=getMultipart&id=680310649&start=0&length=10000
+        url:path+'/AJAX/JSON?method=getMultipart&id='+ppnlink+'&start=0&length=10000',
+        dataType:'json',
+        success:function(data, textStatus) {
+            var volcount = data.data.length;
+            var visibleCount = Math.min(1000, volcount);
+
+            if (visibleCount == 0) {
+                return false;
+            }
+            for (var index = 0; index < visibleCount; index++) {
+                var entry = data.data[index];
+                var volume_ajax_row = '<tr><td class="volume_'+entry.id+' volumeItems_ajax_loaded" colspan="3"></td></tr>';
+
+                volume_rows.push('<tr class="volume_entry"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a> ('+entry.date+')</td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
+            }
+            if (volcount > visibleCount) {
+                for (var index = visibleCount; index < data.data.length; index++) {
+                    var entry = data.data[index];
+                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a> ('+entry.date+')</td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
+                }
+            }
+
+            // Append to modal and return
+            var myreturn = '<table class="datagrid extended"><thead><tr><th>'+vufindString.volume_number+' ('+vufindString.year+')</th><th>'+vufindString.volume_title+'</th><th>'+vufindString.copies+'</th></tr></thead><tbody>' + volume_rows.join('') + '</tbody></table>';
+            $('.data-modal_postload_ajax').empty().append(myreturn);
+            return true;
+        }
+    });
+
 }
 
 
@@ -594,9 +731,9 @@ function create_modal(id, loc_code, link_title, modal_title, modal_body, iframe_
  */
 $(document).ready(function() {
   // Get all the buttons
-$(window).on("load", function() {
-  displayHoldingGuide();
-});
+  $(window).on("load", function() {
+    displayHoldingGuide();
+  });
 
   /* 2015-12-09: Wait until sfx buttons are loaded; makes sfx_fix in
   // displayHoldingGuide() safer
@@ -650,21 +787,42 @@ $(window).on("load", function() {
     var preload_animation = '';
     var force_logoff_loan4 = false;
 
-    // @todo: Errm, if there's a lot text above, well then this matters ;)
-    var frameMaxHeight = window.innerHeight - 250;
-    if (frameMaxHeight > 550) frameMaxHeight = 550;
-    modal_iframe_href = $(this).children('span').attr('data-iframe');
-
     // Create iframe if available
+    modal_iframe_href = $(this).children('span').attr('data-iframe');
     if (modal_iframe_href !== undefined && modal_iframe_href.length > 0) {
-      modal_frame = '<iframe id="modalIframe" name="modalIframe" src="' + modal_iframe_href + '" width="100%" min-height="465px" height="'+frameMaxHeight+'px"/>';
+      // @todo: Errm, if there's a lot text above, well then this matters ;)
+      var frameMaxHeight = window.innerHeight - 250;
+      if (frameMaxHeight > 550) frameMaxHeight = 550;
+
+      modal_frame = '<iframe id="modalIframe" name="modalIframe" src="' + modal_iframe_href + '" width="100%" min-height="250px" />';
+      //height="'+frameMaxHeight+'px"
+
+      // Note 2015-01-02
+      // - The loan4 header is removed if loaded in iframe
+      // - Add event listener for cross domain resizing of iframe (from Loan4)
+      // > See lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/screen/layout.jsp
+      if (loc == 'Loaned' || loc == 'Magazin') {
+        var iframe_resize = function (event) {
+          if (event.origin !== "https://katalog.b.tuhh.de") {
+            return;
+          }
+          var iframe_to_resize = document.getElementById('modalIframe');
+          if (iframe_to_resize) {
+            iframe_to_resize.style.height = event.data + "px";
+          }
+        };
+        // Listener for FF, Chrome etc.
+        if (window.addEventListener) {
+          window.addEventListener("message", iframe_resize, false);
+        }
+        // Listener for (old?) IE
+        else if (window.attachEvent) {
+          window.attachEvent("onmessage", iframe_resize);
+        }
+      }
     }
 
-    if (loc == 'Loaned') {
-      additional_content = '';
-      force_logoff_loan4 = false;
-    }
-    else if (loc == 'Magazin') {
+    if (loc == 'Loaned' || loc == 'Magazin') {
       additional_content = '';
       force_logoff_loan4 = false;
     }
@@ -742,142 +900,15 @@ $(window).on("load", function() {
 
   });
 
-});
 
-
-
-/**
- * Load full status (per copy information) into a modal on request
- *
- * @todo
- * - Make it simpler, no array needed ever
- * - Finally replace it by the tab view used in themes/bootstrap3-tub/templates/record/view.phtml
- *   (prepared in themes/bootstrap3-tub/templates/record/view-tabs.phtml)
- *   > Plus add buttons if called from get_volume_tab
- *
- * @param recID     The PPN
- * @param target    Tag with class or id the result shall be appended to
- *
- * @return Populates data-modal_postload_ajax (@see Jquery.document.ready above)
- */
-function get_holding_tab(recID, target) {
-    var target = target || '.data-modal_postload_ajax';
-    var currentId;
-    var record_number;
-    var xhr;
-
-    currentId = recID;
-    $.ajax({
-        dataType: 'json',
-        url: path + '/AJAX/JSON?method=getItemStatusTUBFull',
-        data: {"id[]":currentId, "record_number":currentId},
-        beforeSend: function(xhr, settings) { xhr.rid = currentId; },
-        success: function(response, status, xhr) {
-            if(response.status == 'OK') {
-            $.each(response.data, function(i, result) {
-
-            //var item = $($(container_source)[xhr.rid]);
-            if (typeof(result.full_status) != 'undefined' && result.full_status.length > 0) {
-                // Full status mode is on -- display the HTML and hide extraneous junk:
-                $(target).empty().append(result.full_status);
-            }
-
-            // Prepare location list
-            // @note: getItemStatusTUBFullAjax always returns locationList; still
-            // here as part of refactoring
-            if (result.locationList) {
-                var locationListHTML = "";
-                for (var x=0; x<result.locationList.length; x++) {
-                    locationListHTML += '<div class="groupLocation">';
-
-                    if (result.locationList[x].availability) {
-                        locationListHTML += '<i class="fa fa-ok text-success"></i> <span class="text-success">'
-                            + result.locationList[x].location + '</span> ';
-                    } else {
-                        locationListHTML += '<i class="fa fa-remove text-error"></i> <span class="text-error"">'
-                        + result.locationList[x].location + '</span> ';
-                    }
-
-                    locationListHTML += '</div>';
-                    locationListHTML += '<div class="groupCallnumber">';
-                    locationListHTML += (result.locationList[x].callnumbers) ?  result.locationList[x].callnumbers : '';
-                    locationListHTML += '</div>';
-                }
-                // Show location list
-                //$(target).append(locationListHTML);
-            }
-        });
-      }
-    }
-  }).done(function(response) {
-    // When fetching copies via ajax is done, fetch the status of each coppy
-    //alert(response.status);
-    if(response.status == 'OK') {
-      displayHoldingGuide('.ajaxItem_modal', '.holdlocation_modal');
-    }
+  /**
+   * Activate nice tooltips for create_modal() buttons
+   *
+   * https://getbootstrap.com/javascript/#tooltips
+   */
+  $('body').tooltip({
+    selector: '[rel=tooltip]',
+    placement : 'bottom'
   });
-}
 
-
-
-/**
- * Load volume list into a modal on request
- *
- * @todo
- * - This view and the tab view used in themes/bootstrap3-tub/templates/record/view.phtml
- *   (prepared in themes/bootstrap3-tub/templates/record/view-tabs.phtml) should 
- *   just use the same template (most likely best place: themes/bootstrap3-tub/templates/ajax)
- *   > hmm, just include themes/bootstrap3-tub/templates/record/hold.phtml somehow?
- * - (Multilanguage table header)
- * - Add paging (bit overkill - (1000, volcount))
- *
- * @note:
- * - rip off of themes/bootstrap3-tub/js/multipart.js
- * - Related
- *   > module/VuFind/src/VuFind/Controller/AjaxController.php
- *   > module/VuFind/src/VuFind/MultipartList.php
- *   > module/VuFind/src/VuFind/RecordTab/TomesVolumes.php
- *   > module/VuFind/src/VuFind/RecordDriver/SolrGBV.php    > getMultipartChildren()?
- *   > themes/bootstrap3-tub/templates/RecordTab/tomesvolumes.phtml
- *
- * @param recID     The PPN (of a multivolume item)
- *
- * @return Populates data-modal_postload_ajax (@see Jquery.document.ready above)
- */
-function get_volume_tab(recID) {
-    ppnlink = recID;
-    var volume_rows = [""];
-
-    jQuery.ajax({
-        //http://lincl1.b.tu-harburg.de:81/vufind2-test/AJAX/JSON?method=getMultipart&id=680310649&start=0&length=10000
-        url:path+'/AJAX/JSON?method=getMultipart&id='+ppnlink+'&start=0&length=10000',
-        dataType:'json',
-        success:function(data, textStatus) {
-            var volcount = data.data.length;
-            var visibleCount = Math.min(1000, volcount);
-
-            if (visibleCount == 0) {
-                return false;
-            }
-            for (var index = 0; index < visibleCount; index++) {
-                var entry = data.data[index];
-                var volume_ajax_row = '<tr><td class="volume_'+entry.id+' volumeItems_ajax_loaded" colspan="4"></td></tr>';
-
-                volume_rows.push('<tr><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
-            }
-            if (volcount > visibleCount) {
-                for (var index = visibleCount; index < data.data.length; index++) {
-                    var entry = data.data[index];
-                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.date+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
-                }
-            }
-
-            // Append to modal and return
-            var myreturn = '<table class="datagrid extended"><thead><tr><th>Band</th><th>Titel</th><th>Jahr</th><th>Exemplare</th></tr></thead><tbody>' + volume_rows.join('') + '</tbody></table>';
-            $('.data-modal_postload_ajax').empty().append(myreturn);
-            return true;
-        }
-    });
-
-
-}
+});
