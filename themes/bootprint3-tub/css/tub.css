@@ -41,9 +41,6 @@ label {display: inline;}
     border: none;
 }
 
-a.nolink        {color: #000000;}
-a.nolink:hover  {color: #000000;}
-
 /* Bookbag toogle inline */
 #bookbag-menu .tub_bookbag_on  {color: #576ca0; font-size:small;}
 #bookbag-menu .tub_bookbag_off {color: #a8ddf0; font-size:small;}
