@@ -92,7 +92,7 @@ function displayHoldingGuide(container_source, display_target) {
           }
           /* 2015-10-01 added @see http://redmine.tub.tuhh.de/issues/624 */
           else if (result.electronic == '1' && (result.locHref !== '' && result.locHref !== false)) {
-            loc_abbr = 'WEB';  loc_modal_body = vufindString.loc_modal_Body_eMarc21;
+            loc_abbr = 'Web';  loc_modal_body = vufindString.loc_modal_Body_eMarc21;
           }
           // Electronic, but without link; pretty special case. It IS electronic, but let's handle it as false
           // Example case (cd rom): http://lincl1.b.tu-harburg.de:81/vufind2-test/Record/268707642
@@ -216,7 +216,7 @@ function displayHoldingGuide(container_source, display_target) {
                                               modal_body  = vufindString.loc_modal_Body_eMarc21,
                                               iframe_src  = result.locHref,
                                               modal_foot  = '');
-                //Dont's show loc_abbr = WEB in addition to SFX-link
+                //Dont's show loc_abbr = Web in addition to SFX-link
                 fallbackOption = loc_button + ' ' + loc_modal_link;
               }
               break;
@@ -461,7 +461,7 @@ function displayHoldingGuide(container_source, display_target) {
             // <strike>Seriously</strike> :) shouldn't be here, but the idea is not that bad, basically? :)
             // Next step: put it into a modal, so the full link can easily be shown - or links (I think there are such cases?)
             // Remove > append to oa-fulltextes > add button classes
-            item.find('.grab-fulltext1').detach().appendTo(item.find('.oa-fulltextes')).addClass('fa holdlink');
+            item.find('.grab-fulltext1').detach().appendTo(item.find('.oa-fulltextes')).addClass('holdlink');
           }
           // Alway show help if Electronic
           else {
@@ -505,7 +505,7 @@ function displayHoldingGuide(container_source, display_target) {
  * @param hover         \b STR  Title to show on hovering the link
  * @param text          \b STR  The link text
  * @param icon          \b STR  Some FontAwesome icon
- * @param css_classes   \b STR  All links get the classes "fa holdlink"
+ * @param css_classes   \b STR  All links get the classes "holdlink"
  *                              (+ the icon param); add some special class
  * @param target        \b STR  opt: target for link; leave empty for self
  * @param id            \b STR  opt: element id
@@ -522,7 +522,7 @@ function create_button(href, hover, text, icon, css_classes, target, id, custom)
   custom = custom || '';
   var button;
 
-  button    = '<a href="'+href+'" '+id+' rel="tooltip" title="'+hover+'" class="fa holdlink '+css_classes+'" '+target+' '+custom+'><i class="fa '+icon+'"></i> ' + text + '</a>';
+  button    = '<a href="'+href+'" '+id+' rel="tooltip" title="'+hover+'" class="holdlink '+css_classes+'" '+target+' '+custom+'><i class="fa '+icon+'"></i> ' + text + '</a>';
 
   return button;
 }
@@ -842,7 +842,7 @@ $(document).ready(function() {
     else if (loc == 'DIGfail') {
       //
     }
-    else if (loc == 'WEB') {
+    else if (loc == 'Web') {
       //
     }
     else if (loc == 'TUBdok') {
