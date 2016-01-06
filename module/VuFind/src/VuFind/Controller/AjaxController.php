@@ -494,7 +494,7 @@ return $this->output($x, self::STATUS_OK);
                 // TZ: if ($info['status'] == 'only copy') would work obviously,
                 // but is meant as a interlibrary loan information
                 // @note Aquired items are marked as "presence_use_only" too
-                if ($info['itemnotes'][0] == 'presence_use_only') {
+                if ($info['presence_use_only'] == '1') {
                     $referenceCount++;
                     // Remember call number and location if $patronOptions['reserve_or_local']
                     // finally is our best option
