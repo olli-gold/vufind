@@ -61,7 +61,7 @@
   <? if (!empty($urls)): ?>
     <span class="marclinks">
     <? foreach ($urls as $current): ?>
-      <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" rel="tooltip" class="externalurl fa holdlink holdelectronic"><i class="fa fa-download"></i> <?=$this->escapeHtml($current['desc'])?></a>
+      <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" rel="tooltip" class="externalurl holdlink holdelectronic"><i class="fa fa-download"></i> <?=$this->escapeHtml($current['desc'])?></a>
     <? endforeach; ?>
     </span>
   <? endif; ?>
