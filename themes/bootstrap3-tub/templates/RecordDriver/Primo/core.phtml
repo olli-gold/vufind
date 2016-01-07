@@ -212,36 +212,6 @@
       </tr>
       <? endif; ?>
 
-      <? /* We need to find out if we're supposed to display an OpenURL link ($openUrlActive),
-            but even if we don't plan to display the link, we still want to get the $openUrl
-            value for use in generating a COinS (Z3988) tag -- see bottom of file.
-          */
-        $openUrl = $this->openUrl($this->driver, 'results');
-        $openUrlActive = $openUrl->isActive();
-        // Account for replace_other_urls setting
-        $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
-        $directUrl = $this->driver->getDirectUrl();
-      ?>
-      <? if ($openUrlActive || !empty($urls)): ?>
-      <tr>
-        <th><?=$this->transEsc('Online Access')?>: </th>
-        <td>
-          <? if ($directUrl): ?>
-              <a href="<?=$directUrl?>"><?=$this->transEsc('Direct link')?></a><br/>
-          <? else: ?>
-          <? if(!$this->driver->isCollection()): ?>
-          <? foreach ($urls as $current): ?>
-            <a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>"><?=$this->escapeHtml($current['desc'])?></a><br/>
-          <? endforeach; ?>
-          <? endif; ?>
-          <? endif; ?>
-          <? if ($openUrl): ?>
-            <?=$openUrl->renderTemplate(true)?>
-          <? endif; ?>
-        </td>
-      </tr>
-      <? endif; ?>
-
       <? $recordLinks = $this->driver->getAllRecordLinks(); ?>
       <? if(!empty($recordLinks)): ?>
         <tr>

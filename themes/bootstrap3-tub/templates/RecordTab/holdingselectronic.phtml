@@ -8,6 +8,14 @@
     $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
 ?>
 
+<div class="tub-doi">
+  <? $doi = $this->driver->getContainerDoi(); ?>
+    <? if (!empty($doi)): ?>
+      <span class="doi_outer"><span class="doi_prefix">DOI</span><span class="doi_link"><a href="https://doi.org/<?=$doi?>"><?=$doi?></a></span></span>
+    <? endif; ?>
+</div>
+
+
 <? if (!empty($urls) || $openUrlActive): ?>
   <h3 class="urllabel"><?=$this->transEsc("Internet")?></h3>
   <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>

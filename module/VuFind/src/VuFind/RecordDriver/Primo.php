@@ -459,6 +459,7 @@ class Primo extends SolrDefault
             }
 
             // If we got no results, do another query with the title instead of ISSN - but only if we have volume information
+            $all2 = 0;
             if ($all == 0 && $f2info == true && $f1info == true) {
                 $altqueryparts = array();
                 $altqueryparts[] = $fieldref['title'];
@@ -485,7 +486,8 @@ class Primo extends SolrDefault
             }
 
             // If we STILL got no results, do another query with the ISSN and format:Journal, just to show, that we have the Journal
-            if ($all == 0) {
+            $all3 = 0;
+            if ($all == 0 && $all2 == 0) {
                 $naltqueryparts = array();
                 if (count($fieldref['issn']) > 0) {
                     $naltqueryparts[] = 'issn:('.implode(' OR ', str_replace(' ', '', $fieldref['issn'])).')';
@@ -533,7 +535,6 @@ class Primo extends SolrDefault
                 $all4 = $q4->getTotal();
                 if ($all4 > 0) {
                     $results = $this->searchService->search('Solr', $nnaquery, 0, $all4, $p4);
-                    return $results->getRecords();
                 }
             }
 
