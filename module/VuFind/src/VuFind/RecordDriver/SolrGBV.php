@@ -161,6 +161,7 @@ class SolrGBV extends SolrMarc
 
         // Start an array of OpenURL parameters:
         return [
+            'url_ver' => 'Z39.88-2004',
             'ctx_ver' => 'Z39.88-2004',
             'ctx_enc' => 'info:ofi/enc:UTF-8',
             'rfr_id' => 'info:sid/' . $this->getCoinsID() . ':generator',
@@ -210,7 +211,7 @@ class SolrGBV extends SolrMarc
          * a journal run as an OpenURL; however, it doesn't work well with
          * Zotero, so it is currently commented out -- instead, we just add
          * some extra fields and to the "unknown format" case. */
-        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
+        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:book';
 //        $params['rft.genre'] = 'journal';
         $params['rft.jtitle'] = $params['rft.title'];
         $params['rft.issn'] = $this->getCleanISSN();
@@ -332,7 +333,7 @@ class SolrGBV extends SolrMarc
          * a journal run as an OpenURL; however, it doesn't work well with
          * Zotero, so it is currently commented out -- instead, we just add
          * some extra fields and to the "unknown format" case. */
-        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:journal';
+        $params['rft_val_fmt'] = 'info:ofi/fmt:kev:mtx:dc';
 //        $params['rft.genre'] = 'journal';
         $params['rft.jtitle'] = $params['rft.title'];
         $params['rft.issn'] = $this->getCleanISSN();
@@ -355,6 +356,9 @@ class SolrGBV extends SolrMarc
             $params['disable_directlink'] = "true";
             $params['sfx.directlink'] = "off";
         }
+
+//        unset($params['rft.creator'], $params['rft.format'], $params['rft.language']);
+
         return $params;
     }
 
