@@ -211,7 +211,7 @@ function displayHoldingGuide(container_source, display_target) {
                                            css_classes = 'holdelectronic');
                 loc_modal_link = create_modal(id          = result.id,
                                               loc_code    = loc_abbr,
-                                              link_title  = vufindString.loc_modal_Title_eMarc21,
+                                              link_title  = vufindString.infoIcon_Hover,
                                               modal_title = vufindString.loc_modal_Title_eMarc21 +': '+title_modal,
                                               modal_body  = vufindString.loc_modal_Body_eMarc21,
                                               iframe_src  = result.locHref,
@@ -229,7 +229,7 @@ function displayHoldingGuide(container_source, display_target) {
                                          css_classes = 'holdshelf');
               loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = loc_abbr,
-                                            link_title  = loc_modal_body,
+                                            link_title  = vufindString.infoIcon_Hover,
                                             modal_title = loc_modal_title,
                                             modal_body  = loc_modal_body,
                                             iframe_src  = '',
@@ -258,7 +258,7 @@ function displayHoldingGuide(container_source, display_target) {
                                          target = '_blank');
               loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = 'Magazin',
-                                            link_title  = vufindString.loc_btn_Hover_order,
+                                            link_title  = vufindString.infoIcon_Hover,
                                             modal_title = vufindString.loc_modal_Title_order,
                                             modal_body  = vufindString.loc_modal_Body_order,
                                             iframe_src  = result.bestOptionHref,
@@ -290,7 +290,7 @@ function displayHoldingGuide(container_source, display_target) {
                                          target = '_blank');
               loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = 'Loaned',
-                                            link_title  = title,
+                                            link_title  = vufindString.infoIcon_Hover,
                                             modal_title = title,
                                             modal_body  = vufindString.loc_modal_Body_reserve,
                                             iframe_src  = result.bestOptionHref,
@@ -320,7 +320,7 @@ function displayHoldingGuide(container_source, display_target) {
                                          css_classes = 'holdrefonly');
               loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = loc_abbr,
-                                            link_title  = title,
+                                            link_title  = vufindString.infoIcon_Hover,
                                             modal_title = loc_modal_title,
                                             modal_body  = loc_modal_body+' ' + vufindString.loc_modal_Title_refonly_generic,
                                             iframe_src  = '',
@@ -348,7 +348,7 @@ function displayHoldingGuide(container_source, display_target) {
                                          css_classes = 'holdacquired');
               loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = loc_abbr,
-                                            link_title  = vufindString.loc_btn_Hover_acquired,
+                                            link_title  = vufindString.infoIcon_Hover,
                                             modal_title = vufindString.loc_modal_Title_acquired,
                                             modal_body  = loc_modal_body,
                                             iframe_src  = 'https://katalog.b.tuhh.de/DB=1/'+vufindString.opclang+'/PPN?PPN='+result.id,
@@ -376,7 +376,7 @@ function displayHoldingGuide(container_source, display_target) {
                                          css_classes = 'x');
               loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = loc_abbr,
-                                            link_title  = vufindString.loc_modal_Title_service_da,
+                                            link_title  = vufindString.infoIcon_Hover,
                                             modal_title = vufindString.loc_modal_Title_service_da,
                                             modal_body  = vufindString.loc_modal_Body_service_da,
                                             iframe_src  = '',
@@ -406,7 +406,7 @@ function displayHoldingGuide(container_source, display_target) {
                                          css_classes = 'x');
               loc_modal_link = create_modal(id          = result.id,
                                             loc_code    = 'Undefined',
-                                            link_title  = vufindString.loc_modal_Title_service_else,
+                                            link_title  = vufindString.infoIcon_Hover,
                                             modal_title = vufindString.loc_modal_Title_service_else,
                                             modal_body  = vufindString.loc_modal_Body_service_else,
                                             iframe_src  = '',
@@ -424,7 +424,7 @@ function displayHoldingGuide(container_source, display_target) {
                                        css_classes = 'holdprinted');
             loc_modal_link = create_modal(id          = result.id,
                                           loc_code    = loc_abbr,
-                                          link_title  = vufindString.loc_modal_Title_printEdAvailable,
+                                          link_title  = vufindString.infoIcon_Hover,
                                           modal_title = vufindString.loc_modal_Title_printEdAvailable,
                                           modal_body  = vufindString.loc_modal_Body_printEdAvailable,
                                           iframe_src  = '',
@@ -467,7 +467,7 @@ function displayHoldingGuide(container_source, display_target) {
           else {
             loc_modal_link = create_modal(id          = result.id,
                                           loc_code    = 'DIG',
-                                          link_title  = vufindString.loc_modal_Title_eonly,
+                                          link_title  = vufindString.infoIcon_Hover,
                                           modal_title = vufindString.loc_modal_Title_eonly,
                                           modal_body  = vufindString.loc_modal_Body_eonly,
                                           iframe_src  = '',

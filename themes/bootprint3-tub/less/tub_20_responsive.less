@@ -93,13 +93,24 @@ header .navbar {
 /* --- Searchtools (sorting) --- */
 .main .container > .row > div {
     @media (max-width: 767px) {
-        margin: 0;
+        &:not(.sidebar) {
+            margin: 0;
+        }
     }
 }
 
-/* --- Sidebar filter (2015-12-26: move it to top) --- */
+/* --- Sidebar collapsing below main content (all screens except search result view - see below) --- */
 .sidebar {
     @media (max-width: 767px) {
+        margin: 15px 8px;
+        background: none;
+    }
+}
+
+/* --- Sidebar filter; search result (2015-12-26: move it to top as button) --- */
+.sidebar_result {
+    @media (max-width: 767px) {
+        margin: 0;
         background: none;
         position: absolute;
         z-index: 5;

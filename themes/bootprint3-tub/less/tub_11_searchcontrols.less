@@ -34,6 +34,14 @@
             background-color: @tub-active-color;
             color: #000000;
             font-weight: normal;
+            &:hover {
+                cursor: text;
+            }
+        }
+        &:not(.active) {
+            &:hover {
+                background-color: @tub-hover-color;
+            }
         }
     }
 }

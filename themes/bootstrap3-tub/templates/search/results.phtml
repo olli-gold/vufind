@@ -49,7 +49,7 @@
 
 <div class="row">
   <? /* Narrow Search Options */ ?>
-  <div class="<?=$this->layoutClass('sidebar')?> col-sm-push-9 col-xs-6">
+  <div class="<?=$this->layoutClass('sidebar')?> sidebar_result col-sm-push-9 col-xs-6">
         <button id="filter-button" data-toggle="collapse" data-target="#filter-sidebar" class="visible-xs-block"><i class="fa fa-filter"></i> Filter <?=($userFilters > 0) ? '('.$userFilters.')' : '' ?></button>
         <div id="filter-sidebar" class="collapse navbar-collapse">
             <? foreach ($this->results->getRecommendations('side') as $current): ?>
