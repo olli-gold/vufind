@@ -27,6 +27,8 @@
  */
 namespace VuFind\RecordDriver;
 
+use DOMDocument;
+
 use VuFindSearch\Backend\Solr\Backend;
 use VuFindSearch\Query\Query;
 use VuFindSearch\ParamBag;
@@ -538,7 +540,37 @@ class Primo extends SolrDefault
                 }
             }
 
-            return ($results) ? $results->getRecords() : false;
+            if ($results) {
+            // Now that we got something, we can check printed license in holdingsfile
+            $issntocheck = str_replace('-', '', $fieldref['issn']);
+            $yeartocheck = $fieldref['date'];
+
+            $printedholdings = file_get_contents('https://www.tub.tuhh.de/ext/holdings/sfxprinted.xml');
+            $dom = new DomDocument();
+            $dom->loadXML($printedholdings);
+            $items = $dom->documentElement->getElementsByTagName('item');
+            foreach ($items as $item) {
+                $issnArray = $item->getElementsByTagName('issn');
+                foreach ($issnArray as $issnVar) {
+                    if ($issnVar->nodeValue == $issntocheck) {
+                        $coverages = $item->getElementsByTagName('coverage');
+                        foreach ($coverages as $coverage) {
+                            if (
+                                $yeartocheck >= $coverage->getElementsByTagName('from')->item(0)->getElementsByTagName('year')->item(0)->nodeValue
+                                && (
+                                    $yeartocheck <= $coverage->getElementsByTagName('to')->item(0)->getElementsByTagName('year')->item(0)->nodeValue
+                                    || $coverage->getElementsByTagName('to')->item(0)->getElementsByTagName('year')->item(0)->nodeValue == null
+                                )
+                            ) {
+                                return $results->getRecords();
+                            }
+                        }
+                    }
+                }
+            }
+            }
+
+            return false;
 
         }
         return false;
