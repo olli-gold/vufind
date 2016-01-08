@@ -541,33 +541,42 @@ class Primo extends SolrDefault
             }
 
             if ($results) {
-            // Now that we got something, we can check printed license in holdingsfile
-            $issntocheck = str_replace('-', '', $fieldref['issn']);
-            $yeartocheck = $fieldref['date'];
+                // Now that we got something, we can check printed license in holdingsfile
+                $yeartocheck = $fieldref['date'];
+                // But this will work only with an ISSN
+                if (count($fieldref['issn']) > 0) {
+                    foreach ($fieldref['issn'] as $iss) {
+                        $issntocheck = str_replace('-', '', $iss);
 
-            $printedholdings = file_get_contents('https://www.tub.tuhh.de/ext/holdings/sfxprinted.xml');
-            $dom = new DomDocument();
-            $dom->loadXML($printedholdings);
-            $items = $dom->documentElement->getElementsByTagName('item');
-            foreach ($items as $item) {
-                $issnArray = $item->getElementsByTagName('issn');
-                foreach ($issnArray as $issnVar) {
-                    if ($issnVar->nodeValue == $issntocheck) {
-                        $coverages = $item->getElementsByTagName('coverage');
-                        foreach ($coverages as $coverage) {
-                            if (
-                                $yeartocheck >= $coverage->getElementsByTagName('from')->item(0)->getElementsByTagName('year')->item(0)->nodeValue
-                                && (
-                                    $yeartocheck <= $coverage->getElementsByTagName('to')->item(0)->getElementsByTagName('year')->item(0)->nodeValue
-                                    || $coverage->getElementsByTagName('to')->item(0)->getElementsByTagName('year')->item(0)->nodeValue == null
-                                )
-                            ) {
-                                return $results->getRecords();
+                        $printedholdings = file_get_contents('https://www.tub.tuhh.de/ext/holdings/sfxprinted.xml');
+                        $dom = new DomDocument();
+                        $dom->loadXML($printedholdings);
+                        $items = $dom->documentElement->getElementsByTagName('item');
+                        foreach ($items as $item) {
+                            $issnArray = $item->getElementsByTagName('issn');
+                            foreach ($issnArray as $issnVar) {
+                                if ($issnVar->nodeValue == $issntocheck) {
+                                    $coverages = $item->getElementsByTagName('coverage');
+                                    foreach ($coverages as $coverage) {
+                                        if (
+                                            $yeartocheck >= $coverage->getElementsByTagName('from')->item(0)->getElementsByTagName('year')->item(0)->nodeValue
+                                            && (
+                                                $yeartocheck <= $coverage->getElementsByTagName('to')->item(0)->getElementsByTagName('year')->item(0)->nodeValue
+                                                || $coverage->getElementsByTagName('to')->item(0)->getElementsByTagName('year')->item(0)->nodeValue == null
+                                            )
+                                        ) {
+                                            return $results->getRecords();
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
-            }
+                else {
+                    // No ISSN, so we cant check, just return best guess
+                    return $results->getRecords();
+                }
             }
 
             return false;
