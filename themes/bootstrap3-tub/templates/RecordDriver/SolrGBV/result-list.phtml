@@ -44,7 +44,7 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
       <div class="row tub-middle-top">
         <div class="col-xs-11 tub-bibliographic">
         <!-- Title -->
-        <a href="<?=$this->recordLink()->getUrl($this->driver)?>" title="<?=$displayTitle?>" class="title">
+        <a href="<?=$this->recordLink()->getUrl($this->driver)?>" rel="tooltip" title="<?=$displayTitle?>" class="title">
         <?
           echo $this->escapeHtml($this->truncate($displayTitle, 100));
           $summSeries = $this->driver->getSeriesShort();

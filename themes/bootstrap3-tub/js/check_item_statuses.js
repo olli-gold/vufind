@@ -117,21 +117,6 @@ function displayHoldingGuide(container_source, display_target) {
 
           // Early exit: display VOLUMES button (if this item has volumes)
           if (result.multiVols == true) {
-            /* 2015-12-03: only create modal
-            loc_button = create_button(href   = path + '/Record/'+ result.id +'/TomesVolumes#tabnav',
-                                       hover  = vufindString.loc_modal_Title_multi,
-                                       text   = vufindString.loc_volumes,
-                                       icon   = 'fa-stack-overflow',
-                                       css_classes = 'holdtomes');
-            loc_modal_link = create_modal(id          = result.id,
-                                          loc_code    = 'Multi',
-                                          link_title  = vufindString.loc_modal_Title_multi,
-                                          modal_title = vufindString.loc_modal_Title_multi,
-                                          modal_body  = vufindString.loc_modal_Body_multi + xy(),
-                                          iframe_src  = '',
-                                          modal_foot  = '');
-            bestOption = loc_button + ' ' + loc_modal_link;
-            */
             // Create a readin room button (last 5 years) - use same button as for case 'local'
             loc_modal_button_last5years = '';
             title = loc_modal_body+ '\n' + vufindString.loc_modal_Title_refonly_generic;
@@ -221,21 +206,6 @@ function displayHoldingGuide(container_source, display_target) {
               }
               break;
             case 'shelf': //fa-hand-lizard-o is nice too (but only newest FA)
-              /* 2015-12-03: only create modal
-              loc_button = create_button(href   = path + '/Record/'+ result.id +'/Holdings#tabnav',
-                                         hover  = loc_modal_body,
-                                         text   = loc_abbr + ' ' + loc_callno,
-                                         icon   = 'fa-map-marker',
-                                         css_classes = 'holdshelf');
-              loc_modal_link = create_modal(id          = result.id,
-                                            loc_code    = loc_abbr,
-                                            link_title  = vufindString.infoIcon_Hover,
-                                            modal_title = loc_modal_title,
-                                            modal_body  = loc_modal_body,
-                                            iframe_src  = '',
-                                            modal_foot  = '');
-              bestOption = loc_button + ' ' + loc_modal_link;
-              */
               loc_modal_button = create_modal(id          = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = loc_modal_body,
@@ -249,22 +219,6 @@ function displayHoldingGuide(container_source, display_target) {
               bestOption = loc_modal_button;
               break;
             case 'order':
-              /* 2015-12-03: only create modal
-              loc_button = create_button(href   = result.bestOptionHref,
-                                         hover  = vufindString.loc_btn_Hover_order,
-                                         text   = vufindString.hold_place,
-                                         icon   = 'fa-upload',
-                                         css_classes = 'holdorder',
-                                         target = '_blank');
-              loc_modal_link = create_modal(id          = result.id,
-                                            loc_code    = 'Magazin',
-                                            link_title  = vufindString.infoIcon_Hover,
-                                            modal_title = vufindString.loc_modal_Title_order,
-                                            modal_body  = vufindString.loc_modal_Body_order,
-                                            iframe_src  = result.bestOptionHref,
-                                            modal_foot  = '');
-              bestOption = loc_button + ' ' + loc_modal_link;
-              */
               loc_modal_button = create_modal(id = result.id,
                                             loc_code    = 'Magazin',
                                             link_title  = vufindString.loc_btn_Hover_order,
@@ -281,22 +235,6 @@ function displayHoldingGuide(container_source, display_target) {
               // just continue, don't break;
             case 'reserve':
               title = vufindString.loc_modal_Title_reserve + result.duedate;
-              /* 2015-12-03: only create modal
-              loc_button = create_button(href   = result.bestOptionHref,
-                                         hover  = title,
-                                         text   = vufindString.recall_this,
-                                         icon   = 'fa-clock-o',
-                                         css_classes = 'holdreserve',
-                                         target = '_blank');
-              loc_modal_link = create_modal(id          = result.id,
-                                            loc_code    = 'Loaned',
-                                            link_title  = vufindString.infoIcon_Hover,
-                                            modal_title = title,
-                                            modal_body  = vufindString.loc_modal_Body_reserve,
-                                            iframe_src  = result.bestOptionHref,
-                                            modal_foot  = '');
-              bestOption = loc_button + ' ' + loc_modal_link;
-              */
               loc_modal_button = create_modal(id = result.id,
                                             loc_code    = 'Loaned',
                                             link_title  = title,
@@ -312,21 +250,6 @@ function displayHoldingGuide(container_source, display_target) {
             case 'local':
               // Todo: is it necessary to use result.reference_callnumber and result.reference_location. It might be...?
               title = loc_modal_body+ '\n' + vufindString.loc_modal_Title_refonly_generic;
-              /* 2015-12-03: only create modal
-              loc_button = create_button(href   = path + '/Record/'+ result.id +'/Holdings#tabnav',
-                                         hover  = title,
-                                         text   = loc_abbr + ' ' + loc_callno,
-                                         icon   = 'fa-home',
-                                         css_classes = 'holdrefonly');
-              loc_modal_link = create_modal(id          = result.id,
-                                            loc_code    = loc_abbr,
-                                            link_title  = vufindString.infoIcon_Hover,
-                                            modal_title = loc_modal_title,
-                                            modal_body  = loc_modal_body+' ' + vufindString.loc_modal_Title_refonly_generic,
-                                            iframe_src  = '',
-                                            modal_foot  = '');
-              bestOption = bestOption + loc_button + ' ' + loc_modal_link;
-              */
               loc_modal_button = create_modal(id = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = title,
@@ -340,21 +263,6 @@ function displayHoldingGuide(container_source, display_target) {
               bestOption = bestOption + loc_modal_button;
               break;
             case 'acquired':
-              /* 2015-12-03: only create modal
-              loc_button = create_button(href   = path + '/Record/'+ result.id +'/Holdings#tabnav',
-                                         hover  = vufindString.loc_btn_Hover_acquired,
-                                         text   = vufindString.loc_modal_Title_acquired,
-                                         icon   = 'fa-plane',
-                                         css_classes = 'holdacquired');
-              loc_modal_link = create_modal(id          = result.id,
-                                            loc_code    = loc_abbr,
-                                            link_title  = vufindString.infoIcon_Hover,
-                                            modal_title = vufindString.loc_modal_Title_acquired,
-                                            modal_body  = loc_modal_body,
-                                            iframe_src  = 'https://katalog.b.tuhh.de/DB=1/'+vufindString.opclang+'/PPN?PPN='+result.id,
-                                            modal_foot  = '');
-              bestOption = bestOption + loc_button + ' ' + loc_modal_link;
-              */
               loc_modal_button = create_modal(id = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = vufindString.loc_btn_Hover_acquired,
@@ -368,21 +276,6 @@ function displayHoldingGuide(container_source, display_target) {
               bestOption = loc_modal_button;
               break;
             case 'service_desk':
-              /* 2015-12-03: only create modal
-              loc_button = create_button(href   = path + '/Record/'+ result.id +'/Holdings#tabnav',
-                                         hover  = vufindString.loc_modal_Title_service_da,
-                                         text   = 'SO ' + loc_callno,
-                                         icon   = 'fa-frown-o',
-                                         css_classes = 'x');
-              loc_modal_link = create_modal(id          = result.id,
-                                            loc_code    = loc_abbr,
-                                            link_title  = vufindString.infoIcon_Hover,
-                                            modal_title = vufindString.loc_modal_Title_service_da,
-                                            modal_body  = vufindString.loc_modal_Body_service_da,
-                                            iframe_src  = '',
-                                            modal_foot  = '');
-              bestOption = loc_button + ' ' + loc_modal_link;
-              */
               loc_modal_button = create_modal(id = result.id,
                                             loc_code    = loc_abbr,
                                             link_title  = vufindString.loc_modal_Title_service_da,
