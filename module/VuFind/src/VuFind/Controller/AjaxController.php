@@ -529,7 +529,8 @@ return $this->output($x, self::STATUS_OK);
                 // 2015-10-27: New DAIA way - location is now part of the callnumber
                 // string, thus a valid reading room no is now 11 (e.g. LBS:MSB-100)
                 // 2015-12-03: New DAIA way - It's again 7 (e.g. MSB-100)
-                elseif (strlen($info['callnumber']) == 7 && $info['callnumber'] != 'Unknown') {                    // Ok, TUBHH reading room call numbers are always 7 characters long. And below we make $patronOptions['shelf']
+                elseif (strlen($info['callnumber']) == 7 && $info['callnumber'] != 'Unknown') {
+                    // Ok, TUBHH reading room call numbers are always 7 characters long. And below we make $patronOptions['shelf']
                     // the most preferable result (electronic is an exception). So force any shelf call number on top here.
                     if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
                     $bestLocationPriority[-1] = $info['location'];
@@ -537,27 +538,21 @@ return $this->output($x, self::STATUS_OK);
             }
             // Not available cases
             else {
-                // 2015-11-10: Dienstapparate are the only special case
+                // Dienstapparate are the only special case
                 if (strlen($info['callnumber']) ==7 && substr($info['callnumber'], 0, 1) == 'D') {
                     $dienstappCount++;
                     if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
-                    $bestLocationPriority[4] = $info['location'];                   
+                    $bestLocationPriority[4] = $info['location'];
                 }
+                // normal case: item is not available as its lent
                 else {
                     $lentCount++;
+                    // Reserve - ok, location isn't really interesting anymore. Remember anyway (who knows?)
+                    if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
+                    $bestLocationPriority[2] = $info['location'];
                 }
             }
 
-            // @todo  Can it exist without being set? Otherwise it's redundant
-            // with the if at the foreach start
-            if ($info['duedate']) {
-                // Do not increment depending on the duedate, because maybe item is on reserve and has no duedate yet (but is handled as lent)
-                //$lentCount++;
-                // Reserve - ok, location isn't really interesting anymore. Remember anyway (who knows?)
-                if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
-                $bestLocationPriority[2] = $info['location'];
-            }
-            
             // TODO: Find cases, see what happens
             if      ($info['status'] === 'missing') {$availability = 'missing';}
             elseif  ($info['status'] === 'lost')    {$availability = 'lost';}
