@@ -901,14 +901,4 @@ $(document).ready(function() {
   });
 
 
-  /**
-   * Activate nice tooltips for create_modal() buttons
-   *
-   * https://getbootstrap.com/javascript/#tooltips
-   */
-  $('body').tooltip({
-    selector: '[rel=tooltip]',
-    placement : 'bottom'
-  });
-
 });

@@ -545,4 +545,15 @@ $(document).ready(function() {
     //$(this).find('.tub_btn').toggleClass('btn-default');
   });
 
+
+  /**
+   * Activate nice tooltips for anything with rel="tooltip"
+   *
+   * https://getbootstrap.com/javascript/#tooltips
+   */
+  $('body').tooltip({
+    selector: '[rel=tooltip]',
+    placement : 'bottom'
+  });
+
 });
