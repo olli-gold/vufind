@@ -459,12 +459,10 @@ return $this->output($x, self::STATUS_OK);
         $referenceCallnumber = false;
         $referenceLocation   = false;
         
-        
         // Analyze each item of the record (title)
-        foreach ($record as $info) {
+        foreach ($record as $key => $info) {
             // Keep track of the due dates to finally return the one with the least waiting time
-            $key = $info['id'];
-            if (array_key_exists('duedate', $info)) {
+            if (isset($info['duedate'])) {
                 $tr[] = $info;
                 $timestamp[$key]  = strtotime($info['duedate']);
             }
@@ -544,13 +542,17 @@ return $this->output($x, self::STATUS_OK);
                     $dienstappCount++;
                     if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
                     $bestLocationPriority[4] = $info['location'];                   
-                }                
+                }
+                else {
+                    $lentCount++;
+                }
             }
 
             // @todo  Can it exist without being set? Otherwise it's redundant
             // with the if at the foreach start
             if ($info['duedate']) {
-                $lentCount++;
+                // Do not increment depending on the duedate, because maybe item is on reserve and has no duedate yet (but is handled as lent)
+                //$lentCount++;
                 // Reserve - ok, location isn't really interesting anymore. Remember anyway (who knows?)
                 if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
                 $bestLocationPriority[2] = $info['location'];

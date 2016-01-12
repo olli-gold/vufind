@@ -1046,12 +1046,16 @@ class DAIA extends AbstractBase implements
 
         // Check item for limitations on loan or presentation
         $presLimits = $this->getItemServiceLimitation($item, 'presentation');
-        foreach ($presLimits as $presLimit) {
-            $return[] = $presLimit;
+        if ($presLimits) {
+            foreach ($presLimits as $presLimit) {
+                $return[] = $presLimit;
+            }
         }
         $loanLimits = $this->getItemServiceLimitation($item, 'loan');
-        foreach ($loanLimits as $loanLimit) {
-            $return[] = $loanLimit;
+        if ($loanLimits) {
+            foreach ($loanLimits as $loanLimit) {
+                $return[] = $loanLimit;
+            }
         }
 
         return $return;
