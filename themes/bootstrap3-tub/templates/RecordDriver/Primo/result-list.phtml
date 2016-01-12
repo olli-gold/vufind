@@ -219,6 +219,7 @@
             <? endif; ?>
           <? endif; ?>
       <? endif; ?>
+<? /*********************************************** Do not show GBV button
       <? if ($this->driver->isGbvRecord()): ?>
                 <!--@todo: I really don't like it here; it should be in themes/bootstrap3-tub/js/check_item_statuses.js -->
                 <script>
@@ -228,19 +229,18 @@
                                        text   = '<?=$this->transEsc('GBV-Record')?>',
                                        icon   = 'fa-university',
                                        css_classes = '');
-                  /*
-                  loc_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
-                                          loc_code    = 'ext_ill',
-                                          link_title  = '<?=$this->transEsc('loc_btn_Hover_ill')?>',
-                                          modal_title = '<?=$this->transEsc('loc_modal_Title_ill')?>',
-                                          modal_body  = '<?=$this->transEsc('loc_modal_Body_ill')?>',
-                                          iframe_src  = 'https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>',
-                                          modal_foot  = '');
-                  document.write(loc_button+loc_modal_link);
-                  */
+//                  loc_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
+//                                          loc_code    = 'ext_ill',
+//                                          link_title  = '<?=$this->transEsc('loc_btn_Hover_ill')?>',
+//                                          modal_title = '<?=$this->transEsc('loc_modal_Title_ill')?>',
+//                                          modal_body  = '<?=$this->transEsc('loc_modal_Body_ill')?>',
+//                                          iframe_src  = 'https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>',
+//                                          modal_foot  = '');
+//                  document.write(loc_button+loc_modal_link);
                   document.write(gbv_button);
                 </script>
       <? endif; ?>
+***************************************/ ?>
       <? if ($this->driver->supportsAjaxStatus()): ?>
           <span class="holdlocation"><i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...</span>
       <? endif ?>
