@@ -385,10 +385,12 @@ class Primo extends SolrDefault
             $results = $this->searchService->search('Primo', $query, 0, $all, $params);
         }
 
-        $resArr = $results->getRecords();
-        foreach ($resArr as $rec) {
-            if ($rec->getUniqueId() != $id) {
-                $return[] = $rec;
+        if ($results) {
+            $resArr = $results->getRecords();
+            foreach ($resArr as $rec) {
+                if ($rec->getUniqueId() != $id) {
+                    $return[] = $rec;
+                }
             }
         }
 
