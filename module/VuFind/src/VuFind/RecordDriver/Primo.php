@@ -268,7 +268,7 @@ class Primo extends SolrDefault
      *
      * @return string|array|bool
      */
-    public function getThumbnail($size = 'small')
+    public function getThumbnail($size = 'medium')
     {
         if ($isbn = $this->getCleanISBN()) {
             return ['size' => $size, 'isn' => $isbn];
