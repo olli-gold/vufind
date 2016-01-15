@@ -196,15 +196,46 @@
 </table>
 <? endforeach; ?>
 <br/>
-<? if ($this->driver->checkInterlibraryLoan() == '1'): ?>
-    <span><a href="https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>" target="_blank"><?=$this->transEsc('interlibrary loan')?></a></span>
-<? endif; ?>
-<? if ($this->driver->checkInterlibraryLoan() == '1' && $this->driver->checkAcquisitionProposal() == '1'): ?>
- |
-<? endif; ?>
-<? if ($this->driver->checkAcquisitionProposal() == '1'): ?>
-    <span><a href="<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>" target="_blank"><?=$this->transEsc('Erwerbungsvorschlag')?></a></span>
-<? endif; ?>
+
+            <script>
+            <? if ($this->driver->checkInterlibraryLoan() == '1'): ?>
+                  // ILL Button
+                  loc_button = create_button(href   = 'https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>',
+                                       hover  = '<?=$this->transEsc('loc_btn_Hover_ill')?>',
+                                       text   = '<?=$this->transEsc('interlibrary loan')?>',
+                                       icon   = 'fa-truck',
+                                       css_classes = 'holdil',
+                                       target = '_blank');
+                  loc_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
+                                          loc_code    = 'ext_ill',
+                                          link_title  = '<?=$this->transEsc('loc_btn_Hover_ill')?>',
+                                          modal_title = '<?=$this->transEsc('loc_modal_Title_ill')?>',
+                                          modal_body  = '<?=$this->transEsc('loc_modal_Body_ill')?>',
+                                          iframe_src  = 'https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>',
+                                          modal_foot  = '');
+                  document.write(loc_button+loc_modal_link);
+            <? endif; ?>
+
+            <? if ($this->driver->checkAcquisitionProposal() == '1'): ?>
+                  // Aquisition proposal button
+                  loc_button = create_button(href   = '<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>',
+                                       hover  = '<?=$this->transEsc('loc_btn_Hover_acqProposal')?>',
+                                       text   = '<?=$this->transEsc('Erwerbungsvorschlag')?>',
+                                       icon   = 'fa-shopping-cart',
+                                       css_classes = 'holdwish',
+                                       target = '_blank');
+                  loc_modal_link = create_modal(id    = '<?=$this->driver->getUniqueId() ?>',
+                                          loc_code    = 'ext_acqusition',
+                                          link_title  = '<?=$this->transEsc('loc_btn_Hover_acqProposal')?>',
+                                          modal_title = '<?=$this->transEsc('loc_modal_Title_acqProposal')?>',
+                                          modal_body  = '<?=$this->transEsc('loc_modal_Body_acqProposal')?>',
+                                          iframe_src  = '<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>',
+                                          modal_foot  = '');
+                  document.write(loc_button+loc_modal_link);
+            <? endif; ?>
+            </script>
+
+
 <? if ($hasVols === true): ?>
   <a href="<?=$this->recordLink()->getTabUrl($this->driver, 'TomesVolumes')?>#tabnav"><?=$this->transEsc("See Tomes/Volumes")?></a>
 <? endif; ?>
