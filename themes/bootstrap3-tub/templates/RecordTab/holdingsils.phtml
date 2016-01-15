@@ -195,7 +195,7 @@
   <? endif; ?>
 </table>
 <? endforeach; ?>
-
+<br/>
 <? if ($this->driver->checkInterlibraryLoan() == '1'): ?>
     <span><a href="https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>" target="_blank"><?=$this->transEsc('interlibrary loan')?></a></span>
 <? endif; ?>
