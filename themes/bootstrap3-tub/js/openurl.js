@@ -58,6 +58,7 @@ function checkImage(currentId) {
                 if (width > 1 && height > 1) {
                     var parentArr = $('*[record-id="'+currentId+'"]')
                     var parent = parentArr[0];
+                    $('.urllabel').removeClass('hidden');
                     // disable links in result list view
                     $(parent).find('.holdelectro').addClass('hidden');
                     // disable links in detailed record view
@@ -92,6 +93,9 @@ function checkImage(currentId) {
 }
 
 $(document).ready(function() {
+    if ($('.marclinks').html() == undefined) {
+        $('.urllabel').addClass('hidden');
+    }
     // assign action to the openUrlWindow link class
     $('a.openUrlWindow').click(function(){
         var params = extractClassParams(this);
