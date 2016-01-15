@@ -22,7 +22,7 @@
   <? if (!empty($urls)): ?>
     <span class="marclinks">
     <? foreach ($urls as $current): ?>
-      <br/><a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" rel="tooltip"><i class="fa fa-download"></i> <?=$this->escapeHtml($current['desc'])?></a>
+      <br/><span class="externalurl"><a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" rel="tooltip"><i class="fa fa-download"></i> <?=$this->escapeHtml($current['desc'])?></a></span>
     <? endforeach; ?>
     </span>
   <? endif; ?>
