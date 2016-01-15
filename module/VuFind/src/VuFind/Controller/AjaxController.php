@@ -458,7 +458,7 @@ return $this->output($x, self::STATUS_OK);
         // Remember some special copies for the $patronOptions['reserve_or_local'] case
         $referenceCallnumber = false;
         $referenceLocation   = false;
-        
+
         // Analyze each item of the record (title)
         foreach ($record as $key => $info) {
             // Keep track of the due dates to finally return the one with the least waiting time
@@ -565,6 +565,9 @@ return $this->output($x, self::STATUS_OK);
             // Store call number/location info:
             $callNumbers[] = $info['callnumber'];
             $locations[] = $info['location'];
+
+            // Add locationhref for Marc21 link (one of them)
+            $locHref = $info['locationhref'];
         }
 
 // TZ: Problem/idea: pickValue() should use a priority list; what does ILSHoldLogic do?
@@ -705,8 +708,6 @@ else              {
             $additional_availability_message = $availability;
         }
         
-        // Add locationhref for Marc21 link (one of them)
-        $locHref = $rec['locationhref'];
         
         // @todo  Check if it is necessary here - already/also called in
         // getItemStatusesAjax() ?!? /TZ
