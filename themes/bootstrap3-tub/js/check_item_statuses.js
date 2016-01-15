@@ -594,12 +594,12 @@ function get_volume_tab(recID) {
                 var entry = data.data[index];
                 var volume_ajax_row = '<tr><td class="volume_'+entry.id+' volumeItems_ajax_loaded" colspan="3"></td></tr>';
 
-                volume_rows.push('<tr class="volume_entry"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a> ('+entry.date+')</td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
+                volume_rows.push('<tr class="volume_entry"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.part+'</a> ('+entry.date+')</td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
             }
             if (volcount > visibleCount) {
                 for (var index = visibleCount; index < data.data.length; index++) {
                     var entry = data.data[index];
-                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a> ('+entry.date+')</td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
+                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.part+'</a> ('+entry.date+')</td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
                 }
             }
 
