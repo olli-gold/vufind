@@ -116,8 +116,17 @@ label {display: inline;}
     padding-left: 10px;
 }
 
-@media (max-width: 991px) and (max-width: 479px) {
-.save-record {
-    margin-left: 7px;
+.showmore,.showless {
+    color: #06c;
 }
+
+.showmore:hover,.showless:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+@media (max-width: 991px) and (max-width: 479px) {
+    .save-record {
+        margin-left: 7px;
+    }
 }
