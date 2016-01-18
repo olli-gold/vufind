@@ -11,8 +11,10 @@ $journalTitle = $this->driver->tryMethod('getContainerTitle');
 $formats = $this->driver->tryMethod('getFormats');
 if ($marcProceedingsField) {
     $format = 'proceedings';
+/*
 } else if ($marcPhdField) {
     $format = 'phdthesis';
+*/
 } else if (!empty($journalTitle) || (is_array($formats) && in_array('Article', $formats))) {
     $format = 'article';
 } else if (is_array($formats) && in_array('Journal', $formats)) {
@@ -65,14 +67,12 @@ if (!empty($author)) {
     echo "author = {{$author}},\n";
 }
 
-/*
 $secondaryAuthors = $this->driver->tryMethod('getSecondaryAuthors');
 if (is_array($secondaryAuthors)) {
     foreach ($secondaryAuthors as $current) {
         echo "editor = {{$current}},\n";
     }
 }
-*/
 
 $pubPlaces = $this->driver->tryMethod('getPlacesOfPublication');
 $pubDates = $this->driver->tryMethod('getPublicationDates');
