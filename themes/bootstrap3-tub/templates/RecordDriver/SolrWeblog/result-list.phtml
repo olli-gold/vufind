@@ -11,7 +11,7 @@
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" class="hiddenSource" />
       <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
-          <img class="recordcover recordcover" src="<?=$this->imageLink('tub/weblog.jpg')?>" alt="<?=$this->transEsc('No Cover Image')?>"/>
+          <img class="recordcover recordcover" src="<?=$this->imageLink('tub/fa-globe.png')?>" alt="<?=$this->transEsc('No Cover Image')?>"/>
       </a>
       <span class="tub-resultnumber"><?=$this->recordNumber?></span>
     </div>
@@ -92,8 +92,8 @@
     <? if ($cart->isActive()): ?>
       <div id="bookbag-menu">
         <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
-        <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_off" href="#" data-recordid="<?=$cartId ?>"> <?=$this->transEsc('Add to Book Bag') ?></a>
-        <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_on" href="#" data-recordid="<?=$cartId ?>"> <?=$this->transEsc('Remove from Book Bag') ?></a>
+        <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_off" href="#" data-recordid="<?=$cartId ?>"> <span class="bookbag_label"><?=$this->transEsc('Add to Book Bag') ?></span></a>
+        <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_on" href="#" data-recordid="<?=$cartId ?>"> <span class="bookbag_label"><?=$this->transEsc('Remove from Book Bag') ?></span></a>
         <noscript>
           <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
             <input type="hidden" name="ids[]" value="<?=$cartId ?>" />
@@ -106,14 +106,6 @@
         </noscript>
       </div>
     <? endif; ?>
-
-<!--
-<p>Lorem ipsum dolor sit amet consectetuer Integer et Sed ut fringilla. Id urna Morbi Maecenas mauris id ornare consequat tempus id ut. Et Vestibulum elit nec id pede diam auctor nisl Aenean auctor. Tincidunt dolor porta non egestas ante quis in mi sit et. Tempor Aenean tincidunt Morbi interdum Lorem sodales ipsum natoque urna hac. Nisl.</p>
-<p>Consequat condimentum hendrerit urna tellus eros pede Phasellus justo orci est. Fermentum metus justo ut at convallis Integer sem interdum vitae ac. Curabitur sollicitudin nisl malesuada magna neque habitasse sit et lobortis Aenean. Felis at est diam leo ut Integer euismod quis est suscipit. Diam Aenean in Pellentesque dictumst sed vitae Nam orci tempor tortor. Nam convallis tincidunt nulla libero pellentesque congue hendrerit augue tortor Ut. Urna montes ac.</p>
-<p>Ipsum et tempor elit orci feugiat ultrices at mauris in Nam. Morbi sagittis eget Proin ultrices id nibh lacinia dolor tellus vitae. Porttitor eu facilisi quis tempus mauris fermentum elit sollicitudin malesuada molestie. Eros molestie ridiculus Nullam pretium consequat mattis Vestibulum Nullam suscipit lorem. Tempus cursus porta et et semper ligula nec Integer Proin.</p>
-<p>Vitae Lorem nisl id auctor nunc augue Duis rutrum gravida pede. Ut vel pretium Quisque consequat convallis a wisi libero et accumsan. Facilisis lorem Vestibulum in amet faucibus condimentum nec egestas vitae In. Nibh Ut nibh amet aliquam tincidunt Curabitur et justo Sed malesuada. At semper nibh non dolor rutrum Lorem ut fringilla.</p>
-<p>Vivamus est neque amet Nullam enim egestas Integer eleifend dolor In. Convallis et Pellentesque magnis ut Curabitur laoreet lacinia nisl cursus Nulla. Vivamus vel Nam Vestibulum nibh Nunc enim pretium Nam malesuada semper. Non sollicitudin augue eros et nulla a nonummy urna sed urna. Ante Phasellus leo facilisi orci nulla hendrerit habitant.</p>
--->
 
         </div> <!-- end tub-bibliographic -->
         <div class="col-xs-1 tub-FUTURE"></div>
