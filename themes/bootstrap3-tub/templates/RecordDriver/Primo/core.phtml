@@ -63,7 +63,7 @@
         </td>
       </tr>
       <? endif; ?>
-      <? $journalTitle = $this->driver->getContainerTitle(); if (!empty($journalTitle) || !empty($ref)): ?>
+      <? $journalTitle = $this->driver->getContainerTitle(); ?>
       <? if (!empty($journalTitle)): ?>
       <tr>
         <th><?=$this->transEsc('Journal')?>:</th>
