@@ -1278,7 +1278,6 @@ class SolrGBV extends SolrMarc
                             $desc = $desc->getData();
                         } else {
                             $desc = $address;
-                            $retVal[] = ['url' => $address, 'desc' => $desc];
                         }
 
                         $uselinks = [ 'Inhaltstext', 'Kurzbeschreibung',
@@ -1290,6 +1289,7 @@ class SolrGBV extends SolrMarc
                         // or if its a non-numeric (i.e. a non-CBS) match.
                         if (in_array($desc, $uselinks) === true
                             || is_numeric($this->getUniqueId()) === false
+                            || $desc == $address
                         ) {
                             $retVal[] = ['url' => $address, 'desc' => $desc];
                         }
