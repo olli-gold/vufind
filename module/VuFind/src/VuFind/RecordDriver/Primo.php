@@ -303,6 +303,10 @@ class Primo extends SolrDefault
                 $retVal[0]['desc'] = $this->translate($desc);
             }
         }
+        if (isset($this->fields['directurl'])) {
+            $retVal[1]['url'] = (string)$this->fields['directurl'];
+            $retVal[1]['desc'] = $this->fields['directurl'];
+        }
 
         return $retVal;
     }
