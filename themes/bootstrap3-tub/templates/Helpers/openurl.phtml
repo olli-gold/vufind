@@ -4,11 +4,12 @@
   if ($this->openUrlEmbed) {
     $classes = "fa fa-fulltext";
   } elseif ($this->openUrlWindow) {
-    $classes = 'fa fa-fulltext openUrlWindow window_settings:' . $this->escapeHtmlAttr($this->openUrlWindow);
+//    $classes = 'fa fa-fulltext openUrlWindow window_settings:' . $this->escapeHtmlAttr($this->openUrlWindow);
+    $classes = 'fa fa-fulltext';
   }
   if (!empty($classes)) {
-    $class = ' class="' . $classes . '"';
-    $class_ib = ' class="imagebased ' . $classes . '"';
+    $class = ' class="' . $classes . '" target="_blank"';
+    $class_ib = ' class="imagebased ' . $classes . '" target="_blank"';
   } else {
     $class = $class_ib = '';
   }
