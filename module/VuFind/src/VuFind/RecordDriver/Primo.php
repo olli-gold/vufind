@@ -765,4 +765,25 @@ class Primo extends SolrDefault
         return false;
     }
 
+    /**
+     * Get the OpenURL parameters to represent this record (useful for the
+     * title attribute of a COinS span tag).
+     *
+     * @param bool $overrideSupportsOpenUrl Flag to override checking
+     * supportsOpenUrl() (default is false)
+     *
+     * @return string OpenURL parameters.
+     */
+    public function getOpenUrl($overrideSupportsOpenUrl = false)
+    {
+        if (isset($this->fields['url'])) {
+            if (strpos($this->fields['url'], 'sfx.gbv.de') !== false) {
+                return $this->fields['url'];
+            }
+        }
+
+        return parent::getOpenUrl($overrideSupportsOpenUrl);
+    }
+
+
 }
