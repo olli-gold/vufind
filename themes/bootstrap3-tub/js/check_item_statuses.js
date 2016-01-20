@@ -326,6 +326,8 @@ function displayHoldingGuide(container_source, display_target) {
             // Change the link to article container into parentlink (the journal this article has been published in)
             item.find('.parentlink').attr('href', result.parentlink);
             item.find('.parentlink').removeClass('nolink');
+            // Hide SFX link (but do not hide fulltext button)
+            item.find('.holdlink.fulltext').addClass('hidden');
           }
 
           // Add clarifying text for some availability information
