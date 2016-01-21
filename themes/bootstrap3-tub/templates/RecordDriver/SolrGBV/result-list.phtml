@@ -277,8 +277,11 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
                                           iframe_src  = 'https://gso.gbv.de/request/FORM/LOAN?PPN=<?=$this->driver->getUniqueId() ?>',
                                           modal_foot  = '');
                   document.write(loc_button+loc_modal_link);
+                </script>
+        <? endif; ?>
 
             <? if ($this->driver->checkAcquisitionProposal() == '1'): ?>
+                <script>
                   // Aquisition proposal button
                   loc_button = create_button(href   = '<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>',
                                        hover  = '<?=$this->transEsc('loc_btn_Hover_acqProposal')?>',
@@ -294,7 +297,6 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
                                           iframe_src  = '<?=$this->transEsc('Erwerbungsvorschlag_Url')?><?=$this->driver->getOpenUrl()?>&gvk_ppn=<?=$this->driver->getUniqueId() ?>',
                                           modal_foot  = '');
                   document.write(loc_button+loc_modal_link);
-                <? endif; ?>
                 </script>
             <? endif; ?>
         </span>
