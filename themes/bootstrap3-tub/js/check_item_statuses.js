@@ -374,8 +374,11 @@ function displayHoldingGuide(container_source, display_target) {
           // Final cleanup
           // If neither sfx is available and our fulltext hack didn't fill in
           // something, then show our fallback information
-          if (sfx_available == false && item.find('.holdlink').length == 0) {
+          if (sfx_available == false && item.find('.holdlink').length == 0 && item.find('.sfxlink').length == 0) {
             item.find(display_target).empty().append(fallbackOption);
+          }
+          if (item.find('.holdlink').length == 0 && item.find('.sfxlink').length > 0) {
+            item.find('.sfxlink').removeClass('hidden');
           }
 
         });
