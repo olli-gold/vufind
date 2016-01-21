@@ -143,6 +143,10 @@ label {display: inline;}
 .navbar-brand-beta:hover,.navbar-brand-beta:focus{text-decoration: none}
 .navbar-brand-beta > img {display: block}
 
+.sidebar .list-group-item.active {
+    color:#555;
+}
+
 @media (max-width: 991px) and (max-width: 479px) {
     .save-record {
         margin-left: 7px;
