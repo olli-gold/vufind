@@ -1,0 +1,158 @@
+<?
+$journalTitle = $this->driver->tryMethod('getContainerTitle');
+$formats = $this->driver->tryMethod('getFormats');
+if ($marcProceedingsField) {
+    $format = 'proceedings';
+} else if ($marcPhdField) {
+    $format = 'phdthesis';
+} else if (!empty($journalTitle) || (is_array($formats) && in_array('Article', $formats))) {
+    $format = 'article';
+} else if (is_array($formats) && in_array('Journal', $formats)) {
+    $format = 'misc';
+} else {
+    $format = 'book';
+}
+
+// Open format tag:
+echo '@' . $format . "{\n";
+
+// Citation key:
+echo $this->driver->getResourceSource() . '-' .  $this->driver->getUniqueId() . ",\n";
+
+$title = rtrim($this->driver->getTitle(), " /");
+echo "title = {{$title}},\n";
+
+if (!empty($journalTitle)) {
+    echo "journal = {{$journalTitle}},\n";
+    $volume = $this->driver->tryMethod('getContainerVolume');
+    if (!empty($volume)) {
+        echo "volume = {{$volume}},\n";
+    }
+    $number = $this->driver->tryMethod('getContainerIssue');
+    if (!empty($number)) {
+        echo "number = {{$number}},\n";
+    }
+    $start = $this->driver->tryMethod('getContainerStartPage');
+    $end = $this->driver->tryMethod('getContainerEndPage');
+    if (!empty($start)) {
+        // use page range if possible
+        if (!empty($end)) {
+            echo "pages = {{$start}-{$end}},\n";
+        } else {
+            // use only start page
+            echo "pages = {{$start}},\n";
+        }
+    }
+}
+
+$series = $this->driver->tryMethod('getSeries');
+if (is_array($series)) {
+    foreach ($series as $current) {
+        echo "series = {" . (is_array($current) ? $current['name'] : $current) . "},\n";
+    }
+}
+
+$author = $this->driver->tryMethod('getPrimaryAuthor');
+if (!empty($author)) {
+    echo "author = {{$author}},\n";
+}
+
+$secondaryAuthors = $this->driver->tryMethod('getSecondaryAuthors');
+if (is_array($secondaryAuthors)) {
+    foreach ($secondaryAuthors as $current) {
+        echo "author = {{$current}},\n";
+    }
+}
+
+$pubPlaces = $this->driver->tryMethod('getPlacesOfPublication');
+$pubDates = $this->driver->tryMethod('getPublicationDates');
+$pubNames = $this->driver->tryMethod('getPublishers');
+if (is_array($pubPlaces) && is_array($pubDates) && is_array($pubNames)) {
+    $total = min(count($pubPlaces), count($pubDates), count($pubNames));
+    // if we have pub dates but no other details, we still want to export the year:
+    if ($total == 0 && count($pubDates) > 0) {
+        $total = 1;
+    }
+    for ($i = 0; $i < $total; $i++) {
+        if (isset($pubPlaces[$i])) {
+            echo "address = {" . rtrim(str_replace(array('[', ']'), '', $pubPlaces[$i]), ': ') . "},\n";
+        }
+        if (isset($pubNames[$i])) {
+            echo "publisher = {" . rtrim($pubNames[$i], ", ") . "},\n";
+        }
+        $date = trim($pubDates[$i], '[]. ');
+        if (strlen($date) > 4) {
+            $date = $this->dateTime()->extractYear($date);
+        }
+        if ($date) {
+            echo "year = {{$date}},\n";
+        }
+    }
+}
+$pubDate = $this->driver->tryMethod('getPublicationDate');
+if ($pubDate) {
+        if (strlen($pubDate) > 4) {
+            $pubDate = $this->dateTime()->extractYear($pubDate);
+        }
+        echo "year = {{$pubDate}},\n";
+}
+
+$isbns = $this->driver->tryMethod('getISBNs');
+if (is_array($isbns) && isset($isbns[0])) {
+    echo 'isbn = { ';
+    foreach ($isbns as $isbn) {
+         echo $isbn . ' ';
+    }
+    echo "},\n";
+}
+
+$issns = $this->driver->tryMethod('getISSNs');
+if (is_array($issns) && isset($issns[0])) {
+    echo 'issn = { ';
+    foreach ($issns as $issn) {
+        echo $issn . ' ';
+    }
+    echo "},\n";
+}
+
+$edition = $this->driver->tryMethod('getEdition');
+if (!empty($edition)) {
+    echo "edition = {{$edition}},\n";
+}
+
+if ($marcPhdField && $subfield = $marcPhdField->getSubfield('a')) {
+    echo "school = {" . $subfield->getData() . "},\n";
+}
+
+// Try to find a page count in the physical description:
+$physical = $this->driver->tryMethod('getPhysicalDescriptions');
+if (is_array($physical)) {
+    foreach ($physical as $current) {
+        if (preg_match('/([0-9]+)\s*p/', $current, $matches)) {
+            echo "pages = {{$matches[1]}},\n";
+            break;
+        }
+    }
+}
+
+$notes = $this->driver->tryMethod('getGeneralNotes');
+if (is_array($notes)) {
+    foreach ($notes as $note) {
+        echo "note = {{$note}},\n";
+    }
+}
+
+$doi = $this->driver->tryMethod('getContainerDoi');
+if ($doi) {
+    echo "doi = {{$doi}},\n";
+}
+
+foreach ($this->record($this->driver)->getUrlList() as $url) {
+    if (strpos($url, 'sfx.gbv.de') === false) {
+        echo "url = {{$url}}\n";
+    }
+}
+
+// Record separator:
+echo "}\n\n";
+?>
