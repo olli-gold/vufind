@@ -92,7 +92,7 @@ if (is_array($pubPlaces) && is_array($pubDates) && is_array($pubNames)) {
 $pubDate = $this->driver->tryMethod('getPublicationDate');
 if ($pubDate) {
         if (strlen($pubDate) > 4) {
-            $pubDate = $this->dateTime()->extractYear($pubDate);
+            $pubDate = date("Y", strtotime($pubDate));
         }
         echo "year = {{$pubDate}},\n";
 }
