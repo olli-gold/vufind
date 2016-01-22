@@ -184,7 +184,10 @@ header .navbar {
             .tub-format {
             }
             .tub-doi {
-                overflow: hidden;
+                line-height: 150%;
+                @media (max-width: 767px) {
+                    padding-top: 5px;
+                }
                 .doi_outer span {
                     @media (max-width: 479px) {
                         font-size: x-small;

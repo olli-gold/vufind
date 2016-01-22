@@ -233,14 +233,24 @@ $urls = $this->record($this->driver)->getLinkDetails($openUrlActive);
         <div class="col-xs-6 col-sm-2 tub-format">
          <?=str_replace('class="', 'class="tub_label tublabel-info ', $this->record($this->driver)->getFormatList())?>
         </div>
-        <div class="col-xs-6 col-sm-2 col-sm-push-8 tub-year text-right">
-          <?=!empty($summDate) ? $this->escapeHtml($summDate[0]) : ''?>
-        </div>
-        <div class="col-xs-12 col-sm-8 col-sm-pull-1 tub-doi">
+        <? $doi_span = 10; $doi_pull = 0; ?>
+        <? if (!empty($summDate)) : ?>
+          <div class="col-xs-2 col-sm-2 col-sm-push-8 tub-year text-right">
+            <?=$this->escapeHtml($summDate[0])?>
+            <? $doi_span = 8; $doi_pull = 2; ?>
+          </div>
+        <? endif; ?>
+          <div class="col-xs-12 col-sm-<?=$doi_span?> col-sm-pull-<?=$doi_pull?> tub-doi">
           <? $doi = $this->driver->getContainerDoi(); ?>
             <? if (!empty($doi)): ?>
+              <?
+                $patterns[0] = '/\./';    $replacements[0] = '.&#8203;';
+                $patterns[1] = '/-/';     $replacements[1] = '-&#8203;';
+                $patterns[2] = '/\//';    $replacements[2] = '/&#8203;';
+                $doi_br = preg_replace($patterns, $replacements, $doi);
+              ?>
               <!-- DOI: <a href="http://dx.doi.org/<?=$doi?>"><?=$doi?></a> -->
-              <span class="doi_outer"><span class="doi_prefix">DOI</span><span class="doi_link"><a href="https://dx.doi.org/<?=$doi?>"><?=$doi?></a></span></span>
+              <span class="doi_outer"><span class="doi_prefix">DOI</span><span class="doi_link"><a href="https://dx.doi.org/<?=$doi?>" rel="tooltip" title="<?=$doi?>"><?=$doi_br?></a></span></span>
             <? endif; ?>
         </div>
       </div> <!-- end tub-middle-bottom -->
