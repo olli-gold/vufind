@@ -55,17 +55,6 @@
 <? if ($this->driver->needsLicense() == true && $this->driver->licenseAvailable() == false): ?>
     <span><?=$this->transEsc('no_license')?></span><br/>
 <? endif; ?>
-<? if (!empty($urls) || $openUrlActive): ?>
-  <h3 class="urllabel"><?=$this->transEsc("Internet")?></h3>
-  <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>
-  <? if (!empty($urls)): ?>
-    <span class="marclinks">
-    <? foreach ($urls as $current): ?>
-      <br/><span class="externalurl"><a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" rel="tooltip"><i class="fa fa-download"></i> <?=$this->escapeHtml($current['desc'])?></a></span>
-    <? endforeach; ?>
-    </span>
-  <? endif; ?>
-<? endif; ?>
 <? foreach ($holdings as $holding): ?>
 <h3>
   <? $locationText = $this->transEsc('location_' . $holding['location'], array(), $holding['location']); ?>
@@ -103,6 +92,10 @@
     <? endif; ?>
   <? endforeach; ?>
   <? foreach ($holding['items'] as $row): ?>
+  <?
+    $epnArr = explode(':', $row['item_id']);
+    $epn = $epnArr[(count($epnArr)-1)];
+  ?>
     <?
         $pureCallnumberArray = explode(':', $row['callnumber']);
         $pureCallnumber = isset($pureCallnumberArray[1]) ? $pureCallnumberArray[1] : $row['callnumber'];
@@ -114,9 +107,14 @@
       <tr vocab="http://schema.org/" typeof="Offer">
         <th><?=$this->transEsc("Copy")?> <?=$this->escapeHtml($row['number'])?></th>
         <td>
-    <?=$this->transEsc("Call Number")?>: <?=$pureCallnumber?><br/>
-      <? if ($volStock[$pureCallnumber]): ?>
-          <?=$volStock[$pureCallnumber]?><br/>
+      <? if ($row['location'] == "Internet"): ?>
+          <a href="<?=$row['locationhref']?>" target="_blank"><?=$row['locationhref']?></a><br/>
+      <? endif; ?>
+      <? if ($pureCallnumber != "Unknown"): ?>
+          <?=$this->transEsc("Call Number")?>: <?=$pureCallnumber?><br/>
+      <? endif; ?>
+      <? if ($volStock[$epn]): ?>
+          <?=$volStock[$epn]?><br/>
       <? endif; ?>
           <? if ($row['reserve'] == "Y"): ?>
             <link property="availability" href="http://schema.org/InStoreOnly" />
@@ -195,8 +193,18 @@
   <? endif; ?>
 </table>
 <? endforeach; ?>
-<br/>
 
+<? if (!empty($urls) || $openUrlActive): ?>
+  <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>
+  <? if (!empty($urls)): ?>
+    <span class="marclinks">
+    <? foreach ($urls as $current): ?>
+      <br/><span class="externalurl"><a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" rel="tooltip"><i class="fa fa-download"></i> <?=$this->escapeHtml($current['desc'])?></a></span>
+    <? endforeach; ?>
+    </span>
+  <? endif; ?>
+<? endif; ?>
+<br/>
             <script>
             <? if ($this->driver->checkInterlibraryLoan() == '1'): ?>
                   // ILL Button

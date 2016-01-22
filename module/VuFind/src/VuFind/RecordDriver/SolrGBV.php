@@ -437,6 +437,8 @@ class SolrGBV extends SolrMarc
      */
     public function getVolumeStock()
     {
+        $iln = isset($this->recordConfig->Library->iln)
+            ? $this->recordConfig->Library->iln : null;
         $vs = null;
         $stock = array();
         $vs = $this->marcRecord->getFields('980');
@@ -449,14 +451,20 @@ class SolrGBV extends SolrMarc
                 if (count($libField) > 0) {
                     $lib = $libField[0]->getData();
                 }
-                if ($lib == '23') {
+                if ($lib == $iln) {
+                    $epnArr = $v->getSubfields('b');
+                    $epn = $epnArr[0]->getData();
+                    while (strlen($epn) < 10) {
+                        $epn = "0".$epn;
+                    }
+                    $idx = $epn;
                     $stockField = $v->getSubfields('g');
                     if (count($stockField) > 0) {
                         $stockInfo = $stockField[0]->getData();
                     }
                     $callnoField = $v->getSubfields('d');
                     if (count($callnoField) > 0) {
-                        $idx = $callnoField[0]->getData();
+                        //$idx = $callnoField[0]->getData();
                     }
                     $stock[$idx] = $stockInfo;
                 }
@@ -473,6 +481,8 @@ class SolrGBV extends SolrMarc
      */
     public function getVolumeStockNote()
     {
+        $iln = isset($this->recordConfig->Library->iln)
+            ? $this->recordConfig->Library->iln : null;
         $vs = null;
         $stock = '';
         $vs = $this->marcRecord->getFields('980');
@@ -483,7 +493,7 @@ class SolrGBV extends SolrMarc
                 if (count($libField) > 0) {
                     $lib = $libField[0]->getData();
                 }
-                if ($lib == '23') {
+                if ($lib == $iln) {
                     $stockField = $v->getSubfields('k');
                     if (count($stockField) > 0) {
                         $stock .= $stockField[0]->getData();
@@ -3339,6 +3349,50 @@ class SolrGBV extends SolrMarc
             $r = $ts[0];
         }
         return $r;
+    }
+
+    /**
+     * Obtains an array of remarks and comments in MARC 980$k and $g. The array is aved to $this->remarks
+     *
+     * @return void
+     * @access protected
+     */
+    protected function getRemarksFromMarc()
+    {
+        $iln = isset($this->recordConfig->Library->iln)
+            ? $this->recordConfig->Library->iln : null;
+        $vs = $this->marcRecord->getFields('980');
+        if ($vs) {
+            // Durchlaufe die Felder 980 (Bestandsangaben aller GBV-Bibliotheken)
+            // Dies ist notwendig, um die Kommentare und Bemerkungen aus dem MARC-Code abzufischen
+            foreach($vs as $v) {
+                // is this ours? In Feld $2 steht die ILN der Bibliothek, zu der diese Bestandsangabe gehoert
+                // Wenn der Titel zur konfigurierten Bibliothek gehoert, werte die Zeile aus
+                $libArr = $v->getSubfields('2');
+                $lib = $libArr[0]->getData();
+                if ($lib === $iln) {
+                    $v_signature = null;
+                    $epnArr = $v->getSubfields('b');
+                    $epn = $epnArr[0]->getData();
+                    $copy[$epn] = array();
+                    $v_names = $v->getSubfields('k');
+                    $v_remarks = $v->getSubfields('g');
+                    if (count($v_names) > 0) {
+                        $copy[$epn]['summary'] = array();
+                        foreach($v_names as $v_name) {
+                            $copy[$epn]['summary'][] = $v_name->getData();
+                        }
+                    }
+                    if (count($v_remarks) > 0) {
+                        $copy[$epn]['marc_notes'] = array();
+                        foreach($v_remarks as $v_remark) {
+                            $copy[$epn]['marc_notes'][] = $v_remark->getData();
+                        }
+                    }
+                }
+            }
+        }
+        $this->remarks = $copy;
     }
 
 }
