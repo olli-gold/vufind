@@ -55,6 +55,9 @@
 <? if ($this->driver->needsLicense() == true && $this->driver->licenseAvailable() == false): ?>
     <span><?=$this->transEsc('no_license')?></span><br/>
 <? endif; ?>
+<? if ($openUrlActive): ?>
+  <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>
+<? endif; ?>
 <? foreach ($holdings as $holding): ?>
 <h3>
   <? $locationText = $this->transEsc('location_' . $holding['location'], array(), $holding['location']); ?>
@@ -135,7 +138,7 @@
               <? if (isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
                 <a class="<?=$checkILLRequest ? 'checkILLRequest ' : ''?>inlineblock modal-link placeILLRequest" href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"  title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
               <? endif; ?>
-              <? if ($row['presence_use_only'] == true): ?>
+              <? if ($row['presence_use_only'] == true && $row['location'] != "Internet" && substr($row['location'], 0, 5) != 'http:'): ?>
                 <span><?=$this->transEsc('presence_use_only')?></span>
               <? endif; ?>
             <? else: ?>
@@ -194,8 +197,7 @@
 </table>
 <? endforeach; ?>
 
-<? if (!empty($urls) || $openUrlActive): ?>
-  <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>
+<? if (!empty($urls)): ?>
   <? if (!empty($urls)): ?>
     <span class="marclinks">
     <? foreach ($urls as $current): ?>
