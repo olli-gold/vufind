@@ -609,6 +609,13 @@ class Primo extends SolrDefault
                 $isbnsearch = true;
                 $queryparts[] = 'isbn:('.implode(' OR ', $fieldref['isbn']).')';
             }
+            if (count($fieldref['issn']) > 0) {
+                $isbnsearch = true;
+                $queryparts[] = 'issn:('.implode(' OR ', $fieldref['issn']).')';
+                if ($fieldref['date']) {
+                    $queryparts[] = 'publishDate:'.$fieldref['date'];
+                }
+            }
             if ($isbnsearch === false) {
                 $queryparts[] = 'title:("'.trim(addslashes($fieldref['title'])).'")';
 
@@ -732,6 +739,7 @@ class Primo extends SolrDefault
         $retVal['title'] = $this->getTitle();
         $retVal['date'] = $this->getPublicationDate();
         $retVal['isbn'] = $this->getISBNs();
+        $retVal['issn'] = $this->getISSNs();
         $retVal['author'] = $this->getPrimaryAuthor();
         return $retVal;
     }
@@ -788,6 +796,5 @@ class Primo extends SolrDefault
 
         return parent::getOpenUrl($overrideSupportsOpenUrl);
     }
-
 
 }
