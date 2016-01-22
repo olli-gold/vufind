@@ -62,11 +62,8 @@ case 'Website':
 }
 
 // A driver-specific template may pass in format overrides; check for these before going to the driver itself:
-$formats = isset($this->overrideFormats) ? $this->overrideFormats : $this->driver->tryMethod('getFormats');
-if (is_array($formats) && !empty($formats)) {
-    foreach ($formats as $format) {
-        echo "%0 $format\n";
-    }
+if (!empty($endnoteFormat)) {
+    echo "%0 $endnoteFormat\n";
 } else {
     // Assume book if no format found (otherwise data may be considered invalid):
     echo "%0 Book\n";
@@ -171,6 +168,7 @@ if (!empty($journalTitle)) {
 
 $doi = $this->driver->tryMethod('getContainerDoi');
 if ($doi) {
+    echo "%R $doi\n";
     echo "%U https://doi.org/$doi\n";
 }
 
