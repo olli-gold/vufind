@@ -173,14 +173,20 @@ header .navbar {
             }
             .tub-FUTURE {
             }
+            
             @media (max-width: 767px) {
-                margin-bottom: 45px;
+                /* Test setting tub-middle-bottom to relative instead margin-bottom: 45px; */
+                margin-bottom: auto;
             }
         }
         .tub-middle-bottom {
             position:absolute;
             bottom: 0px;
             width: 100%;
+            @media (max-width: 767px) {
+                position:relative;
+                margin-top: 0.85rem;
+            }
             .tub-format {
             }
             .tub-doi {
@@ -196,6 +202,7 @@ header .navbar {
             }
             .tub-year {
             }
+
         }
         @media (max-width: 991px) {
             min-height: 121px;
