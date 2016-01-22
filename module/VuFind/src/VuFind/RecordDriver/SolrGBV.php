@@ -1726,6 +1726,10 @@ class SolrGBV extends SolrMarc
         if (in_array('eJournal', $this->getFormats()) === true || $this->isNLZ() === true || in_array('Journal', $this->getFormats()) === true || in_array('Serial Volume', $this->getFormats()) === true) {
             return '0';
         }
+        // Is this item a national license?
+        if ($this->isNLZ() === true) {
+            return '0';
+        }
 
         return '1';
     }
@@ -2951,7 +2955,10 @@ class SolrGBV extends SolrMarc
     protected function stripNLZ($rid = false) {
         if ($rid === false) $rid = $this->fields['id'];
         // if this is a national licence record, strip NLZ prefix since this is not indexed as ppnlink
-        if (substr($this->fields['id'], 0, 3) === 'NLZ' || substr($this->fields['id'], 0, 3) === 'NLM') {
+        if (substr($this->fields['id'], 0, 4) === 'NLEB' || substr($this->fields['id'], 0, 4) === 'NLEJ') {
+            $rid = substr($rid, 4);
+        }
+        if (substr($this->fields['id'], 0, 3) === 'NLM') {
             $rid = substr($rid, 3);
         }
         return $rid;
@@ -2966,8 +2973,11 @@ class SolrGBV extends SolrMarc
     protected function addNLZ($rid = false) {
         if ($rid === false) $rid = $this->fields['id'];
         $prefix = '';
-        if (substr($this->fields['id'], 0, 3) === 'NLZ') {
-            $prefix = 'NLZ';
+        if (substr($this->fields['id'], 0, 4) === 'NLEB') {
+            $prefix = 'NLEB';
+        }
+        if (substr($this->fields['id'], 0, 4) === 'NLEJ') {
+            $prefix = 'NLEJ';
         }
         if (substr($this->fields['id'], 0, 3) === 'NLM') {
             $prefix = 'NLM';
@@ -2992,7 +3002,7 @@ class SolrGBV extends SolrMarc
      * @access protected
      */
     private function _isNLZ($id) {
-        if (substr($id, 0, 3) === 'NLZ' || substr($id, 0, 3) === 'NLM') {
+        if (substr($id, 0, 3) === 'NLM' || substr($id, 0, 4) === 'NLEJ' || substr($id, 0, 4) === 'NLEB') {
             return true;
         }
         return false;
