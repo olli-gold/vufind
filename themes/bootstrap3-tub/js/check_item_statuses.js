@@ -377,7 +377,7 @@ function displayHoldingGuide(container_source, display_target) {
           if (sfx_available == false && item.find('.holdlink').length == 0 && item.find('.sfxlink').length == 0) {
             item.find(display_target).empty().append(fallbackOption);
           }
-          if (item.find('.holdlink').length == 0 && item.find('.sfxlink').length > 0) {
+          if ( item.find('.sfxlink').length > 0 && item.find('.holdlink').length == 0 && (item.find('.openUrlControls .imagebased').length == 0 || item.find('.openUrlControls .imagebased:visible').length == 0)) {
             item.find('.sfxlink').removeClass('hidden');
           }
 
