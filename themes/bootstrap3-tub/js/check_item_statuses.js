@@ -698,17 +698,24 @@ $(document).ready(function() {
       // Note 2015-01-02
       // - The loan4 header is removed if loaded in iframe
       // - Add event listener for cross domain resizing of iframe (from Loan4)
-      // > See lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/screen/layout.jsp
+      // > For resize see lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/screen/layout.jsp
+      // > For close see  lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/logout.jsp
       if (loc == 'Loaned' || loc == 'Magazin') {
         var iframe_resize = function (event) {
           if (event.origin !== "https://katalog.b.tuhh.de") {
             return;
           }
+
+          // lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/logout.jsp
+          if (event.data == 'bye') $('#modal').modal('hide');
+
+          // lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/screen/layout.jsp
           var iframe_to_resize = document.getElementById('modalIframe');
           if (iframe_to_resize) {
             iframe_to_resize.style.height = event.data + "px";
           }
         };
+
         // Listener for FF, Chrome etc.
         if (window.addEventListener) {
           window.addEventListener("message", iframe_resize, false);
