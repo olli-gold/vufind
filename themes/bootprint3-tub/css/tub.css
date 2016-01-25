@@ -157,7 +157,7 @@ label {display: inline;}
     }
 }
 
-.sidebar {
+.sidebar.detailedrecordview {
     background: #fff;
     border: solid #ddd 1px;
 }
