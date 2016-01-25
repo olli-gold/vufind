@@ -109,7 +109,7 @@
     <? if (isset($row['barcode']) && $row['barcode'] != ""): ?>
       <tr vocab="http://schema.org/" typeof="Offer">
         <th class="sample"><?=$this->transEsc("Copy")?> <?=$this->escapeHtml($row['number'])?></th>
-        <td>
+        <td class="sample">
       <? if ($row['location'] == "Internet"): ?>
           <a href="<?=$row['locationhref']?>" target="_blank"><?=$row['locationhref']?></a><br/>
       <? endif; ?>

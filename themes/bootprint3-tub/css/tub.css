@@ -144,11 +144,15 @@ label {display: inline;}
 .navbar-brand-beta > img {display: block}
 
 .table.table-striped tbody tr th.sample {
-    width: 15%;
+    width: 100px;
 }
 
 @media (max-width: 991px) and (max-width: 479px) {
     .table.table-striped tbody tr th.sample {
-        visibility: hidden;
+        width: 70px;
+        font-size: smaller;
+    }
+    .table.table-striped tbody tr td.sample {
+        font-size: smaller;
     }
 }
