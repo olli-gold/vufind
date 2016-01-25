@@ -173,18 +173,27 @@ header .navbar {
             }
             .tub-FUTURE {
             }
+            
             @media (max-width: 767px) {
-                margin-bottom: 45px;
+                /* Test setting tub-middle-bottom to relative instead margin-bottom: 45px; */
+                margin-bottom: auto;
             }
         }
         .tub-middle-bottom {
             position:absolute;
             bottom: 0px;
             width: 100%;
+            @media (max-width: 767px) {
+                position:relative;
+                margin-top: 0.85rem;
+            }
             .tub-format {
             }
             .tub-doi {
-                overflow: hidden;
+                line-height: 150%;
+                @media (max-width: 767px) {
+                    padding-top: 5px;
+                }
                 .doi_outer span {
                     @media (max-width: 479px) {
                         font-size: x-small;
@@ -193,6 +202,7 @@ header .navbar {
             }
             .tub-year {
             }
+
         }
         @media (max-width: 991px) {
             min-height: 121px;
@@ -210,14 +220,10 @@ header .navbar {
             display: inline-block;
             .tub_holdingguide {
                 /* white-space: nowrap; */
-                padding-left: 3px;
                 vertical-align: top;
-                .openUrlControls {
+                .openUrlControls, .holdlink {
                     padding-left: 3px;
                     vertical-align: top;
-                }
-                .holdlink.holdprinted {
-                    margin-left: 5px; /* bad */
                 }
                 img {
                     /* height: 22px; -weird, there is some check for height? Info i appears */
