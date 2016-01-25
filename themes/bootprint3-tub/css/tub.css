@@ -156,3 +156,8 @@ label {display: inline;}
         font-size: smaller;
     }
 }
+
+.sidebar {
+    background: #fff;
+    border: solid #ddd 1px;
+}
