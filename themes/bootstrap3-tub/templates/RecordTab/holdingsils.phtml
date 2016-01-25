@@ -108,7 +108,7 @@
     <? $checkILLRequest = (isset($row['checkILLRequest']) && $row['checkILLRequest']); ?>
     <? if (isset($row['barcode']) && $row['barcode'] != ""): ?>
       <tr vocab="http://schema.org/" typeof="Offer">
-        <th><?=$this->transEsc("Copy")?> <?=$this->escapeHtml($row['number'])?></th>
+        <th class="sample"><?=$this->transEsc("Copy")?> <?=$this->escapeHtml($row['number'])?></th>
         <td>
       <? if ($row['location'] == "Internet"): ?>
           <a href="<?=$row['locationhref']?>" target="_blank"><?=$row['locationhref']?></a><br/>
@@ -149,7 +149,7 @@
                 &ndash; <span class="small"><?=$this->transEsc("Due")?>: <?=$this->escapeHtml($row['duedate'])?></span>
               <? endif; ?>
               <? if (isset($row['requests_placed']) && $row['requests_placed'] > 0): ?>
-                <span><?=$this->transEsc("Requests")?>: <?=$this->escapeHtml($row['requests_placed'])?></span>
+                <span><?=$this->transEsc("Reservations")?>: <?=$this->escapeHtml($row['requests_placed'])?></span>
               <? endif; ?>
               <? if (isset($row['link']) && $row['link']): ?>
                 <a class="<?=$check ? 'checkRequest' : ''?> modal-link inlineblock placehold" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?></a>

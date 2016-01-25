@@ -142,3 +142,13 @@ label {display: inline;}
 }
 .navbar-brand-beta:hover,.navbar-brand-beta:focus{text-decoration: none}
 .navbar-brand-beta > img {display: block}
+
+.table.table-striped tbody tr th.sample {
+    width: 15%;
+}
+
+@media (max-width: 991px) and (max-width: 479px) {
+    .table.table-striped tbody tr th.sample {
+        visibility: hidden;
+    }
+}
