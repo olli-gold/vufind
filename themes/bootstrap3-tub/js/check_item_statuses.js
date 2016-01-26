@@ -55,7 +55,7 @@ function displayHoldingGuide(container_source, display_target) {
     $.ajax({
         dataType: 'json',
         url: path + '/AJAX/JSON?method=getItemStatuses',
-        data: {"id[]":currentId, "record_number":ids},
+        data: {"id[]":currentId, "record_number":ids, "lang":vufindString.userLang},
         beforeSend: function(xhr, settings) { xhr.rid = ids; },
         success: function(response, status, xhr) {
           if(response.status == 'OK') {

@@ -210,6 +210,8 @@ class AjaxController extends AbstractBase
     {
         $this->writeSession();  // avoid session write timing bug
         $catalog = $this->getILS();
+        $language = $this->params()->fromQuery('lang');
+        $catalog->setLanguage($language);
         $ids = $this->params()->fromQuery('id');
         $results = $catalog->getStatuses($ids);
 
@@ -1040,6 +1042,8 @@ return $this->output($x, self::STATUS_OK);
     {
         $this->writeSession();  // avoid session write timing bug
         $catalog = $this->getILS();
+        $language = $this->params()->fromQuery('lang');
+        $catalog->setLanguage($language);
         $ids = $this->params()->fromQuery('id');
         $results = $catalog->getStatuses($ids);
 

@@ -72,6 +72,7 @@
         //              Or maybe in AjaxController via loading a special template (like for the status messages).
         $this->jsTranslations()->addStrings(
           array(
+            'userLang' => $this->transEsc('userLang'),
             'copies' => $this->transEsc('copies'),
             'opclang' => $this->transEsc('opclang'),
             'notforloan' => $this->transEsc('status_notforloan'),
