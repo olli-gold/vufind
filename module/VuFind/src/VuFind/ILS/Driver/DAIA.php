@@ -67,6 +67,13 @@ class DAIA extends AbstractBase implements
     protected $daiaIdPrefix;
 
     /**
+     * Language for the DAIA server response
+     *
+     * @var string
+     */
+    protected $language;
+
+    /**
      * DAIA response format
      *
      * @var string
@@ -159,6 +166,7 @@ class DAIA extends AbstractBase implements
         } else {
             $this->debug('No ContentTypes for response defined. Accepting any.');
         }
+        $this->language = 'de';
     }
 
     /**
@@ -191,6 +199,22 @@ class DAIA extends AbstractBase implements
     public function getHoldLink($id, $details)
     {
         return ($details['ilslink'] != '') ? $details['ilslink'] : null;
+    }
+
+
+
+    /**
+     * Set Language
+     *
+     * This is responsible for setting the language we want to get from the DAIA server.
+     *
+     * @param string $lang The language code
+     *
+     * @return void
+     */
+    public function setLanguage($lang)
+    {
+        $this->language = $lang;
     }
 
     /**
@@ -366,6 +390,7 @@ class DAIA extends AbstractBase implements
         $params = [
             'id' => $id,
             'format' => $this->daiaResponseFormat,
+            'lang' => $this->language
         ];
 
         try {

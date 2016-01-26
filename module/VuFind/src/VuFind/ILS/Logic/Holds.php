@@ -158,7 +158,7 @@ class Holds
      *
      * @return array A sorted results set
      */
-    public function getHoldings($id, $ids = null)
+    public function getHoldings($id, $ids = null, $language = 'en')
     {
         $holdings = [];
 
@@ -168,6 +168,14 @@ class Holds
             // controller and view to inform the user that these credentials are
             // needed for hold data.
             $patron = $this->ilsAuth->storedCatalogLogin();
+
+            // Does this ILS Driver allow language selection?
+            $langcheck = $this->catalog->checkFunction(
+                'setLanguage'
+            );
+            if ($langcheck === true) {
+                $this->catalog->setLanguage($language);
+            }
 
             // Does this ILS Driver handle consortial holdings?
             $config = $this->catalog->checkFunction(

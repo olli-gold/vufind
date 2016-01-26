@@ -1800,10 +1800,10 @@ class SolrGBV extends SolrMarc
      *
      * @return array
      */
-    public function getRealTimeHoldings()
+    public function getRealTimeHoldings($lang = null)
     {
         return $this->hasILS() ? $this->holdLogic->getHoldings(
-            $this->getUniqueID(), $this->getConsortialIDs()
+            $this->getUniqueID(), $this->getConsortialIDs(), $lang
         ) : [];
     }
 

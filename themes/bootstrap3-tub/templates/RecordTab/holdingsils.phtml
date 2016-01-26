@@ -2,7 +2,7 @@
     // Set up convenience variables:
     $account = $this->auth()->getManager();
     $user = $account->isLoggedIn();
-    $holdings = $this->driver->getRealTimeHoldings();
+    $holdings = $this->driver->getRealTimeHoldings($this->layout()->userLang);
     $openUrl = $this->openUrl($this->driver, 'holdings');
     $openUrlActive = $openUrl->isActive();
     // Account for replace_other_urls setting
@@ -130,7 +130,12 @@
               <? /* Begin Available Items (Holds) */ ?>
                <span class="text-success"><?=$this->transEsc("Available")?><link property="availability" href="http://schema.org/InStock" /></span>
               <? if (isset($row['link']) && $row['link']): ?>
-                <a style="display:inline-block" class="<?=$check ? 'checkRequest ' : ''?>inlineblock modal-link placehold" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>" title="<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>"><i class="fa"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?></a>
+                <span class="holdlocation">
+                  <a id="info-<?=$row['id']?>" style="display:inline-block" class="<?=$check ? 'checkRequest ' : ''?>inlineblock locationInfox holdlink modal-link hidden-print" rel="tooltip" href="#" title="<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>" data-original-title="<?=$this->transEsc('loc_btn_Hover_order')?>">
+                      <i class="fa fa-upload holdorder"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>
+                      <span class="modal-dialog hidden" data-iframe="<?=$this->recordLink()->getRequestUrl($row['link'])?>" data-location="<?=$this->transEsc($row['location'])?>" data-title="<?=$this->transEsc('loc_modal_Title_order')?>"><?=$this->transEsc('loc_modal_Body_order')?></span>
+                  </a>
+                </span>
               <? endif; ?>
               <? if (isset($row['storageRetrievalRequestLink']) && $row['storageRetrievalRequestLink']): ?>
                 <a class="<?=$checkStorageRetrievalRequest ? 'checkStorageRetrievalRequest ' : ''?>modal-link placeStorageRetrievalRequest" href="<?=$this->recordLink()->getRequestUrl($row['storageRetrievalRequestLink'])?>" title="<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?>"><i class="fa"></i>&nbsp;<?=$this->transEsc($checkStorageRetrievalRequest ? "storage_retrieval_request_check_text" : "storage_retrieval_request_place_text")?></a>
@@ -151,8 +156,16 @@
               <? if (isset($row['requests_placed']) && $row['requests_placed'] > 0): ?>
                 <span><?=$this->transEsc("Reservations")?>: <?=$this->escapeHtml($row['requests_placed'])?></span>
               <? endif; ?>
+              <? if ((isset($row['duedate']) && $row['duedate']) || (isset($row['requests_placed']) && $row['requests_placed'] > 0)): ?>
+                  <br/>
+              <? endif; ?>
               <? if (isset($row['link']) && $row['link']): ?>
-                <a class="<?=$check ? 'checkRequest' : ''?> modal-link inlineblock placehold" href="<?=$this->recordLink()->getRequestUrl($row['link'])?>"><i class="fa"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?></a>
+                <span class="holdlocation">
+                  <a id="info-<?=$row['id']?>" style="display:inline-block" class="<?=$check ? 'checkRequest ' : ''?>inlineblock locationInfox holdlink modal-link hidden-print" rel="tooltip" href="#" title="<?=$this->transEsc($check ? "Check Recall" : "Recall This")?>" data-original-title="<?=$this->transEsc('loc_btn_Hover_order')?>">
+                      <i class="fa fa-clock-o holdreserve"></i>&nbsp;<?=$this->transEsc($check ? "Check Recall" : "Recall This")?>
+                      <span class="modal-dialog hidden" data-iframe="<?=$this->recordLink()->getRequestUrl($row['link'])?>" data-location="<?=$this->transEsc($row['location'])?>" data-title="<?=$this->driver->getTitle()?>"><?=$this->transEsc('loc_modal_Body_reserve')?></span>
+                  </a>
+                </span>
               <? endif; ?>
             <? endif; ?>
           <? endif; ?>
@@ -247,7 +260,11 @@
 
 
 <? if ($hasVols === true): ?>
-  <a href="<?=$this->recordLink()->getTabUrl($this->driver, 'TomesVolumes')?>#tabnav"><?=$this->transEsc("See Tomes/Volumes")?></a>
+<a id="info-<?=$this->driver->getUniqueId() ?>" class="holdlink modal-link hidden-print" title="" rel="tooltip" href="<?=$this->recordLink()->getTabUrl($this->driver, 'TomesVolumes')?>#tabnav" data-original-title="<?=$this->transEsc('loc_modal_Title_multi')?>">
+<i class="fa fa-stack-overflow holdtomes"></i>
+<?=$this->transEsc("See Tomes/Volumes")?>
+<span class="modal-dialog hidden" data-location="Multi" data-title="<?=$this->transEsc('loc_modal_Title_multi')?>"><?=$this->transEsc('loc_modal_Body_multi')?>"></span>
+</a>
 <? endif; ?>
 
 <? $history = $this->driver->getRealTimeHistory(); ?>
