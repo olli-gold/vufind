@@ -132,7 +132,7 @@
               <? if (isset($row['link']) && $row['link']): ?>
                 <span class="holdlocation">
                   <a id="info-<?=$row['id']?>" style="display:inline-block" class="<?=$check ? 'checkRequest ' : ''?>inlineblock locationInfox holdlink modal-link hidden-print" rel="tooltip" href="#" title="<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>" data-original-title="<?=$this->transEsc('loc_btn_Hover_order')?>">
-                      <i class="fa fa-upload holdorder"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "loc_modal_Title_order")?>
+                      <i class="fa fa-upload holdorder"></i>&nbsp;<?=$this->transEsc($check ? "Check Hold" : "hold_place")?>
                       <span class="modal-dialog hidden" data-iframe="<?=$this->recordLink()->getRequestUrl($row['link'])?>" data-location="<?=$this->transEsc($row['location'])?>" data-title="<?=$this->transEsc('loc_modal_Title_order')?>"><?=$this->transEsc('loc_modal_Body_order')?></span>
                   </a>
                 </span>
