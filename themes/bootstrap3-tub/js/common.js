@@ -285,7 +285,7 @@ $(document).ready(function() {
   $('.msls').append(' | ');
   $('#href_en').detach().appendTo('.msls').text('EN'); // Remove (it's an ID), add to msls and replace text
   $('#dropdown_language').hide(); // hide native vufind dropdown
-  $('.wpsearch').hide(); // Hide wordpress search field
+  $('#ss').hide(); // Hide wordpress search field
 
 
   // support "jump menu" dropdown boxes
