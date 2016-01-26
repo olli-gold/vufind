@@ -280,12 +280,14 @@ $(document).ready(function() {
   // TUB & Wordpress specific (2015-08-28):
   // - Replace language links in wordpress header with own links
   // - Remove Search field
+  // - Replace logo
   $('.msls').empty(); // easiest just to rebuild links
   $('#href_de').detach().appendTo('.msls').text('DE'); // Remove (it's an ID), add to msls and replace text
   $('.msls').append(' | ');
   $('#href_en').detach().appendTo('.msls').text('EN'); // Remove (it's an ID), add to msls and replace text
   $('#dropdown_language').hide(); // hide native vufind dropdown
   $('.wpsearch').hide(); // Hide wordpress search field
+  $('.tublogo a img').attr('src', '//lincl1.b.tu-harburg.de:81/vufind2/themes/bootprint3-tub/images/tub_find_logo.png'); // Replace logo
 
 
   // support "jump menu" dropdown boxes
