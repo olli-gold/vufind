@@ -48,6 +48,10 @@ function html_entity_decode(string, quote_style)
   return tmp_str;
 }
 
+function isTouchDevice(){
+  return true == ("ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch);
+}
+
 // Turn GET string into array
 function deparam(url) {
   var request = {};
@@ -553,9 +557,11 @@ $(document).ready(function() {
    *
    * https://getbootstrap.com/javascript/#tooltips
    */
-  $('body').tooltip({
-    selector: '[rel=tooltip]',
-    placement : 'bottom'
-  });
+  if(isTouchDevice()===false) {
+    $('body').tooltip({
+      selector: '[rel=tooltip]',
+      placement : 'bottom'
+    });
+  }
 
 });
