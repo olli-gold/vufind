@@ -125,7 +125,7 @@ label {display: inline;}
     text-decoration: underline;
     cursor: pointer;
 }
-
+/*
 .navbar-brand-beta {
     background-image: url("../../../themes/bootprint3-tub/images/tubfind-logo-beta.png");
     background-position: center center;
@@ -142,7 +142,7 @@ label {display: inline;}
 }
 .navbar-brand-beta:hover,.navbar-brand-beta:focus{text-decoration: none}
 .navbar-brand-beta > img {display: block}
-
+*/
 .table.table-striped tbody tr th.sample {
     width: 100px;
 }
