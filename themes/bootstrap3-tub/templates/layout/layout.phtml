@@ -40,6 +40,12 @@
         if ($cart->isActive()) {
           $this->headScript()->appendFile("vendor/cookies.js");
           $this->headScript()->appendFile("cart.js");
+          /** @todo:
+            *  - check_item_statuses.js is only loaded for modals in menues
+            *  - finally use "the" default way for a common modal 
+            *  - https://getbootstrap.com/javascript/
+            */
+          $this->headScript()->appendFile("check_item_statuses.js");
           $domain = $cart->getCookieDomain();
           $this->headScript()->appendScript(
             'var cartCookieDomain = ' . (!empty($domain) ? "'$domain'" : 'false') . ';'
