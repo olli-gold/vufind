@@ -667,6 +667,10 @@ $(document).ready(function() {
   /**
    * Show modal on button click
    *
+   * @todo 2015-01-27
+   * Most of the modal handling should move somewhere else (e.g. common.js)
+   * since it isn't used for action buttons only anymore
+   *
    * //https://stackoverflow.com/questions/1359018/in-jquery-how-to-attach-events-to-dynamic-html-elements
    */
   $('body').on('click', 'a.locationInfox', function(event) {
@@ -798,6 +802,41 @@ $(document).ready(function() {
     // Add special function as close action if loan4 is opened
     if (force_logoff_loan4 === true) {
       Lightbox.addCloseAction(closeLoan4);
+    }
+
+    // 2015-01-27 On clicking input fields in Safari, the modal jumps to top of
+    // the page. This hack prevents this
+    // https://github.com/twbs/bootstrap/issues/9023#issuecomment-27701089
+    // @todo: Check if a new version of bootstrap fixes this problem and remove!
+    if( navigator.userAgent.match(/iPhone|iPad|iPod/i) ) {
+      $('.modal').on('show.bs.modal', function() {
+        // Position modal absolute and bump it down to the scrollPosition
+        $(this)
+          .css({
+            position: 'absolute',
+            marginTop: $(window).scrollTop() + 'px',
+            bottom: 'auto'
+          });
+
+        // Position backdrop absolute and make it span the entire page
+        //
+        // Also dirty, but we need to tap into the backdrop after Boostrap
+        // positions it but before transitions finish.
+        //
+        setTimeout( function() {
+          $('.modal-backdrop').css({
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: Math.max(
+              document.body.scrollHeight, document.documentElement.scrollHeight,
+              document.body.offsetHeight, document.documentElement.offsetHeight,
+              document.body.clientHeight, document.documentElement.clientHeight
+            ) + 'px'
+          });
+        }, 0);
+      });
     }
 
     // Show everything

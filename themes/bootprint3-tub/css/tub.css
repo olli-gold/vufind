@@ -168,6 +168,10 @@ label {display: inline;}
 
 /*  Apple Special Fun (modals are zoomed problem)
     https://github.com/jschr/bootstrap-modal/issues/64#issuecomment-55794181
+    @todo: Try targeting IOS (Safari) only - 0 padding looks bad
+    @todo: Check if a new version of bootstrap fixes this problem and remove!
 */
-body {padding-right: 0px !important}
-.modal-open {overflow-y: auto;}
+@media (max-width: 768px) {
+  body {padding-right: 0px !important}
+  .modal-open {overflow-y: auto;}
+}

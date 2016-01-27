@@ -553,8 +553,9 @@ $(document).ready(function() {
 
   /**
    * Activate nice tooltips for anything with rel="tooltip"
-   *
    * https://getbootstrap.com/javascript/#tooltips
+   *
+   * 2016-01-26: Enable only for non-touch devices
    */
   if(isTouchDevice()===false) {
     $('body').tooltip({
