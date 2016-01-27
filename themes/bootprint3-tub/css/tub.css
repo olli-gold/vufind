@@ -161,3 +161,13 @@ label {display: inline;}
     background: #fff;
     border: solid #ddd 1px;
 }
+
+.close-modal {
+    font-size: 2rem;
+}
+
+/*  Apple Special Fun (modals are zoomed problem)
+    https://github.com/jschr/bootstrap-modal/issues/64#issuecomment-55794181
+*/
+body {padding-right: 0px !important}
+.modal-open {overflow-y: auto;}
