@@ -1,5 +1,6 @@
 <?
-  $searchTabs = $this->searchtabs($this->params->getsearchClassId(), $this->params->getDisplayQuery(), $this->params->getSearchHandler(), $this->params->getSearchType());
+  $searchTabs = $this->searchtabs()->getTabConfig($this->params->getsearchClassId(), $this->params->getDisplayQuery(), $this->params->getSearchHandler(), $this->params->getSearchType());
+var_dump($searchTabs);
 ?>
 <? if (count($searchTabs) > 0): ?>
   <div class="alert alert-info">

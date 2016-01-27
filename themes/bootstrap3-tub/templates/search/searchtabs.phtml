@@ -1,5 +1,5 @@
 <?
-  $searchTabs = $this->searchtabs($this->searchClassId, $this->lookfor, $this->searchIndex, $this->searchType);
+  $searchTabs = $this->searchtabs()->getTabConfig($this->searchClassId, $this->lookfor, $this->searchIndex, $this->searchType);
 ?>
 <? if (count($searchTabs) > 0): ?>
     <ul class="nav nav-tabs">
