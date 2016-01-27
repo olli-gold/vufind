@@ -290,7 +290,6 @@ $(document).ready(function() {
   $('.msls').append(' | ');
   $('#href_en').detach().appendTo('.msls').text('EN'); // Remove (it's an ID), add to msls and replace text
   $('#dropdown_language').hide(); // hide native vufind dropdown
-  $('.wpsearch').hide(); // Hide wordpress search field
   $('.tublogo a img').attr('src', '//lincl1.b.tu-harburg.de:81/vufind2/themes/bootprint3-tub/images/tub_find_logo.png'); // Replace logo
 
 

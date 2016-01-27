@@ -14,9 +14,22 @@
 .sub-menu {z-index: 1000 !important}
 #branding {z-index: 1000 !important}
 
-/* Logo */
-.tublogo {
-    width: 170px !important;
+/* Right header */
+#apbranding-box {
+    /* language switch */
+    .msls {
+        width: auto !important;
+    }
+    .tubsearch {
+        display: none;
+    }
+    /* logo */
+    .tublogo {
+        width: 170px !important;
+        @media (max-width: 991px) {
+            width: 120px !important;
+        }
+    }
 }
 
 /* Footer - wow, lot's and lot's of css...  */
