@@ -700,7 +700,7 @@ $(document).ready(function() {
       // - Add event listener for cross domain resizing of iframe (from Loan4)
       // > For resize see lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/screen/layout.jsp
       // > For close see  lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/logout.jsp
-      if (loc == 'Loaned' || loc == 'Magazin') {
+      if (loc == 'Loaned' || loc == 'Magazin' || loc == 'Closed Stack') {
         var iframe_resize = function (event) {
           if (event.origin !== "https://katalog.b.tuhh.de") {
             return;
