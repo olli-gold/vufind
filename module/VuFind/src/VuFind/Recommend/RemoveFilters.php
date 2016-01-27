@@ -94,7 +94,6 @@ class RemoveFilters implements RecommendInterface
      */
     public function process($results)
     {
-//var_dump($results->getParams());
         $filters = $results->getParams()->getFilterList(false);
         if (count($filters) > 0) {
             foreach ($filters as $filter) {
@@ -113,7 +112,7 @@ class RemoveFilters implements RecommendInterface
      */
     public function hasFilters()
     {
-        return ($this->activeFacetsCount > 0) ? true : false;
+        return ($this->activeFacetsCount > 0);
     }
 
     /**
@@ -121,7 +120,7 @@ class RemoveFilters implements RecommendInterface
      *
      * @return string
      */
-    public function getFilterlessURL()
+    public function getFilterlessUrl()
     {
         return $this->results->getUrlQuery()->removeAllFilters();
     }
@@ -135,5 +134,4 @@ class RemoveFilters implements RecommendInterface
     {
         return $this->activeFacetsCount;
     }
-
 }

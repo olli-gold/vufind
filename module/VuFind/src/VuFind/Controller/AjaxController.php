@@ -1414,7 +1414,7 @@ return $this->output($x, self::STATUS_OK);
         $params = $results->getParams();
         $params->initFromRequest($this->getRequest()->getQuery());
         foreach ($this->params()->fromQuery('hf', []) as $hf) {
-            $params->getOptions()->addHiddenFilter($hf);
+            $params->addHiddenFilter($hf);
         }
         $params->getOptions()->disableHighlighting();
         $params->getOptions()->spellcheckEnabled(false);

@@ -725,40 +725,40 @@ class DAIA extends AbstractBase implements
         $duedate = null;
         $availableLink = '';
         $queue = '';
-        if (isset($item['available'])) {
-            if (count($item['available']) === 1) {
-                $availability = true;
-            } else {
-                // check if item is loanable or presentation
-                foreach ($item['available'] as $available) {
-                    // attribute service can be set once or not
-                    if (isset($available['service'])
-                        && in_array(
-                            $available['service'],
-                            ['loan', 'presentation', 'openaccess']
-                        )
+        $item_notes = [];
+        if (array_key_exists('available', $item)) {
+            // check if item is loanable or presentation
+            foreach ($item['available'] as $available) {
+                // attribute service can be set once or not
+                if (isset($available['service'])
+                    && in_array(
+                        $available['service'],
+                        ['loan', 'presentation', 'openaccess']
+                    )
+                ) {
+                    // set item available if service is loan, presentation or
+                    // openaccess
+                    $availability = true;
+                    if ($available['service'] == 'loan'
+                        && isset($available['service']['href'])
                     ) {
-                        // set item available if service is loan, presentation or
-                        // openaccess
-                        $availability = true;
-                        if ($available['service'] == 'loan'
-                            && isset($available['service']['href'])
-                        ) {
-                            // save the link to the ils if we have a href for loan
-                            // service
-                            $availableLink = $available['service']['href'];
-                        }
+                        // save the link to the ils if we have a href for loan
+                        // service
+                        $availableLink = $available['service']['href'];
                     }
+                }
 
-                    // use limitation element for status string
-                    if (isset($available['limitation'])) {
-                        $status = $this->getItemLimitation($available['limitation']);
-                    }
+                // use limitation element for status string
+                if (isset($available['limitation'])) {
+                    $item_notes = array_merge(
+                        $item_notes,
+                        $this->getItemLimitation($available['limitation'])
+                    );
+                }
 
-                    // log messages for debugging
-                    if (isset($available['message'])) {
-                        $this->logMessages($available['message'], 'item->available');
-                    }
+                // log messages for debugging
+                if (isset($available['message'])) {
+                    $this->logMessages($available['message'], 'item->available');
                 }
             }
         }
@@ -779,8 +779,10 @@ class DAIA extends AbstractBase implements
 
                     // use limitation element for status string
                     if (isset($unavailable['limitation'])) {
-                        $status = $this
-                            ->getItemLimitation($unavailable['limitation']);
+                        $item_notes = array_merge(
+                            $item_notes,
+                            $this->getItemLimitation($unavailable['limitation'])
+                        );
                     }
                 }
                 // attribute expected is mandatory for unavailable element
@@ -819,6 +821,7 @@ class DAIA extends AbstractBase implements
             $return['ilslink'] = $availableLink;
         }
 
+        $return['item_notes']      = $item_notes;
         $return['status']          = $status;
         $return['availability']    = $availability;
         $return['duedate']         = $duedate;
@@ -957,18 +960,19 @@ class DAIA extends AbstractBase implements
     }
 
     /**
-     * Returns the evaluated value of the provided limitation element
+     * Returns the evaluated values of the provided limitations element
      *
      * @param array $limitations Array with DAIA limitation data
      *
-     * @return string
+     * @return array
      */
     protected function getItemLimitation($limitations)
     {
+        $itemLimitation = [];
         foreach ($limitations as $limitation) {
             // return the first limitation with content set
             if (isset($limitation['content'])) {
-                return $limitation['content'];
+                $itemLimitation[] = $limitation['content'];
             }
         }
         return '';
