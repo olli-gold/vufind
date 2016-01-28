@@ -175,3 +175,9 @@ label {display: inline;}
   body {padding-right: 0px !important}
   .modal-open {overflow-y: auto;}
 }
+
+@media (max-width: 991px) {
+    .result .right {
+        min-height: 1px; /* IOS seems not to understand auto */
+    }
+}
