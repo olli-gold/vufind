@@ -1,11 +1,13 @@
 <?
   // Set up additional search box, which is not getting displayed:
+  if (isset($REQUEST['lookfor']) && $REQUEST['lookfor'] != '') {
   $this->layout()->searchboxN = $this->context($this)->renderInContext(
       'search/searchbox.phtml',
       array(
-        'lookfor' => $lookfor
+        'lookfor' => $_REQUEST['lookfor']
       )
   );
+  }
 ?>
 <? $account = $this->auth()->getManager(); ?>
 <div class="navbar-header">
