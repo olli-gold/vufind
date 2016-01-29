@@ -59,8 +59,8 @@ class MultipartList
      */
     public function initList()
     {
-        if (file_exists('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->id)) {
-            $cacheF = file('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->id);
+        if (file_exists('/drbd/www/tubfind2/local/cache/objects/multipart-'.$this->id)) {
+            $cacheF = file('/drbd/www/tubfind2/local/cache/objects/multipart-'.$this->id);
             $lastmod = $cacheF[0];
 //            if ($lastmod > time()-1800) {
                 $this->multipartList = unserialize($cacheF[1]);
@@ -76,8 +76,8 @@ class MultipartList
      */
     public function cacheList()
     {
-        if (file_exists('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->id)) {
-            $cacheF = file('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->id);
+        if (file_exists('/drbd/www/tubfind2/local/cache/objects/multipart-'.$this->id)) {
+            $cacheF = file('/drbd/www/tubfind2/local/cache/objects/multipart-'.$this->id);
             $lastmod = $cacheF[0];
             if ($lastmod < time()-1800) {
                 $this->saveCache();
@@ -96,7 +96,7 @@ class MultipartList
      * @access protected
      */
     protected function saveCache() {
-        $cacheFile = fopen('/srv/www/vufind2/vufind/local/cache/objects/multipart-'.$this->id, 'w');
+        $cacheFile = fopen('/drbd/www/tubfind2/local/cache/objects/multipart-'.$this->id, 'w');
         fputs($cacheFile, time()."\n");
         fputs($cacheFile, serialize($this->multipartList));
         fclose($cacheFile);
