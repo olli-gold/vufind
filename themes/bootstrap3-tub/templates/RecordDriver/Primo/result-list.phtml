@@ -155,6 +155,11 @@
         </div>
         <? $doi_span = 9; $doi_pull = 0; ?>
         <? if (!empty($summDate)) : ?>
+        <?
+            if (strlen($summDate) > 4) {
+                $summDate = date("Y", strtotime($summDate));
+            }
+        ?>
           <div class="col-xs-2 col-sm-2 col-sm-push-7 tub-year text-right">
             <?=$this->escapeHtml($summDate)?>
             <? $doi_span = 7; $doi_pull = 2; ?>
