@@ -210,9 +210,9 @@ class AjaxController extends AbstractBase
     {
         $this->writeSession();  // avoid session write timing bug
         $catalog = $this->getILS();
-        $language = $this->params()->fromQuery('lang');
+        $language = $this->params()->fromPost('lang', $this->params()->fromQuery('lang'));
         $catalog->setLanguage($language);
-        $ids = $this->params()->fromQuery('id');
+        $ids = $this->params()->fromPost('id', $this->params()->fromQuery('id'));
         $results = $catalog->getStatuses($ids);
 
         if (!is_array($results)) {
@@ -1119,8 +1119,10 @@ return $this->output($x, self::STATUS_OK);
 
         // loop through each ID check if it is saved to any of the user's lists
         $result = [];
-        $ids = $this->params()->fromQuery('id', []);
-        $sources = $this->params()->fromQuery('source', []);
+        $ids = $this->params()->fromPost('id', $this->params()->fromQuery('id', []));
+        $sources = $this->params()->fromPost(
+            'source', $this->params()->fromQuery('source', [])
+        );
         if (!is_array($ids) || !is_array($sources)) {
             return $this->output(
                 $this->translate('Argument must be array.'),

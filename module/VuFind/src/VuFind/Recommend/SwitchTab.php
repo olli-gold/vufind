@@ -42,8 +42,11 @@ namespace VuFind\Recommend;
 class SwitchTab implements RecommendInterface
 {
     /**
+     * Current tab settings
+     *
+     * @var array
      */
-    var $tabSelections = null;
+    protected $tabSelections = null;
 
     /**
      * Store the configuration of the recommendation module.
@@ -98,8 +101,7 @@ class SwitchTab implements RecommendInterface
         foreach ($tabEnv as $tab) {
             if ($tab['selected'] === true) {
                 $tabs['active'] = $tab;
-            }
-            else {
+            } else {
                 $tabs['inactive'][] = $tab;
             }
         }
@@ -126,7 +128,7 @@ class SwitchTab implements RecommendInterface
      *
      * @param array $tabEnv tabConfig
      *
-     * @return string
+     * @return array
      */
     public function getInactiveTabs($tabEnv)
     {
