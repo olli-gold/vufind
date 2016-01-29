@@ -290,8 +290,7 @@ $(document).ready(function() {
   $('.msls').append(' | ');
   $('#href_en').detach().appendTo('.msls').text('EN'); // Remove (it's an ID), add to msls and replace text
   $('#dropdown_language').hide(); // hide native vufind dropdown
-  $('.tublogo a img').attr('src', '//lincl1.b.tu-harburg.de:81/vufind2/themes/bootprint3-tub/images/tub_find_logo.png'); // Replace logo
-
+  $('.tublogo').empty().append('<a href="'+path+'"><img src="'+path+'/themes/bootprint3-tub/images/tub_find_logo.png" alt="TUB.find" title="TUB.find"></a>'); // Replace logo and link
 
   // support "jump menu" dropdown boxes
   $('select.jumpMenu').change(function(){ $(this).parent('form').submit(); });
