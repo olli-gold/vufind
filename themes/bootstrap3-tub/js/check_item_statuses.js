@@ -75,19 +75,19 @@ function displayHoldingGuide(container_source, display_target) {
           var loc_modal_body;
 
           // Add some additional infos for TUBHH holdings
-          if (result.bestOptionLocation.indexOf('Lehr') > -1) {
+          if (result.bestOptionLocation.indexOf('Lehr') > -1 || result.bestOptionLocation.indexOf('Text Book Collection') > -1) {
             loc_abbr = 'LBS';  loc_modal_body = vufindString.loc_modal_Body_shelf_lbs + loc_shelf + '.';
           }
-          else if (result.bestOptionLocation.indexOf('Lesesaal 1') > -1) {
+          else if (result.bestOptionLocation.indexOf('Lesesaal 1') > -1 || result.bestOptionLocation.indexOf('Reading Room 1') > -1) {
             loc_abbr = 'LS1';  loc_modal_body = vufindString.loc_modal_Body_shelf_ls1 + loc_shelf + '.';
           }
-          else if (result.bestOptionLocation.indexOf('Lesesaal 2') > -1) {
+          else if (result.bestOptionLocation.indexOf('Lesesaal 2') > -1 || result.bestOptionLocation.indexOf('Reading Room 2') > -1) {
             loc_abbr = 'LS2';  loc_modal_body = vufindString.loc_modal_Body_shelf_ls2 + loc_shelf + '.';
           }
           else if (result.bestOptionLocation.indexOf('Sonderstandort') > -1) {
             loc_abbr = 'SO';    loc_modal_body = vufindString.loc_modal_Title_service_da;
           }
-          else if (result.bestOptionLocation.indexOf('Semesterapparat') > -1) {
+          else if (result.bestOptionLocation.indexOf('Semesterapparat') > -1 || result.bestOptionLocation.indexOf('Course Reserves Collection') > -1) {
             loc_abbr = 'SEM';  loc_modal_body = vufindString.loc_modal_Body_sem + '.';
           }
           /* 2015-10-01 added @see http://redmine.tub.tuhh.de/issues/624 */
