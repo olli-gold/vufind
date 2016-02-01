@@ -290,7 +290,7 @@ $(document).ready(function() {
   $('.msls').append(' | ');
   $('#href_en').detach().appendTo('.msls').text('EN'); // Remove (it's an ID), add to msls and replace text
   $('#dropdown_language').hide(); // hide native vufind dropdown
-  $('.tublogo').empty().append('<a href="'+path+'"><img src="'+path+'/themes/bootprint3-tub/images/tub_find_logo.png" alt="TUB.find" title="TUB.find"></a>'); // Replace logo and link
+  $('.tublogo').empty().append('<a href="/"><img src="'+path+'/themes/bootprint3-tub/images/tub_find_logo.png" alt="TUB.find" title="TUB.find"></a>'); // Replace logo and link
 
   // support "jump menu" dropdown boxes
   $('select.jumpMenu').change(function(){ $(this).parent('form').submit(); });
