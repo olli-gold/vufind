@@ -462,6 +462,10 @@ class SolrGBV extends SolrMarc
                     if (count($stockField) > 0) {
                         $stockInfo = $stockField[0]->getData();
                     }
+                    $noteField = $v->getSubfields('k');
+                    if (count($noteField) > 0) {
+                        $stockInfo .= "<br/>".$noteField[0]->getData();
+                    }
                     $callnoField = $v->getSubfields('d');
                     if (count($callnoField) > 0) {
                         //$idx = $callnoField[0]->getData();
