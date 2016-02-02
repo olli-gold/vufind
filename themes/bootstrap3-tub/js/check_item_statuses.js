@@ -633,9 +633,9 @@ function get_volume_tab(recID) {
  */
 $(document).ready(function() {
   // Get all the buttons
-  $(window).on("load", function() {
+  //$(window).on("load", function() {
     displayHoldingGuide();
-  });
+  //});
 
   /* 2015-12-09: Wait until sfx buttons are loaded; makes sfx_fix in
   // displayHoldingGuide() safer
