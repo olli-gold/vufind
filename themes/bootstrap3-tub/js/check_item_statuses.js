@@ -181,6 +181,10 @@ function displayHoldingGuide(container_source, display_target) {
                 here we don't have to do it for each driver.
                 */
 
+                if (result.bestOptionLocation == "Web") {
+                    loc_abbr = result.bestOptionLocation;
+                }
+
                 /* 2015-10-01 @see http://redmine.tub.tuhh.de/issues/624 */
                 title = loc_abbr;
                 if (result.bestOptionLocation == result.locHref) {
