@@ -387,14 +387,20 @@ function displayHoldingGuide(container_source, display_target) {
 
         });
       } else {
+        // Response status not ok
         // display the error message on each of the ajax status place holder
         item.find(display_target).empty().append(response.data);
       }
       // (Why?)
       //item.find('.holdlocation').removeClass('holdlocation');
 
-    }
-  });
+      }
+    }).done(function() {
+        // got the buttons for current ID
+        // now the SFX check may start
+        //alert("Done buttons for "+currentId);
+        checkImage(currentId);
+    });
   }
 }
 
