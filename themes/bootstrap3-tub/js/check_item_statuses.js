@@ -87,7 +87,10 @@ function displayHoldingGuide(container_source, display_target) {
           else if (result.bestOptionLocation.indexOf('Sonderstandort') > -1) {
             loc_abbr = 'SO';    loc_modal_body = vufindString.loc_modal_Title_service_da;
           }
-          else if (result.bestOptionLocation.indexOf('Semesterapparat') > -1 || result.bestOptionLocation.indexOf('Course Reserves Collection') > -1) {
+          else if (result.bestOptionLocation.indexOf('Magazin') > -1 || result.bestOptionLocation.indexOf('Closed Stack') > -1) {
+            loc_abbr = 'Transport';    loc_modal_body = vufindString.loc_modal_Title_service_transport;
+          }
+           else if (result.bestOptionLocation.indexOf('Semesterapparat') > -1 || result.bestOptionLocation.indexOf('Course Reserves Collection') > -1) {
             loc_abbr = 'SEM';  loc_modal_body = vufindString.loc_modal_Body_sem + '.';
           }
           /* 2015-10-01 added @see http://redmine.tub.tuhh.de/issues/624 */
