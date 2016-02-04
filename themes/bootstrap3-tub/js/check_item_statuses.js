@@ -348,6 +348,10 @@ function displayHoldingGuide(container_source, display_target) {
           // Show our final result!
           item.find(display_target).empty().append(bestOption);
 
+          // got the buttons for current ID
+          // now the SFX check may start
+          checkImage(result.id);
+
           // SFX-Hack: If nothing is found, a very small dummy gif is returned.
           // If so, hide the controls (or just the image), so everything else around
           // is displayed nicely (not indented etc.). Maybe better in \themes\bootstrap3-tub\js\openurl.js
@@ -387,7 +391,6 @@ function displayHoldingGuide(container_source, display_target) {
           if ( item.find('.sfxlink').length > 0 && item.find('.holdlink').length == 0 && (item.find('.openUrlControls .imagebased').length == 0 || item.find('.openUrlControls .imagebased:visible').length == 0)) {
             item.find('.sfxlink').removeClass('hidden');
           }
-
         });
       } else {
         // Response status not ok
@@ -398,11 +401,6 @@ function displayHoldingGuide(container_source, display_target) {
       //item.find('.holdlocation').removeClass('holdlocation');
 
       }
-    }).done(function() {
-        // got the buttons for current ID
-        // now the SFX check may start
-        //alert("Done buttons for "+currentId);
-        checkImage(currentId);
     });
   }
 }

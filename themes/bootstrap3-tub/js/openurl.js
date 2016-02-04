@@ -50,43 +50,37 @@ function checkFulltextButtons() {
 function checkImage(currentId) {
     var ouimageArr = $('*[data-recordid="'+currentId+'"]');
     var ouimage = ouimageArr[0];
-    if (ouimage) {
-        ouimage.onload = function(){
-            if (ouimage.complete){
-                var height = ouimage.height;
-                var width = ouimage.width;
-                if (width > 1 && height > 1) {
-                    var parentArr = $('*[record-id="'+currentId+'"]')
-                    var parent = parentArr[0];
-                    $('.urllabel').removeClass('hidden');
-                    // disable links in result list view
-                    $(parent).find('.holdelectro').addClass('hidden');
-                    // disable links in detailed record view
-                    $('.externalurl').addClass('hidden');
-                    // hide additional SFX button in PrimoTab
-                    $(parent).find('.holdlink.fulltext').addClass('hidden');
-                    $(parent).find('.holdlink.holddirectdl').addClass('hidden');
-                    // optionally display MARC links
-                    $('.marclinks').prepend('<br/><span class="showmore">'+vufindString.show_more_links+'</span> <span class="showless">'+vufindString.show_less_links+'</span>');
-                    $('.showless').addClass('hidden');
-                    $('.showmore').click( function () {
-                        $('.externalurl').removeClass('hidden');
-                        $('.showmore').addClass('hidden');
-                        $('.showless').removeClass('hidden');
-                    });
-                    $('.showless').click( function () {
-                        $('.externalurl').addClass('hidden');
-                        $('.showmore').removeClass('hidden');
-                        $('.showless').addClass('hidden');
-                    });
-                }
-            }
+    var parentArr = $('*[record-id="'+currentId+'"]')
+    var parent = parentArr[0];
+    if (ouimage.complete) {
+        var height = ouimage.height;
+        var width = ouimage.width;
+        if (width > 1 && height > 1) {
+            $('.urllabel').removeClass('hidden');
+            // disable links in result list view
+            $(parent).find('.holdelectro').addClass('hidden');
+            // disable links in detailed record view
+            $('.externalurl').addClass('hidden');
+            // hide additional SFX button in PrimoTab
+            $(parent).find('.holdlink.fulltext').addClass('hidden');
+            $(parent).find('.holdlink.holddirectdl').addClass('hidden');
+            // optionally display MARC links
+            $('.marclinks').prepend('<br/><span class="showmore">'+vufindString.show_more_links+'</span> <span class="showless">'+vufindString.show_less_links+'</span>');
+            $('.showless').addClass('hidden');
+            $('.showmore').click( function () {
+                $('.externalurl').removeClass('hidden');
+                $('.showmore').addClass('hidden');
+                $('.showless').removeClass('hidden');
+            });
+            $('.showless').click( function () {
+                $('.externalurl').addClass('hidden');
+                $('.showmore').removeClass('hidden');
+                $('.showless').addClass('hidden');
+            });
         }
     }
     // Hiding status unclear button if we have any kind of fulltextbutton
     // I know, that does not belong here, but it works here...
-    var parentArr = $('*[record-id="'+currentId+'"]')
-    var parent = parentArr[0];
     if (!$(parent).find('.holdlink.fulltext').hasClass('hidden')) {
         $(parent).find('.holdelectro').addClass('hidden');
     }
