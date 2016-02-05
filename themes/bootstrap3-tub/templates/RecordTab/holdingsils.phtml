@@ -17,7 +17,6 @@
     $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
 
     $formats = $this->driver->getFormats();
-    var_dump($formats);
 ?>
 
 <?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', array('user' => $this->auth()->isLoggedIn())); ?>
