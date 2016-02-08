@@ -23,7 +23,7 @@
     <span class="marclinks">
     <? foreach ($urls as $current): ?>
         <? if (strpos($current['url'], 'sfx.gbv.de') !== false): ?>
-            <br/><a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" rel="tooltip"><img src="https://sfx.gbv.de/sfx_tuhh/sfx.gif" alt="SFX" /></a>
+            <br/><a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" rel="tooltip"  class="sfxlink"><img src="https://sfx.gbv.de/sfx_tuhh/sfx.gif" alt="SFX" /></a>
         <? else: ?>
             <br/><span class="externalurl"><a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" rel="tooltip"><i class="fa fa-download"></i> <?=$this->escapeHtml($current['desc'])?></a></span>
         <? endif; ?>

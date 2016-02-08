@@ -62,6 +62,7 @@ function checkImage(currentId) {
             // disable links in detailed record view
             $('.externalurl').addClass('hidden');
             // hide additional SFX button in PrimoTab
+            $('.sfxlink').addClass('hidden');
             $(parent).find('.holdlink.fulltext').addClass('hidden');
             $(parent).find('.holdlink.holddirectdl').addClass('hidden');
             // optionally display MARC links

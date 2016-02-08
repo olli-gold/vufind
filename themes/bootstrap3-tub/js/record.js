@@ -175,7 +175,13 @@ function ajaxLoadTab(tabid) {
 }
 
 $(document).ready(function(){
+
   var id = $('.hiddenId')[0].value;
+
+  $('*[data-recordid="'+id+'"]').load(function() {
+    checkImage(id);
+  });
+
   registerTabEvents();
 
   $('ul.recordTabs a').click(function (e) {
@@ -195,6 +201,7 @@ $(document).ready(function(){
       return ajaxLoadTab(tabid);
     }
   });
+
 
   /* --- LIGHTBOX --- */
   // Cite lightbox
@@ -273,3 +280,4 @@ $(document).ready(function(){
     document.location.href = path+'/MyResearch/ILLRequests';
   });
 });
+
