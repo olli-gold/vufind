@@ -430,6 +430,38 @@ class SolrGBV extends SolrMarc
     }
 
     /**
+     * Get the reference of the parent including its link.
+     *
+     * @access  protected
+     * @return  array
+     */
+    protected function getParentHReference()
+    {
+        $vs = null;
+        $vs = $this->marcRecord->getFields('773');
+        if (count($vs) > 0) {
+            $refs = array();
+            foreach($vs as $v) {
+                $a_names = $v->getSubfields('w');
+                if (count($a_names) > 0) {
+                    $idArr = explode(')', $a_names[0]->getData());
+                    $hrefId = $this->addNLZ($idArr[1]);
+                }
+                if ($hrefId) {
+/*                    $d = $this->recordLoader->load(
+                        $hrefId,
+                        $this->params()->fromPost('source', 'Solr')
+                    );
+*/
+                    $refs[] = $hrefId;
+                }
+            }
+            return $refs;
+        }
+        return null;
+    }
+
+    /**
      * Get information about the volume stocks.
      *
      * @access  public
