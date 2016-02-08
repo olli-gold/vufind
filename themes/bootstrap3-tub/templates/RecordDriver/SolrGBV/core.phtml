@@ -35,7 +35,8 @@
      $std = $st[0];
    }
    ?>
-    <h3 property="name"><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $std . ' ' . $this->driver->getTitleSection())?></h3>
+<!--    <h3 property="name"><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $std . ' ' . $this->driver->getTitleSection())?></h3>   -->
+    <h3 property="name"><?=$this->escapeHtml($this->driver->getShortTitle() . ' ' . $std)?></h3>
 
     <? $summary = $this->driver->getSummary(); $summary = isset($summary[0]) ? $this->escapeHtml($summary[0]) : false; ?>
     <? if ($summary): ?>
