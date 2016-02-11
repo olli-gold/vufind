@@ -61,6 +61,7 @@
   <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>
 <? endif; ?>
 <? foreach ($holdings as $holding): ?>
+  <? if ($holding['location'] != 'Unknown'): ?>
 <h3>
   <? $locationText = $this->transEsc('location_' . $holding['location'], array(), $holding['location']); ?>
   <? if (isset($holding['locationhref']) && $holding['locationhref']): ?>
@@ -69,6 +70,7 @@
     <?=$locationText?>
   <? endif; ?>
 </h3>
+
 <table class="table table-striped" summary="<?=$this->transEsc('Holdings details from')?> <?=$this->transEsc($holding['location'])?>">
   <? $callNos = $this->tab->getUniqueCallNumbers($holding['items']); if (!empty($callNos)): ?>
 <!--
@@ -212,6 +214,7 @@
     </tr>
   <? endif; ?>
 </table>
+<? endif; ?>
 <? endforeach; ?>
 
 <? if (!empty($urls)): ?>
