@@ -69,4 +69,17 @@ class SolrTubdok extends SolrDefault
 
         return $pubDates;
     }
+
+    /**
+     * Get the DOI of the item that contains this record
+     *
+     * @return string
+     */
+    public function getContainerDoi()
+    {
+        return isset($this->fields['doi_str'])
+            ? $this->fields['doi_str'] : '';
+    }
+
+
 }
