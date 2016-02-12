@@ -210,7 +210,9 @@ class AjaxController extends AbstractBase
     {
         $this->writeSession();  // avoid session write timing bug
         $catalog = $this->getILS();
-        $ids = $this->params()->fromQuery('id');
+        $language = $this->params()->fromPost('lang', $this->params()->fromQuery('lang'));
+        $catalog->setLanguage($language);
+        $ids = $this->params()->fromPost('id', $this->params()->fromQuery('id'));
         $results = $catalog->getStatuses($ids);
 
         if (!is_array($results)) {
@@ -458,7 +460,7 @@ return $this->output($x, self::STATUS_OK);
         // Remember some special copies for the $patronOptions['reserve_or_local'] case
         $referenceCallnumber = false;
         $referenceLocation   = false;
-        
+
         // Analyze each item of the record (title)
         foreach ($record as $key => $info) {
             // Keep track of the due dates to finally return the one with the least waiting time
@@ -565,6 +567,9 @@ return $this->output($x, self::STATUS_OK);
             // Store call number/location info:
             $callNumbers[] = $info['callnumber'];
             $locations[] = $info['location'];
+
+            // Add locationhref for Marc21 link (one of them)
+            $locHref = $info['locationhref'];
         }
 
 // TZ: Problem/idea: pickValue() should use a priority list; what does ILSHoldLogic do?
@@ -705,8 +710,6 @@ else              {
             $additional_availability_message = $availability;
         }
         
-        // Add locationhref for Marc21 link (one of them)
-        $locHref = $rec['locationhref'];
         
         // @todo  Check if it is necessary here - already/also called in
         // getItemStatusesAjax() ?!? /TZ
@@ -1039,6 +1042,8 @@ return $this->output($x, self::STATUS_OK);
     {
         $this->writeSession();  // avoid session write timing bug
         $catalog = $this->getILS();
+        $language = $this->params()->fromQuery('lang');
+        $catalog->setLanguage($language);
         $ids = $this->params()->fromQuery('id');
         $results = $catalog->getStatuses($ids);
 
@@ -1114,8 +1119,10 @@ return $this->output($x, self::STATUS_OK);
 
         // loop through each ID check if it is saved to any of the user's lists
         $result = [];
-        $ids = $this->params()->fromQuery('id', []);
-        $sources = $this->params()->fromQuery('source', []);
+        $ids = $this->params()->fromPost('id', $this->params()->fromQuery('id', []));
+        $sources = $this->params()->fromPost(
+            'source', $this->params()->fromQuery('source', [])
+        );
         if (!is_array($ids) || !is_array($sources)) {
             return $this->output(
                 $this->translate('Argument must be array.'),
@@ -1409,7 +1416,7 @@ return $this->output($x, self::STATUS_OK);
         $params = $results->getParams();
         $params->initFromRequest($this->getRequest()->getQuery());
         foreach ($this->params()->fromQuery('hf', []) as $hf) {
-            $params->getOptions()->addHiddenFilter($hf);
+            $params->addHiddenFilter($hf);
         }
         $params->getOptions()->disableHighlighting();
         $params->getOptions()->spellcheckEnabled(false);

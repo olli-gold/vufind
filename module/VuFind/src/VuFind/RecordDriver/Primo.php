@@ -303,6 +303,10 @@ class Primo extends SolrDefault
                 $retVal[0]['desc'] = $this->translate($desc);
             }
         }
+        if (isset($this->fields['directurl'])) {
+            $retVal[1]['url'] = (string)$this->fields['directurl'];
+            $retVal[1]['desc'] = $this->fields['directurl'];
+        }
 
         return $retVal;
     }
@@ -605,6 +609,13 @@ class Primo extends SolrDefault
                 $isbnsearch = true;
                 $queryparts[] = 'isbn:('.implode(' OR ', $fieldref['isbn']).')';
             }
+            if (count($fieldref['issn']) > 0) {
+                $isbnsearch = true;
+                $queryparts[] = 'issn:('.implode(' OR ', $fieldref['issn']).')';
+                if ($fieldref['date']) {
+                    $queryparts[] = 'publishDate:'.$fieldref['date'];
+                }
+            }
             if ($isbnsearch === false) {
                 $queryparts[] = 'title:("'.trim(addslashes($fieldref['title'])).'")';
 
@@ -728,6 +739,7 @@ class Primo extends SolrDefault
         $retVal['title'] = $this->getTitle();
         $retVal['date'] = $this->getPublicationDate();
         $retVal['isbn'] = $this->getISBNs();
+        $retVal['issn'] = $this->getISSNs();
         $retVal['author'] = $this->getPrimaryAuthor();
         return $retVal;
     }
@@ -763,6 +775,26 @@ class Primo extends SolrDefault
     public function isGbvRecord() {
         if ($this->getGbvPpn() !== null) return true;
         return false;
+    }
+
+    /**
+     * Get the OpenURL parameters to represent this record (useful for the
+     * title attribute of a COinS span tag).
+     *
+     * @param bool $overrideSupportsOpenUrl Flag to override checking
+     * supportsOpenUrl() (default is false)
+     *
+     * @return string OpenURL parameters.
+     */
+    public function getOpenUrl($overrideSupportsOpenUrl = false)
+    {
+        if (isset($this->fields['url'])) {
+            if (strpos($this->fields['url'], 'sfx.gbv.de') !== false) {
+                return $this->fields['url'];
+            }
+        }
+
+        return parent::getOpenUrl($overrideSupportsOpenUrl);
     }
 
 }

@@ -437,6 +437,8 @@ class SolrGBV extends SolrMarc
      */
     public function getVolumeStock()
     {
+        $iln = isset($this->recordConfig->Library->iln)
+            ? $this->recordConfig->Library->iln : null;
         $vs = null;
         $stock = array();
         $vs = $this->marcRecord->getFields('980');
@@ -449,14 +451,24 @@ class SolrGBV extends SolrMarc
                 if (count($libField) > 0) {
                     $lib = $libField[0]->getData();
                 }
-                if ($lib == '23') {
+                if ($lib == $iln) {
+                    $epnArr = $v->getSubfields('b');
+                    $epn = $epnArr[0]->getData();
+                    while (strlen($epn) < 10) {
+                        $epn = "0".$epn;
+                    }
+                    $idx = $epn;
                     $stockField = $v->getSubfields('g');
                     if (count($stockField) > 0) {
                         $stockInfo = $stockField[0]->getData();
                     }
+                    $noteField = $v->getSubfields('k');
+                    if (count($noteField) > 0) {
+                        $stockInfo .= "<br/>".$noteField[0]->getData();
+                    }
                     $callnoField = $v->getSubfields('d');
                     if (count($callnoField) > 0) {
-                        $idx = $callnoField[0]->getData();
+                        //$idx = $callnoField[0]->getData();
                     }
                     $stock[$idx] = $stockInfo;
                 }
@@ -473,6 +485,8 @@ class SolrGBV extends SolrMarc
      */
     public function getVolumeStockNote()
     {
+        $iln = isset($this->recordConfig->Library->iln)
+            ? $this->recordConfig->Library->iln : null;
         $vs = null;
         $stock = '';
         $vs = $this->marcRecord->getFields('980');
@@ -483,7 +497,7 @@ class SolrGBV extends SolrMarc
                 if (count($libField) > 0) {
                     $lib = $libField[0]->getData();
                 }
-                if ($lib == '23') {
+                if ($lib == $iln) {
                     $stockField = $v->getSubfields('k');
                     if (count($stockField) > 0) {
                         $stock .= $stockField[0]->getData();
@@ -1278,7 +1292,6 @@ class SolrGBV extends SolrMarc
                             $desc = $desc->getData();
                         } else {
                             $desc = $address;
-                            $retVal[] = ['url' => $address, 'desc' => $desc];
                         }
 
                         $uselinks = [ 'Inhaltstext', 'Kurzbeschreibung',
@@ -1290,6 +1303,7 @@ class SolrGBV extends SolrMarc
                         // or if its a non-numeric (i.e. a non-CBS) match.
                         if (in_array($desc, $uselinks) === true
                             || is_numeric($this->getUniqueId()) === false
+                            || $desc == $address
                         ) {
                             $retVal[] = ['url' => $address, 'desc' => $desc];
                         }
@@ -1716,6 +1730,10 @@ class SolrGBV extends SolrMarc
         if (in_array('eJournal', $this->getFormats()) === true || $this->isNLZ() === true || in_array('Journal', $this->getFormats()) === true || in_array('Serial Volume', $this->getFormats()) === true) {
             return '0';
         }
+        // Is this item a national license?
+        if ($this->isNLZ() === true) {
+            return '0';
+        }
 
         return '1';
     }
@@ -1786,10 +1804,10 @@ class SolrGBV extends SolrMarc
      *
      * @return array
      */
-    public function getRealTimeHoldings()
+    public function getRealTimeHoldings($lang = null)
     {
         return $this->hasILS() ? $this->holdLogic->getHoldings(
-            $this->getUniqueID(), $this->getConsortialIDs()
+            $this->getUniqueID(), $this->getConsortialIDs(), $lang
         ) : [];
     }
 
@@ -2941,7 +2959,10 @@ class SolrGBV extends SolrMarc
     protected function stripNLZ($rid = false) {
         if ($rid === false) $rid = $this->fields['id'];
         // if this is a national licence record, strip NLZ prefix since this is not indexed as ppnlink
-        if (substr($this->fields['id'], 0, 3) === 'NLZ' || substr($this->fields['id'], 0, 3) === 'NLM') {
+        if (substr($this->fields['id'], 0, 4) === 'NLEB' || substr($this->fields['id'], 0, 4) === 'NLEJ') {
+            $rid = substr($rid, 4);
+        }
+        if (substr($this->fields['id'], 0, 3) === 'NLM') {
             $rid = substr($rid, 3);
         }
         return $rid;
@@ -2956,8 +2977,11 @@ class SolrGBV extends SolrMarc
     protected function addNLZ($rid = false) {
         if ($rid === false) $rid = $this->fields['id'];
         $prefix = '';
-        if (substr($this->fields['id'], 0, 3) === 'NLZ') {
-            $prefix = 'NLZ';
+        if (substr($this->fields['id'], 0, 4) === 'NLEB') {
+            $prefix = 'NLEB';
+        }
+        if (substr($this->fields['id'], 0, 4) === 'NLEJ') {
+            $prefix = 'NLEJ';
         }
         if (substr($this->fields['id'], 0, 3) === 'NLM') {
             $prefix = 'NLM';
@@ -2982,7 +3006,7 @@ class SolrGBV extends SolrMarc
      * @access protected
      */
     private function _isNLZ($id) {
-        if (substr($id, 0, 3) === 'NLZ' || substr($id, 0, 3) === 'NLM') {
+        if (substr($id, 0, 3) === 'NLM' || substr($id, 0, 4) === 'NLEJ' || substr($id, 0, 4) === 'NLEB') {
             return true;
         }
         return false;
@@ -3339,6 +3363,50 @@ class SolrGBV extends SolrMarc
             $r = $ts[0];
         }
         return $r;
+    }
+
+    /**
+     * Obtains an array of remarks and comments in MARC 980$k and $g. The array is aved to $this->remarks
+     *
+     * @return void
+     * @access protected
+     */
+    protected function getRemarksFromMarc()
+    {
+        $iln = isset($this->recordConfig->Library->iln)
+            ? $this->recordConfig->Library->iln : null;
+        $vs = $this->marcRecord->getFields('980');
+        if ($vs) {
+            // Durchlaufe die Felder 980 (Bestandsangaben aller GBV-Bibliotheken)
+            // Dies ist notwendig, um die Kommentare und Bemerkungen aus dem MARC-Code abzufischen
+            foreach($vs as $v) {
+                // is this ours? In Feld $2 steht die ILN der Bibliothek, zu der diese Bestandsangabe gehoert
+                // Wenn der Titel zur konfigurierten Bibliothek gehoert, werte die Zeile aus
+                $libArr = $v->getSubfields('2');
+                $lib = $libArr[0]->getData();
+                if ($lib === $iln) {
+                    $v_signature = null;
+                    $epnArr = $v->getSubfields('b');
+                    $epn = $epnArr[0]->getData();
+                    $copy[$epn] = array();
+                    $v_names = $v->getSubfields('k');
+                    $v_remarks = $v->getSubfields('g');
+                    if (count($v_names) > 0) {
+                        $copy[$epn]['summary'] = array();
+                        foreach($v_names as $v_name) {
+                            $copy[$epn]['summary'][] = $v_name->getData();
+                        }
+                    }
+                    if (count($v_remarks) > 0) {
+                        $copy[$epn]['marc_notes'] = array();
+                        foreach($v_remarks as $v_remark) {
+                            $copy[$epn]['marc_notes'][] = $v_remark->getData();
+                        }
+                    }
+                }
+            }
+        }
+        $this->remarks = $copy;
     }
 
 }

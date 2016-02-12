@@ -40,6 +40,12 @@
         if ($cart->isActive()) {
           $this->headScript()->appendFile("vendor/cookies.js");
           $this->headScript()->appendFile("cart.js");
+          /** @todo:
+            *  - check_item_statuses.js is only loaded for modals in menues
+            *  - finally use "the" default way for a common modal 
+            *  - https://getbootstrap.com/javascript/
+            */
+          $this->headScript()->appendFile("check_item_statuses.js");
           $domain = $cart->getCookieDomain();
           $this->headScript()->appendScript(
             'var cartCookieDomain = ' . (!empty($domain) ? "'$domain'" : 'false') . ';'
@@ -66,6 +72,7 @@
         //              Or maybe in AjaxController via loading a special template (like for the status messages).
         $this->jsTranslations()->addStrings(
           array(
+            'userLang' => $this->transEsc('userLang'),
             'copies' => $this->transEsc('copies'),
             'opclang' => $this->transEsc('opclang'),
             'notforloan' => $this->transEsc('status_notforloan'),
@@ -231,7 +238,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <button type="button" class="close close-modal" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 id="modalTitle" class="modal-title"></h4>
           </div>
           <div class="modal-body"><i class="tub_loading fa fa-circle-o-notch fa-spin"></i> <?=$this->transEsc('Loading')?>...</div>

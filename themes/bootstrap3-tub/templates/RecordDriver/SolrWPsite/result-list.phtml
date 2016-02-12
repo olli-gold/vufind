@@ -11,7 +11,7 @@
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getUniqueID())?>" class="hiddenId" />
       <input type="hidden" value="<?=$this->escapeHtmlAttr($this->driver->getResourceSource())?>" class="hiddenSource" />
       <a href="<?=$this->recordLink()->getUrl($this->driver)?>">
-          <img class="recordcover" src="<?=$this->imageLink('tub/website.jpg')?>" alt="<?=$this->transEsc('Cover Image')?>"/>
+          <img class="recordcover" src="<?=$this->imageLink('tub/fa-globe.png')?>" alt="<?=$this->transEsc('Cover Image')?>"/>
       </a>
       <span class="tub-resultnumber"><?=$this->recordNumber?></span>
     </div>
@@ -81,8 +81,8 @@
     <? if ($cart->isActive()): ?>
       <div id="bookbag-menu">
         <input id="cartId" type="hidden" name="ids[<?=$this->driver->getUniqueId() ?>]" value="<?=$cartId ?>" />
-        <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_off" href="#" data-recordid="<?=$cartId ?>"> <?=$this->transEsc('Add to Book Bag') ?></a>
-        <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_on" href="#" data-recordid="<?=$cartId ?>"> <?=$this->transEsc('Remove from Book Bag') ?></a>
+        <a id="single-cart-add" class="single-cart-add <? if(!$cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_off" href="#" data-recordid="<?=$cartId ?>"> <span class="bookbag_label"><?=$this->transEsc('Add to Book Bag') ?></span></a>
+        <a id="single-cart-remove" class="single-cart-remove <? if($cart->contains($cartId)): ?>correct <? endif ?>hidden fa fa-thumb-tack tub_bookbag_on" href="#" data-recordid="<?=$cartId ?>"> <span class="bookbag_label"><?=$this->transEsc('Remove from Book Bag') ?></span></a>
         <noscript>
           <form method="post" name="addForm" action="<?=$this->url('cart-home')?>">
             <input type="hidden" name="ids[]" value="<?=$cartId ?>" />

@@ -32,6 +32,17 @@ header {
 }
 
 
+/* --- Search Home --- */
+.searchHomeContent {
+    width: auto;
+    .well {
+        background: transparent linear-gradient(to bottom, #FFF, #EEE) repeat scroll 0% 0%;
+        border: none;
+        padding: 0;
+    }
+}
+
+
 /* --- Any row --- */
 .row {
     /* this is all rows, there is no class top-row anyway?! */
@@ -79,7 +90,8 @@ header {
         &.active {
             background: @tub-active-color;
             border-color: @tub-active-color;
-            &:hover {background: @tub-active-color; border-color: @tub-active-color;}
+            color:#555;
+            &:hover {background: @tub-hover-color; border-color: @tub-hover-color; color: #ffffff;}
             .badge {color:@tub-active-color;}
         }
     }

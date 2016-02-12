@@ -58,6 +58,7 @@ function checkImage(currentId) {
                 if (width > 1 && height > 1) {
                     var parentArr = $('*[record-id="'+currentId+'"]')
                     var parent = parentArr[0];
+                    $('.urllabel').removeClass('hidden');
                     // disable links in result list view
                     $(parent).find('.holdelectro').addClass('hidden');
                     // disable links in detailed record view
@@ -66,7 +67,7 @@ function checkImage(currentId) {
                     $(parent).find('.holdlink.fulltext').addClass('hidden');
                     $(parent).find('.holdlink.holddirectdl').addClass('hidden');
                     // optionally display MARC links
-                    $('.marclinks').append('<span class="showmore">'+vufindString.show_more_links+'</span> <span class="showless">'+vufindString.show_less_links+'</span>');
+                    $('.marclinks').prepend('<br/><span class="showmore">'+vufindString.show_more_links+'</span> <span class="showless">'+vufindString.show_less_links+'</span>');
                     $('.showless').addClass('hidden');
                     $('.showmore').click( function () {
                         $('.externalurl').removeClass('hidden');
@@ -92,6 +93,9 @@ function checkImage(currentId) {
 }
 
 $(document).ready(function() {
+    if ($('.marclinks').html() == undefined) {
+        $('.urllabel').addClass('hidden');
+    }
     // assign action to the openUrlWindow link class
     $('a.openUrlWindow').click(function(){
         var params = extractClassParams(this);

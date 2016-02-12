@@ -55,7 +55,7 @@ function displayHoldingGuide(container_source, display_target) {
     $.ajax({
         dataType: 'json',
         url: path + '/AJAX/JSON?method=getItemStatuses',
-        data: {"id[]":currentId, "record_number":ids},
+        data: {"id[]":currentId, "record_number":ids, "lang":vufindString.userLang},
         beforeSend: function(xhr, settings) { xhr.rid = ids; },
         success: function(response, status, xhr) {
           if(response.status == 'OK') {
@@ -75,19 +75,19 @@ function displayHoldingGuide(container_source, display_target) {
           var loc_modal_body;
 
           // Add some additional infos for TUBHH holdings
-          if (result.bestOptionLocation.indexOf('Lehr') > -1) {
+          if (result.bestOptionLocation.indexOf('Lehr') > -1 || result.bestOptionLocation.indexOf('Text Book Collection') > -1) {
             loc_abbr = 'LBS';  loc_modal_body = vufindString.loc_modal_Body_shelf_lbs + loc_shelf + '.';
           }
-          else if (result.bestOptionLocation.indexOf('Lesesaal 1') > -1) {
+          else if (result.bestOptionLocation.indexOf('Lesesaal 1') > -1 || result.bestOptionLocation.indexOf('Reading Room 1') > -1) {
             loc_abbr = 'LS1';  loc_modal_body = vufindString.loc_modal_Body_shelf_ls1 + loc_shelf + '.';
           }
-          else if (result.bestOptionLocation.indexOf('Lesesaal 2') > -1) {
+          else if (result.bestOptionLocation.indexOf('Lesesaal 2') > -1 || result.bestOptionLocation.indexOf('Reading Room 2') > -1) {
             loc_abbr = 'LS2';  loc_modal_body = vufindString.loc_modal_Body_shelf_ls2 + loc_shelf + '.';
           }
           else if (result.bestOptionLocation.indexOf('Sonderstandort') > -1) {
             loc_abbr = 'SO';    loc_modal_body = vufindString.loc_modal_Title_service_da;
           }
-          else if (result.bestOptionLocation.indexOf('Semesterapparat') > -1) {
+          else if (result.bestOptionLocation.indexOf('Semesterapparat') > -1 || result.bestOptionLocation.indexOf('Course Reserves Collection') > -1) {
             loc_abbr = 'SEM';  loc_modal_body = vufindString.loc_modal_Body_sem + '.';
           }
           /* 2015-10-01 added @see http://redmine.tub.tuhh.de/issues/624 */
@@ -326,6 +326,8 @@ function displayHoldingGuide(container_source, display_target) {
             // Change the link to article container into parentlink (the journal this article has been published in)
             item.find('.parentlink').attr('href', result.parentlink);
             item.find('.parentlink').removeClass('nolink');
+            // Hide SFX link (but do not hide fulltext button)
+            item.find('.holdlink.fulltext').addClass('hidden');
           }
 
           // Add clarifying text for some availability information
@@ -372,8 +374,11 @@ function displayHoldingGuide(container_source, display_target) {
           // Final cleanup
           // If neither sfx is available and our fulltext hack didn't fill in
           // something, then show our fallback information
-          if (sfx_available == false && item.find('.holdlink').length == 0) {
+          if (sfx_available == false && item.find('.holdlink').length == 0 && item.find('.sfxlink').length == 0) {
             item.find(display_target).empty().append(fallbackOption);
+          }
+          if ( item.find('.sfxlink').length > 0 && item.find('.holdlink').length == 0 && (item.find('.openUrlControls .imagebased').length == 0 || item.find('.openUrlControls .imagebased:visible').length == 0)) {
+            item.find('.sfxlink').removeClass('hidden');
           }
 
         });
@@ -594,12 +599,12 @@ function get_volume_tab(recID) {
                 var entry = data.data[index];
                 var volume_ajax_row = '<tr><td class="volume_'+entry.id+' volumeItems_ajax_loaded" colspan="3"></td></tr>';
 
-                volume_rows.push('<tr class="volume_entry"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a> ('+entry.date+')</td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
+                volume_rows.push('<tr class="volume_entry"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.part+'</a> ('+entry.date+')</td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'" class="holdlink" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
             }
             if (volcount > visibleCount) {
                 for (var index = visibleCount; index < data.data.length; index++) {
                     var entry = data.data[index];
-                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.partNum+'</a> ('+entry.date+')</td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="#" class="holdlink get_volum_items" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
+                    volume_rows.push('<tr class="offscreen"><td><a href="'+path+'/Record/'+entry.id+'">'+entry.part+'</a> ('+entry.date+')</td><td><a href="'+path+'/Record/'+entry.id+'">'+entry.title+'</a></td><td><a href="'+path+'/Record/'+entry.id+'" class="holdlink" id="'+entry.id+'"><i class="fa fa-bars"></i> '+vufindString.copies+'</a></td></tr>'+volume_ajax_row);
                 }
             }
 
@@ -662,6 +667,10 @@ $(document).ready(function() {
   /**
    * Show modal on button click
    *
+   * @todo 2015-01-27
+   * Most of the modal handling should move somewhere else (e.g. common.js)
+   * since it isn't used for action buttons only anymore
+   *
    * //https://stackoverflow.com/questions/1359018/in-jquery-how-to-attach-events-to-dynamic-html-elements
    */
   $('body').on('click', 'a.locationInfox', function(event) {
@@ -693,17 +702,24 @@ $(document).ready(function() {
       // Note 2015-01-02
       // - The loan4 header is removed if loaded in iframe
       // - Add event listener for cross domain resizing of iframe (from Loan4)
-      // > See lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/screen/layout.jsp
-      if (loc == 'Loaned' || loc == 'Magazin') {
+      // > For resize see lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/screen/layout.jsp
+      // > For close see  lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/logout.jsp
+      if (loc == 'Loaned' || loc == 'Magazin' || loc == 'Closed Stack') {
         var iframe_resize = function (event) {
           if (event.origin !== "https://katalog.b.tuhh.de") {
             return;
           }
+
+          // lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/logout.jsp
+          if (event.data == 'bye') $('#modal').modal('hide');
+
+          // lhhar:/pica/jaguar/apache-tomcat-6.0.24/webapps/LBS_WEB/WEB-INF/jsp/screen/layout.jsp
           var iframe_to_resize = document.getElementById('modalIframe');
           if (iframe_to_resize) {
             iframe_to_resize.style.height = event.data + "px";
           }
         };
+
         // Listener for FF, Chrome etc.
         if (window.addEventListener) {
           window.addEventListener("message", iframe_resize, false);
@@ -786,6 +802,41 @@ $(document).ready(function() {
     // Add special function as close action if loan4 is opened
     if (force_logoff_loan4 === true) {
       Lightbox.addCloseAction(closeLoan4);
+    }
+
+    // 2015-01-27 On clicking input fields in Safari, the modal jumps to top of
+    // the page. This hack prevents this
+    // https://github.com/twbs/bootstrap/issues/9023#issuecomment-27701089
+    // @todo: Check if a new version of bootstrap fixes this problem and remove!
+    if( navigator.userAgent.match(/iPhone|iPad|iPod/i) ) {
+      $('.modal').on('show.bs.modal', function() {
+        // Position modal absolute and bump it down to the scrollPosition
+        $(this)
+          .css({
+            position: 'absolute',
+            marginTop: $(window).scrollTop() + 'px',
+            bottom: 'auto'
+          });
+
+        // Position backdrop absolute and make it span the entire page
+        //
+        // Also dirty, but we need to tap into the backdrop after Boostrap
+        // positions it but before transitions finish.
+        //
+        setTimeout( function() {
+          $('.modal-backdrop').css({
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: Math.max(
+              document.body.scrollHeight, document.documentElement.scrollHeight,
+              document.body.offsetHeight, document.documentElement.offsetHeight,
+              document.body.clientHeight, document.documentElement.clientHeight
+            ) + 'px'
+          });
+        }, 0);
+      });
     }
 
     // Show everything

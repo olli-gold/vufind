@@ -43,7 +43,8 @@ label {display: inline;}
 
 /* Bookbag toogle inline */
 #bookbag-menu .tub_bookbag_on  {color: #576ca0; font-size:small;}
-#bookbag-menu .tub_bookbag_off {color: #a8ddf0; font-size:small;}
+/*#bookbag-menu .tub_bookbag_off {color: #a8ddf0; font-size:small;}*/
+#bookbag-menu .tub_bookbag_off {color: #576ca0; font-size:small;}
 
 /** class to make stuff "invisible" but still readable by screen readers
  * maybe use .offcanvas ?!?
@@ -116,8 +117,67 @@ label {display: inline;}
     padding-left: 10px;
 }
 
-@media (max-width: 991px) and (max-width: 479px) {
-.save-record {
-    margin-left: 7px;
+.showmore,.showless {
+    color: #06c;
 }
+
+.showmore:hover,.showless:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+/*
+.navbar-brand-beta {
+    background-image: url("../../../themes/bootprint3-tub/images/tubfind-logo-beta.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    color: transparent;
+    height: 65px;
+    margin-top: 5px;
+    width: 170px;
+    float: left;padding: 15px 15px;
+    font-size: 18px;
+    line-height: 20px;
+    height: 50px;
+}
+.navbar-brand-beta:hover,.navbar-brand-beta:focus{text-decoration: none}
+.navbar-brand-beta > img {display: block}
+*/
+.table.table-striped tbody tr th.sample {
+    width: 100px;
+}
+
+@media (max-width: 991px) and (max-width: 479px) {
+    .table.table-striped tbody tr th.sample {
+        width: 70px;
+        font-size: smaller;
+    }
+    .table.table-striped tbody tr td.sample {
+        font-size: smaller;
+    }
+}
+
+.sidebar.detailedrecordview {
+    background: #fff;
+    border: solid #ddd 1px;
+}
+
+.close-modal {
+    font-size: 2rem;
+}
+
+/*  Apple Special Fun (modals are zoomed problem)
+    https://github.com/jschr/bootstrap-modal/issues/64#issuecomment-55794181
+    @todo: Try targeting IOS (Safari) only - 0 padding looks bad
+    @todo: Check if a new version of bootstrap fixes this problem and remove!
+*/
+@media (max-width: 768px) {
+  body {padding-right: 0px !important}
+  .modal-open {overflow-y: auto;}
+}
+
+@media (max-width: 991px) {
+    .result .right {
+        min-height: 1px; /* IOS seems not to understand auto */
+    }
 }

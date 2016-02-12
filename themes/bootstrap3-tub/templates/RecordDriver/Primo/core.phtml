@@ -55,16 +55,21 @@
     <?/* Display Main Details */?>
     <table class="table" summary="<?=$this->transEsc('Bibliographic Details')?>">
       <? $ref = $this->driver->getIsPartOf(); ?>
-      <? $journalTitle = $this->driver->getContainerTitle(); if (!empty($journalTitle) || !empty($ref)): ?>
+      <? if (!empty($ref)): ?>
       <tr>
         <th><?=$this->transEsc('Published in')?>:</th>
         <td>
-          <? if (!empty($journalTitle)): ?>
-              <? $containerID = $this->driver->getContainerRecordID(); ?>
-              <a href="<?=($containerID ? $this->recordLink()->getUrl("VuFind|$containerID") : $this->record($this->driver)->getLink('journaltitle', $journalTitle))?>"><?=$this->escapeHtml($journalTitle)?></a>
-          <? else: ?>
-              <? if (!empty($ref)) { echo $this->escapeHtml($ref); } ?>
-          <? endif; ?>
+            <?= $this->escapeHtml($ref) ?>
+        </td>
+      </tr>
+      <? endif; ?>
+      <? $journalTitle = $this->driver->getContainerTitle(); ?>
+      <? if (!empty($journalTitle)): ?>
+      <tr>
+        <th><?=$this->transEsc('Journal')?>:</th>
+        <td>
+          <? $containerID = $this->driver->getContainerRecordID(); ?>
+          <a href="<?=($containerID ? $this->recordLink()->getUrl("VuFind|$containerID") : $this->record($this->driver)->getLink('journaltitle', $journalTitle))?>"><?=$this->escapeHtml($journalTitle)?></a>
         </td>
       </tr>
       <? endif; ?>

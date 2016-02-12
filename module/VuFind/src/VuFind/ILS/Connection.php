@@ -231,6 +231,28 @@ class Connection implements TranslatorAwareInterface
     }
 
     /**
+     * Check Drivers language support
+     *
+     * A support method for checkFunction(). This is responsible for checking
+     * the driver for the method setLanguage.
+     *
+     * @param array $functionConfig The Cancel Hold configuration values
+     * @param array $params         An array of function-specific params (or null)
+     *
+     * @return bool
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    protected function checkMethodsetLanguage($functionConfig, $params)
+    {
+        $response = false;
+        if (method_exists($this->getDriverClass(), 'setLanguage') === true) {
+            $response = true;
+        }
+        return $response;
+    }
+
+    /**
      * Check Holds
      *
      * A support method for checkFunction(). This is responsible for checking
@@ -742,7 +764,7 @@ class Connection implements TranslatorAwareInterface
     {
         return isset($this->config->holdings_text_fields)
             ? $this->config->holdings_text_fields->toArray()
-            : ['notes', 'summary', 'supplements', 'indexes'];
+            : ['holdings_notes', 'summary', 'supplements', 'indexes'];
     }
 
     /**

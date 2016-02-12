@@ -1,11 +1,13 @@
 <?
   // Set up additional search box, which is not getting displayed:
+  if (isset($REQUEST['lookfor']) && $REQUEST['lookfor'] != '') {
   $this->layout()->searchboxN = $this->context($this)->renderInContext(
       'search/searchbox.phtml',
       array(
-        'lookfor' => $lookfor
+        'lookfor' => $_REQUEST['lookfor']
       )
   );
+  }
 ?>
 <? $account = $this->auth()->getManager(); ?>
 <div class="navbar-header">
@@ -13,7 +15,7 @@
     <span class="sr-only">Toggle navigation</span>
     <i class="fa fa-bars"></i>
   </button>
-  <a role="logo" class="navbar-brand" href="<?=$this->url('home')?>">VuFind</a>
+  <a role="logo" class="navbar-brand-beta" href="<?=$this->url('home')?>"> </a>
 </div>
 <? /* 2015-12-27: What's the point of always loading a search form for >1200px and never showing it?
   if ($this->layout()->searchbox !== false): ? >
@@ -76,12 +78,12 @@
       <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="tub_lielement fa fa-angle-right"></i> <?=$this->transEsc("Password")?></a>
           <ul class="dropdown-menu">
-            <!-- TZ 2015-09-26: old way
-              <li><a href="https://www.tub.tu-harburg.de/ext/lbspw" target="_blank"><?=$this->transEsc('Change Password')?></a></li>
-              <li><a href="https://www.tub.tu-harburg.de/ext/lbspw/forgotten" target="_blank"><?=$this->transEsc('Lost Password?')?></a></li>
+              <li><a href="https://www.tub.tu-harburg.de/ext/lbspw/index.php?lang=<?=$this->layout()->userLang?>" target="_blank"><?=$this->transEsc('Change Password')?></a></li>
+              <li><a href="https://www.tub.tu-harburg.de/ext/lbspw/forgotten/index.php?lang=<?=$this->layout()->userLang?>" target="_blank"><?=$this->transEsc('lostpassword')?></a></li>
+            <!-- TZ 2016-01-25: new way (looks bad with opac template)
+            <li><a href="#" id="info-pwchange" class="locationInfox modal-link"><?=$this->transEsc('Change Password')?><span data-title="<?=$this->transEsc('Change Password')?>" data-location="Undefined" data-iframe="https://www.tub.tu-harburg.de/ext/lbspw" class="modal-dialog hidden"><?=$this->transEsc('I AM HELPTEXT')?></span></a></li>
+            <li><a href="#" id="info-pwrequest" class="locationInfox modal-link"><?=$this->transEsc('Lost Password?')?><span data-title="<?=$this->transEsc('Lost Password?')?>" data-location="Undefined" data-iframe="https://www.tub.tu-harburg.de/ext/lbspw/forgotten" class="modal-dialog hidden"><?=$this->transEsc('I AM HELPTEXT')?></span></a></li>
             -->
-            <li><a href="#" id="info-pwchange" class="locationInfox modal-link"><?=$this->transEsc('Change Password')?><span data-title="<?=$this->transEsc('Change Password')?>" data-location="Undefined" data-iframe="https://www.tub.tu-harburg.de/ext/lbspw" class="modal-dialog hidden"><?=$this->transEsc('Blablub und so weiter')?></span></a></li>
-            <li><a href="#" id="info-pwrequest" class="locationInfox modal-link"><?=$this->transEsc('Lost Password?')?><span data-title="<?=$this->transEsc('Lost Password?')?>" data-location="Undefined" data-iframe="https://www.tub.tu-harburg.de/ext/lbspw/forgotten" class="modal-dialog hidden"><?=$this->transEsc('Blablub und so weiter')?></span></a></li>
           </ul>
       </li>
 

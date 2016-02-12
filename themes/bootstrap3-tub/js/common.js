@@ -48,6 +48,10 @@ function html_entity_decode(string, quote_style)
   return tmp_str;
 }
 
+function isTouchDevice(){
+  return true == ("ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch);
+}
+
 // Turn GET string into array
 function deparam(url) {
   var request = {};
@@ -280,13 +284,13 @@ $(document).ready(function() {
   // TUB & Wordpress specific (2015-08-28):
   // - Replace language links in wordpress header with own links
   // - Remove Search field
+  // - Replace logo
   $('.msls').empty(); // easiest just to rebuild links
   $('#href_de').detach().appendTo('.msls').text('DE'); // Remove (it's an ID), add to msls and replace text
   $('.msls').append(' | ');
   $('#href_en').detach().appendTo('.msls').text('EN'); // Remove (it's an ID), add to msls and replace text
   $('#dropdown_language').hide(); // hide native vufind dropdown
-  $('.wpsearch').hide(); // Hide wordpress search field
-
+  $('.tublogo').empty().append('<a href="/"><img src="'+path+'/themes/bootprint3-tub/images/tub_find_logo.png" alt="TUB.find" title="TUB.find"></a>'); // Replace logo and link
 
   // support "jump menu" dropdown boxes
   $('select.jumpMenu').change(function(){ $(this).parent('form').submit(); });
@@ -548,12 +552,15 @@ $(document).ready(function() {
 
   /**
    * Activate nice tooltips for anything with rel="tooltip"
-   *
    * https://getbootstrap.com/javascript/#tooltips
+   *
+   * 2016-01-26: Enable only for non-touch devices
    */
-  $('body').tooltip({
-    selector: '[rel=tooltip]',
-    placement : 'bottom'
-  });
+  if(isTouchDevice()===false) {
+    $('body').tooltip({
+      selector: '[rel=tooltip]',
+      placement : 'bottom'
+    });
+  }
 
 });

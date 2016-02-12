@@ -65,7 +65,7 @@
           isset($this->checkboxFilters) && is_array($this->checkboxFilters) ? $this->checkboxFilters : array()
       );
     ?>
-    <? if ($numberOfFilters > $numberOfDefaultFilters && ((isset($hasDefaultsApplied) && $hasDefaultsApplied) || !empty($filterDetails))): ?>
+    <? if (isset($numberOfFilters) && isset($numberOfDefaultFilters) && $numberOfFilters > $numberOfDefaultFilters && ((isset($hasDefaultsApplied) && $hasDefaultsApplied) || !empty($filterDetails))): ?>
       <? $defaultFilterState = $options->getRetainFilterSetting() ? ' checked="checked"' : ''; ?>
       <div class="btn search-retainfilter">
         <label>

@@ -22,7 +22,11 @@
   <? if (!empty($urls)): ?>
     <span class="marclinks">
     <? foreach ($urls as $current): ?>
-      <br/><a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" rel="tooltip"><i class="fa fa-download"></i> <?=$this->escapeHtml($current['desc'])?></a>
+        <? if (strpos($current['url'], 'sfx.gbv.de') !== false): ?>
+            <br/><a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" rel="tooltip"><img src="https://sfx.gbv.de/sfx_tuhh/sfx.gif" alt="SFX" /></a>
+        <? else: ?>
+            <br/><span class="externalurl"><a href="<?=$this->escapeHtmlAttr($this->proxyUrl($current['url']))?>" rel="tooltip"><i class="fa fa-download"></i> <?=$this->escapeHtml($current['desc'])?></a></span>
+        <? endif; ?>
     <? endforeach; ?>
     </span>
   <? endif; ?>
