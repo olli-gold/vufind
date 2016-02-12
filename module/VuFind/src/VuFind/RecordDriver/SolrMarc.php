@@ -175,6 +175,28 @@ class SolrMarc extends SolrDefault
     }
 
     /**
+     * Get the multipart resource record level of the current record.
+     *
+     * @return string
+     */
+    public function getMultipartLevel()
+    {
+        $leader = $this->getMarcRecord()->getLeader();
+        $mpLevel = strtoupper($leader[19]);
+
+        switch ($mpLevel) {
+        case 'A': // multipart set parent
+            return "parent";
+        case 'B': // part with independent title
+            return "independent";
+        case 'C': // part with dependent title
+            return "dependent";
+        default:
+            return "unknown";
+        }
+    }
+
+    /**
      * Get notes on bibliography content.
      *
      * @return array

@@ -363,6 +363,37 @@ class SolrGBV extends SolrMarc
     }
 
     /**
+     * Get the OpenURL parameters to represent this record (useful for the
+     * title attribute of a COinS span tag).
+     *
+     * @param bool $overrideSupportsOpenUrl Flag to override checking
+     * supportsOpenUrl() (default is false)
+     *
+     * @return string OpenURL parameters.
+     */
+    public function getOpenUrl($overrideSupportsOpenUrl = false)
+    {
+        // stop here if this record does not support OpenURLs
+        if (!$overrideSupportsOpenUrl && !$this->supportsOpenUrl()) {
+            return false;
+        }
+        // Return false if this is a parent record
+        if ($this->getMultipartLevel() === 'parent') {
+            return false;
+        }
+        // Set up parameters based on the format of the record:
+        $format = $this->getOpenUrlFormat();
+        $method = "get{$format}OpenUrlParams";
+        if (method_exists($this, $method)) {
+            $params = $this->$method();
+        } else {
+            $params = $this->getUnknownFormatOpenUrlParams($format);
+        }
+        // Assemble the URL:
+        return http_build_query($params);
+    }
+
+    /**
      * TUBHH Enhancement for GBV Discovery
      * Return the reference of one article
      * An array will be returned with keys=volume, issue, startpage [spage], endpage [epage] and publication year [date].
@@ -768,34 +799,6 @@ class SolrGBV extends SolrMarc
     public function getAwards()
     {
         return $this->getFieldArray('586');
-    }
-
-    /**
-     * Get the bibliographic level of the current record.
-     *
-     * @return string
-     */
-    public function getBibliographicLevel()
-    {
-        $leader = $this->marcRecord->getLeader();
-        $biblioLevel = strtoupper($leader[7]);
-
-        switch ($biblioLevel) {
-        case 'M': // Monograph
-            return "Monograph";
-        case 'S': // Serial
-            return "Serial";
-        case 'A': // Monograph Part
-            return "MonographPart";
-        case 'B': // Serial Part
-            return "SerialPart";
-        case 'C': // Collection
-            return "Collection";
-        case 'D': // Collection Part
-            return "CollectionPart";
-        default:
-            return "Unknown";
-        }
     }
 
     /**
