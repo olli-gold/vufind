@@ -3,14 +3,14 @@
   $this->headTitle($this->translate('Book Bag'));
 
   // Set up breadcrumbs:
-  $this->layout()->breadcrumbs = '<li>' . $this->getLastSearchLink($this->transEsc('Search'), '', '</li> ')
+  $this->layout()->breadcrumbs = '<li>' . $this->searchMemory()->getLastSearchLink($this->transEsc('Search'), '', '</li> ')
     . '<li class="active">' . $this->transEsc('Book Bag') . '</li>';
 ?>
 <?=$this->flashmessages()?>
 <form class="form-inline" action="<?=$this->url('cart-home')?>" method="post"  name="cartForm">
   <? if (!$this->cart()->isEmpty()): ?>
     <div class="cart-controls clearfix">
-      <div class="checkbox pull-left">
+      <div class="checkbox pull-left flip">
         <label>
           <input type="checkbox" name="selectAll" class="checkbox-select-all" checked="true"/>
           <?=$this->transEsc('select_page')?>
@@ -26,7 +26,7 @@
         <i class="fa fa-envelope-o"></i>
         <?=$this->transEsc('Email')?>
       </button>
-      <? $exportOptions = $this->export()->getBulkOptions(); if (count($exportOptions) > 0): ?>
+      <? $exportOptions = $this->export()->getActiveFormats('bulk'); if (count($exportOptions) > 0): ?>
         <button type="submit" class="btn btn-default" name="export" title="<?=$this->transEsc('bookbag_export')?>" value="1">
           <i class="fa fa-list-alt"></i>
           <?=$this->transEsc('Export')?>

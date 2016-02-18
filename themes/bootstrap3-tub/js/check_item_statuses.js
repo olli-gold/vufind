@@ -87,6 +87,11 @@ function displayHoldingGuide(container_source, display_target) {
           else if (result.bestOptionLocation.indexOf('Sonderstandort') > -1) {
             loc_abbr = 'SO';    loc_modal_body = vufindString.loc_modal_Title_service_da;
           }
+/*
+          else if (result.bestOptionLocation.indexOf('Magazin') > -1 || result.bestOptionLocation.indexOf('Closed Stack') > -1) {
+            loc_abbr = 'Transport';    loc_modal_body = vufindString.loc_modal_Title_service_transport;
+          }
+*/
           else if (result.bestOptionLocation.indexOf('Semesterapparat') > -1 || result.bestOptionLocation.indexOf('Course Reserves Collection') > -1) {
             loc_abbr = 'SEM';  loc_modal_body = vufindString.loc_modal_Body_sem + '.';
           }
@@ -180,6 +185,10 @@ function displayHoldingGuide(container_source, display_target) {
                 @Note: We could also add the hint in the template itself, but
                 here we don't have to do it for each driver.
                 */
+
+                if (result.bestOptionLocation == "Web") {
+                    loc_abbr = result.bestOptionLocation;
+                }
 
                 /* 2015-10-01 @see http://redmine.tub.tuhh.de/issues/624 */
                 title = loc_abbr;
@@ -341,6 +350,10 @@ function displayHoldingGuide(container_source, display_target) {
           // Show our final result!
           item.find(display_target).empty().append(bestOption);
 
+          // got the buttons for current ID
+          // now the SFX check may start
+          checkImage(result.id);
+
           // SFX-Hack: If nothing is found, a very small dummy gif is returned.
           // If so, hide the controls (or just the image), so everything else around
           // is displayed nicely (not indented etc.). Maybe better in \themes\bootstrap3-tub\js\openurl.js
@@ -380,17 +393,17 @@ function displayHoldingGuide(container_source, display_target) {
           if ( item.find('.sfxlink').length > 0 && item.find('.holdlink').length == 0 && (item.find('.openUrlControls .imagebased').length == 0 || item.find('.openUrlControls .imagebased:visible').length == 0)) {
             item.find('.sfxlink').removeClass('hidden');
           }
-
         });
       } else {
+        // Response status not ok
         // display the error message on each of the ajax status place holder
         item.find(display_target).empty().append(response.data);
       }
       // (Why?)
       //item.find('.holdlocation').removeClass('holdlocation');
 
-    }
-  });
+      }
+    });
   }
 }
 
@@ -629,9 +642,9 @@ function get_volume_tab(recID) {
  */
 $(document).ready(function() {
   // Get all the buttons
-  $(window).on("load", function() {
+  //$(window).on("load", function() {
     displayHoldingGuide();
-  });
+  //});
 
   /* 2015-12-09: Wait until sfx buttons are loaded; makes sfx_fix in
   // displayHoldingGuide() safer

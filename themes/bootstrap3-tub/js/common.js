@@ -292,6 +292,11 @@ $(document).ready(function() {
   $('#dropdown_language').hide(); // hide native vufind dropdown
   $('.tublogo').empty().append('<a href="/"><img src="'+path+'/themes/bootprint3-tub/images/tub_find_logo.png" alt="TUB.find" title="TUB.find"></a>'); // Replace logo and link
 
+  // Do not display an empty sidebar in detailed record view
+  if ($.trim($('.detailedrecordview').html()) == '') {
+    $('.detailedrecordview').hide();
+  }
+
   // support "jump menu" dropdown boxes
   $('select.jumpMenu').change(function(){ $(this).parent('form').submit(); });
 

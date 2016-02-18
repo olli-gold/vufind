@@ -213,117 +213,158 @@ class AjaxController extends AbstractBase
         $language = $this->params()->fromPost('lang', $this->params()->fromQuery('lang'));
         $catalog->setLanguage($language);
         $ids = $this->params()->fromPost('id', $this->params()->fromQuery('id'));
-        $results = $catalog->getStatuses($ids);
 
-        if (!is_array($results)) {
-            // If getStatuses returned garbage, let's turn it into an empty array
-            // to avoid triggering a notice in the foreach loop below.
-            $results = [];
+        $id = null;
+        if (count($ids) == 1) {
+            $id = $ids[0];
         }
 
-        // In order to detect IDs missing from the status response, create an
-        // array with a key for every requested ID.  We will clear keys as we
-        // encounter IDs in the response -- anything left will be problems that
-        // need special handling.
-        $missingIds = array_flip($ids);
+        // Special treatment for national licenses
+        if (substr($id, 0, 2) === 'NL') {
+            $driver = $this->getRecordLoader()->load(
+                $id,
+                $this->params()->fromPost('source', 'Solr')
+            );
 
-        // Get access to PHP template renderer for partials:
-        $renderer = $this->getViewRenderer();
+            $urls = $driver->getUrls();
 
-        // Load messages for response:
-        $messages = [
-            'available' => $renderer->render('ajax/status-available.phtml'),
-            'unavailable' => $renderer->render('ajax/status-unavailable.phtml'),
-            'unknown' => $renderer->render('ajax/status-unknown.phtml'),
-            'notforloan' => $renderer->render('ajax/status-notforloan.phtml')
-        ];
-
-        // Load callnumber and location settings:
-        $config = $this->getConfig();
-        $callnumberSetting = isset($config->Item_Status->multiple_call_nos)
-            ? $config->Item_Status->multiple_call_nos : 'msg';
-        $locationSetting = isset($config->Item_Status->multiple_locations)
-            ? $config->Item_Status->multiple_locations : 'msg';
-        $showFullStatus = isset($config->Item_Status->show_full_status)
-            ? $config->Item_Status->show_full_status : false;
-
-        // Loop through all the status information that came back
-        $statuses = [];
-        foreach ($results as $recordNumber => $record) {
-            // Filter out suppressed locations:
-            $record = $this->filterSuppressedLocations($record);
-
-            // Skip empty records:
-            if (count($record)) {
-                if ($locationSetting == "group") {
-                    $current = $this->getItemStatusGroup(
-                        $record, $messages, $callnumberSetting
-                    );
-                } else {
-                    $current = $this->getItemStatus(
-                        $record, $messages, $locationSetting, $callnumberSetting
-                    );
-                }
-                // If a full status display has been requested, append the HTML:
-                if ($showFullStatus) {
-                    $current['full_status'] = $renderer->render(
-                        'ajax/status-full.phtml', ['statusItems' => $record]
-                    );
-                }              
-                $current['record_number'] = array_search($current['id'], $ids);
-// TZ: Why is it statuses - only one exists. Everything merged as best guess? This has to go awry with multiple locations (?)
-                $statuses[] = $current;
-
-                // The current ID is not missing -- remove it from the missing list.
-                unset($missingIds[$current['id']]);
-            }
-        }
-
-// TZ TODO: getPrintedStatuses also calles in getItemStatus() - one could be removed?        
-        $link_printed = $this->getPrintedStatuses();
-        $linkPrintedHtml = null;
-        $parentLinkHtml = null;
-        if ($link_printed) {
-            $view = ['refId' => $link_printed];
-            $linkPrintedHtml = $this->getViewRenderer()->render('ajax/link_printed.phtml', $view);
-            $parentLinkHtml = $this->getViewRenderer()->render('ajax/parentlink.phtml', $view);
-        }
-
-        $multiVol = $this->getMultiVolumes();
-
-        // If any IDs were missing, send back appropriate dummy data
-        /* add?
-                'presenceOnly' => $referenceIndicator,
-                'electronic' => $electronic, */
-        foreach ($missingIds as $missingId => $recordNumber) {
             $statuses[] = [
-                'id'                   => $missingId,
-                'patronBestOption'     => 'false',
-                'bestOptionHref'       => 'false',
-                'bestOptionLocation'   => 'false',
-                'availability'         => 'false',
-                'availability_message' => $messages['unavailable'],
-                'location'             => $this->translate('Unknown'),
+                'id'                   => $id,
+                'patronBestOption'     => 'e_only',
+                'bestOptionHref'       => $urls[0]['url'],
+                'locHref'              => $urls[0]['url'],
+                'bestOptionLocation'   => $this->translate('Web'),
+                'availability'         => true,
+                'availability_message' => '',
+                'location'             => $this->translate('Web'),
                 'locationList'         => false,
                 'reserve'              => 'false',
                 'reserve_message'      => $this->translate('Not On Reserve'),
                 'callnumber'           => '',
-                'missing_data'         => true,
-                'link_printed'         => $linkPrintedHtml,
-                'link_printed_href'    => $link_printed,
-                'parentlink'           => $parentLinkHtml,
-                'record_number'        => $recordNumber,
+                'missing_data'         => false,
+                'link_printed'         => null,
+                'link_printed_href'    => null,
+                'parentlink'           => false,
+                'record_number'        => $this->params()->fromPost('record_number', $this->params()->fromQuery('record_number')),
                 'reference_location'   => 'false',
                 'reference_callnumber' => 'false',
-                'multiVols'            => $multiVol
+                'multiVols'            => false
             ];
         }
+        else {
+            // Ask the catalog for details
+            $results = $catalog->getStatuses($ids);
 
+            if (!is_array($results)) {
+                // If getStatuses returned garbage, let's turn it into an empty array
+                // to avoid triggering a notice in the foreach loop below.
+                $results = [];
+            }
+
+            // In order to detect IDs missing from the status response, create an
+            // array with a key for every requested ID.  We will clear keys as we
+            // encounter IDs in the response -- anything left will be problems that
+            // need special handling.
+            $missingIds = array_flip($ids);
+
+            // Get access to PHP template renderer for partials:
+            $renderer = $this->getViewRenderer();
+
+            // Load messages for response:
+            $messages = [
+                'available' => $renderer->render('ajax/status-available.phtml'),
+                'unavailable' => $renderer->render('ajax/status-unavailable.phtml'),
+                'unknown' => $renderer->render('ajax/status-unknown.phtml'),
+                'notforloan' => $renderer->render('ajax/status-notforloan.phtml')
+            ];
+
+            // Load callnumber and location settings:
+            $config = $this->getConfig();
+            $callnumberSetting = isset($config->Item_Status->multiple_call_nos)
+                ? $config->Item_Status->multiple_call_nos : 'msg';
+            $locationSetting = isset($config->Item_Status->multiple_locations)
+                ? $config->Item_Status->multiple_locations : 'msg';
+            $showFullStatus = isset($config->Item_Status->show_full_status)
+                ? $config->Item_Status->show_full_status : false;
+
+            // Loop through all the status information that came back
+            $statuses = [];
+            foreach ($results as $recordNumber => $record) {
+                // Filter out suppressed locations:
+                $record = $this->filterSuppressedLocations($record);
+
+                // Skip empty records:
+                if (count($record)) {
+                    if ($locationSetting == "group") {
+                        $current = $this->getItemStatusGroup(
+                            $record, $messages, $callnumberSetting
+                        );
+                    } else {
+                        $current = $this->getItemStatus(
+                            $record, $messages, $locationSetting, $callnumberSetting
+                        );
+                    }
+                    // If a full status display has been requested, append the HTML:
+                    if ($showFullStatus) {
+                        $current['full_status'] = $renderer->render(
+                            'ajax/status-full.phtml', ['statusItems' => $record]
+                        );
+                    }
+                    $current['record_number'] = array_search($current['id'], $ids);
+// TZ: Why is it statuses - only one exists. Everything merged as best guess? This has to go awry with multiple locations (?)
+                    $statuses[] = $current;
+
+                    // The current ID is not missing -- remove it from the missing list.
+                    unset($missingIds[$current['id']]);
+                }
+            }
+
+// TZ TODO: getPrintedStatuses also calles in getItemStatus() - one could be removed?
+            $link_printed = $this->getPrintedStatuses();
+            $linkPrintedHtml = null;
+            $parentLinkHtml = null;
+            if ($link_printed) {
+                $view = ['refId' => $link_printed];
+                $linkPrintedHtml = $this->getViewRenderer()->render('ajax/link_printed.phtml', $view);
+                $parentLinkHtml = $this->getViewRenderer()->render('ajax/parentlink.phtml', $view);
+            }
+
+            $multiVol = $this->getMultiVolumes();
+
+            // If any IDs were missing, send back appropriate dummy data
+            /* add?
+                    'presenceOnly' => $referenceIndicator,
+                    'electronic' => $electronic, */
+            foreach ($missingIds as $missingId => $recordNumber) {
+                $statuses[] = [
+                    'id'                   => $missingId,
+                    'patronBestOption'     => 'false',
+                    'bestOptionHref'       => 'false',
+                    'bestOptionLocation'   => 'false',
+                    'availability'         => 'false',
+                    'availability_message' => $messages['unavailable'],
+                    'location'             => $this->translate('Unknown'),
+                    'locationList'         => false,
+                    'reserve'              => 'false',
+                    'reserve_message'      => $this->translate('Not On Reserve'),
+                    'callnumber'           => '',
+                    'missing_data'         => true,
+                    'link_printed'         => $linkPrintedHtml,
+                    'link_printed_href'    => $link_printed,
+                    'parentlink'           => $parentLinkHtml,
+                    'record_number'        => $recordNumber,
+                    'reference_location'   => 'false',
+                    'reference_callnumber' => 'false',
+                    'multiVols'            => $multiVol
+                ];
+            }
+        }
         // Done
         return $this->output($statuses, self::STATUS_OK);
-$x = '<pre>' . var_export($results) . '</pre>';
-//$x = '<pre>' . var_export($statuses) . '</pre>';
-return $this->output($x, self::STATUS_OK);
+
+        $x = '<pre>' . var_export($results) . '</pre>';
+        //$x = '<pre>' . var_export($statuses) . '</pre>';
+        return $this->output($x, self::STATUS_OK);
     }
 
 
@@ -668,6 +709,9 @@ else              {
         // Ok, so we should for sure have a false status for availability
         elseif ($available == false) {
             $patronOptions['service_desk'] = true;
+        }
+        elseif (false) {
+            $patronOptions['e_only'] = true;
         }
         else {
             $patronOptions['false'] = true;

@@ -15,6 +15,8 @@
 
     // Set page title.
     $this->headTitle($this->translate('Holdings') . ': ' . $this->driver->getBreadcrumb());
+
+    $formats = $this->driver->getFormats();
 ?>
 
 <?=$this->context($this)->renderInContext('librarycards/selectcard.phtml', array('user' => $this->auth()->isLoggedIn())); ?>
@@ -59,6 +61,7 @@
   <? if ($openUrlActive): ?><?=$openUrl->renderTemplate()?><? endif; ?>
 <? endif; ?>
 <? foreach ($holdings as $holding): ?>
+  <? if ($holding['location'] != 'Unknown'): ?>
 <h3>
   <? $locationText = $this->transEsc('location_' . $holding['location'], array(), $holding['location']); ?>
   <? if (isset($holding['locationhref']) && $holding['locationhref']): ?>
@@ -67,6 +70,7 @@
     <?=$locationText?>
   <? endif; ?>
 </h3>
+
 <table class="table table-striped" summary="<?=$this->transEsc('Holdings details from')?> <?=$this->transEsc($holding['location'])?>">
   <? $callNos = $this->tab->getUniqueCallNumbers($holding['items']); if (!empty($callNos)): ?>
 <!--
@@ -127,8 +131,10 @@
             <span class="text-muted"><?=$this->transEsc("status_unknown_message")?></span>
           <? else: ?>
             <? if ($row['availability']): ?>
+              <? if ($hasVols !== true && !in_array('eBook', $formats) && !in_array('Journal', $formats)): ?>
               <? /* Begin Available Items (Holds) */ ?>
                <span class="text-success"><?=$this->transEsc("Available")?><link property="availability" href="http://schema.org/InStock" /></span>
+              <? endif; ?>
               <? if (isset($row['link']) && $row['link']): ?>
                 <span class="holdlocation">
                   <a id="info-<?=$row['id']?>" style="display:inline-block" class="<?=$check ? 'checkRequest ' : ''?>inlineblock locationInfox holdlink modal-link hidden-print" rel="tooltip" href="#" title="<?=$this->transEsc($check ? "Check Hold" : "Place a Hold")?>" data-original-title="<?=$this->transEsc('loc_btn_Hover_order')?>">
@@ -143,7 +149,7 @@
               <? if (isset($row['ILLRequestLink']) && $row['ILLRequestLink']): ?>
                 <a class="<?=$checkILLRequest ? 'checkILLRequest ' : ''?>inlineblock modal-link placeILLRequest" href="<?=$this->recordLink()->getRequestUrl($row['ILLRequestLink'])?>"  title="<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?>"><i class="fa"></i>&nbsp;<?=$this->transEsc($checkILLRequest ? "ill_request_check_text" : "ill_request_place_text")?></a>
               <? endif; ?>
-              <? if ($row['presence_use_only'] == true && $row['location'] != "Internet" && substr($row['location'], 0, 5) != 'http:'): ?>
+              <? if ($row['presence_use_only'] == true && $row['location'] != "Internet" && substr($row['location'], 0, 5) != 'http:' && $hasVols !== true && !in_array('eBook', $formats) && !in_array('Journal', $formats)): ?>
                 <span><?=$this->transEsc('presence_use_only')?></span>
               <? endif; ?>
             <? else: ?>
@@ -208,6 +214,7 @@
     </tr>
   <? endif; ?>
 </table>
+<? endif; ?>
 <? endforeach; ?>
 
 <? if (!empty($urls)): ?>
