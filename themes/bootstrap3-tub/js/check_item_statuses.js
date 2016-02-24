@@ -84,7 +84,7 @@ function displayHoldingGuide(container_source, display_target) {
           else if (result.bestOptionLocation.indexOf('Lesesaal 2') > -1 || result.bestOptionLocation.indexOf('Reading Room 2') > -1) {
             loc_abbr = 'LS2';  loc_modal_body = vufindString.loc_modal_Body_shelf_ls2 + loc_shelf + '.';
           }
-          else if (result.bestOptionLocation.indexOf('Sonderstandort') > -1) {
+          else if (result.bestOptionLocation.indexOf('Sonderstandort') > -1 || result.bestOptionLocation.indexOf('Special Location') > -1) {
             loc_abbr = 'SO';    loc_modal_body = vufindString.loc_modal_Title_service_da;
           }
 /*
