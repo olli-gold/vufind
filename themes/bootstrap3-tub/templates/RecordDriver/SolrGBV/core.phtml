@@ -279,12 +279,14 @@
       <? endif; ?>
 
       <? $parentRecord = $this->driver->tryMethod('getParentHReference'); if ($parentRecord[0]): ?>
+<!--
       <tr>
         <th><?=$this->transEsc('parent_record')?>: </th>
         <td>
           <a href="<?=$this->recordLink()->getUrl()?><?=$parentRecord[0]?>"><?=$this->transEsc('parent')?></a><?//=var_dump($this->record($this->driver)->getRecordLoader()->load($parentRecord[0]))?>
         </td>
       </tr>
+-->
       <? endif; ?>
 
       <? $childRecordCount = $this->driver->tryMethod('getChildRecordCount'); if ($childRecordCount): ?>

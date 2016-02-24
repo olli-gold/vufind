@@ -587,6 +587,12 @@ class AjaxController extends AbstractBase
                     if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
                     $bestLocationPriority[4] = $info['location'];
                 }
+           /* TODO: improve counting of lent items depending on DAIA output */
+                // here is something strange: this item has no location, it cannot be lent
+                else if($info['location'] == 'Unknown') {
+                    $patronBestOption   = false;
+                    $bestOptionLocation = 'Sonderstandort';
+                }
                 // normal case: item is not available as its lent
                 else {
                     // ... but it can only be considered as lent if it has at least one duedate!
@@ -698,7 +704,7 @@ else              {
             $patronOptions['shelf'] = true;
         }
         // Ok, everything is in the closed stack?
-        elseif ($borrowableCount > 0 && $borrowableCount == $stackorderCount) {
+        elseif ($availableCount > 0 && $availableCount == $stackorderCount) {
             $patronOptions['order'] = true;
             $reservationLink = ' <a class="holdlink" href="'.htmlspecialchars($placeaholdhref).'" target="_blank">'.$this->translate('Place a Hold').'</a>';
             $bestOptionHref  = $placeaholdhref;
