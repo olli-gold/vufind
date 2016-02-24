@@ -589,7 +589,10 @@ class AjaxController extends AbstractBase
                 }
                 // normal case: item is not available as its lent
                 else {
-                    $lentCount++;
+                    // ... but it can only be considered as lent if it has at least one duedate!
+                    if (count($tr) > 0) {
+                        $lentCount++;
+                    }
                     // Reserve - ok, location isn't really interesting anymore. Remember anyway (who knows?)
                     if ($bestLocationPriority[0] == $info['location']) $bestLocationPriority[0] = '';
                     $bestLocationPriority[2] = $info['location'];
