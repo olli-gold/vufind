@@ -216,6 +216,28 @@ class Factory
     }
 
     /**
+     * Factory for SolrLocal record driver.
+     *
+     * @param ServiceManager $sm Service manager.
+     *
+     * @return SolrLocal
+     */
+    public static function getSolrLocal(ServiceManager $sm)
+    {
+        $driver = new SolrLocal(
+            $sm->getServiceLocator()->get('VuFind\Config')->get('config'),
+            $sm->getServiceLocator()->get('VuFind\Config')->get('searches')
+        );
+        $driver->attachILS(
+            $sm->getServiceLocator()->get('VuFind\ILSConnection'),
+            $sm->getServiceLocator()->get('VuFind\ILSHoldLogic'),
+            $sm->getServiceLocator()->get('VuFind\ILSTitleHoldLogic')
+        );
+        $driver->attachSearchService($sm->getServiceLocator()->get('VuFind\Search'));
+        return $driver;
+    }
+
+    /**
      * Factory for SolrMarcRemote record driver.
      *
      * @param ServiceManager $sm Service manager.

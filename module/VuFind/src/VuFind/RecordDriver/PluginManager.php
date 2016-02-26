@@ -94,9 +94,9 @@ class PluginManager extends \VuFind\ServiceManager\AbstractPluginManager
                                                array_search('findex.gbv.de', $data['institution']) !== false || $data['institution'] === 'findex.gbv.de')) {
             $recordType = 'SolrGBV';
         }
-        //else if (array_search('Catalog', $record['data']) !== false || $data['collection'] === 'Catalog') {
-        //    $recordType = 'SolrLocal';
-        //}
+        else if (array_search('Catalog', $record['data']) !== false || $data['collection'] === 'Catalog') {
+            $recordType = 'SolrLocal';
+        }
         else if (isset($data['recordtype'])) {
             $key = 'Solr' . ucwords($data['recordtype']);
             $recordType = $this->has($key) ? $key : 'SolrDefault';
