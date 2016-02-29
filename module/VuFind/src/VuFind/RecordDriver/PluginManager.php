@@ -91,7 +91,8 @@ class PluginManager extends \VuFind\ServiceManager\AbstractPluginManager
     {
         // Use GBV Record Driver if the record comes from GBV
         if ($data['recordtype'] === 'marc' && (array_search('GBV Zentral', $data['institution']) !== false || $data['institution'] === 'GBV Zentral' || 
-                                               array_search('findex.gbv.de', $data['institution']) !== false || $data['institution'] === 'findex.gbv.de')) {
+                                               array_search('findex.gbv.de', $data['institution']) !== false || $data['institution'] === 'findex.gbv.de') &&
+                                               array_search('Catalog', $data['collection']) === false) {
             $recordType = 'SolrGBV';
         }
         else if (array_search('Catalog', $record['data']) !== false || $data['collection'] === 'Catalog') {
