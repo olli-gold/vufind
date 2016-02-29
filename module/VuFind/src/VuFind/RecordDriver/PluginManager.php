@@ -95,7 +95,7 @@ class PluginManager extends \VuFind\ServiceManager\AbstractPluginManager
                                                array_search('Catalog', $data['collection']) === false) {
             $recordType = 'SolrGBV';
         }
-        else if (array_search('Catalog', $record['data']) !== false || $data['collection'] === 'Catalog') {
+        else if (array_search('Catalog', $data['collection']) !== false || $data['collection'] === 'Catalog') {
             $recordType = 'SolrLocal';
         }
         else if (isset($data['recordtype'])) {
