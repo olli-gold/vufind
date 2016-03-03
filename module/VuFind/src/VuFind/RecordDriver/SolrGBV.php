@@ -164,7 +164,7 @@ class SolrGBV extends SolrMarc
             'url_ver' => 'Z39.88-2004',
             'ctx_ver' => 'Z39.88-2004',
             'ctx_enc' => 'info:ofi/enc:UTF-8',
-            'rfr_id' => 'info:sid/' . $this->getCoinsID() . ':generator',
+            'rfr_id' => 'info:sid/' . $this->getCoinsID(),
             'rft.title' => $this->getShortTitle(),
             'rft.date' => $pubDate,
             'rft_id' => $doi,
