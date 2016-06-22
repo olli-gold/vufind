@@ -654,6 +654,17 @@ class PAIA extends DAIA
     }
 
     /**
+     * Get the callnumber of this item
+     *
+     * @param array $doc Array of PAIA item.
+     *
+     * @return String
+     */
+    protected function getCallNumber($doc) {
+        return isset($doc['label']) ? $doc['label'] : null;
+    }
+
+    /**
      * Patron Login
      *
      * This is responsible for authenticating a patron against the catalog.
@@ -1108,7 +1119,7 @@ class PAIA extends DAIA
 
             // PAIA custom field
             // label (0..1) call number, shelf mark or similar item label
-            $result['callnumber'] = (isset($doc['label']) ? $doc['label'] : null);
+            $result['callnumber'] = $this->getCallNumber($doc);
 
             /*
              * meaning of starttime and endtime depends on status:
@@ -1205,7 +1216,7 @@ class PAIA extends DAIA
 
             // PAIA custom field
             // label (0..1) call number, shelf mark or similar item label
-            $result['callnumber'] = (isset($doc['label']) ? $doc['label'] : null);
+            $result['callnumber'] = $this->getCallNumber($doc);;
 
             $result['create'] = (isset($doc['starttime'])
                 ? $this->convertDatetime($doc['starttime']) : '');
@@ -1301,7 +1312,7 @@ class PAIA extends DAIA
 
             // PAIA custom field
             // label (0..1) call number, shelf mark or similar item label
-            $result['callnumber'] = (isset($doc['label']) ? $doc['label'] : null);
+            $result['callnumber'] = $this->getCallNumber($doc);;
 
             // Optional VuFind fields
             /*
