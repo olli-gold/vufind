@@ -45,6 +45,17 @@ use InvalidArgumentException;
  */
 class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
 {
+    protected $validConfig = [
+        'DAIA' =>
+            [
+                'baseUrl'            => 'http://daia.gbv.de/',
+            ],
+        'PAIA' =>
+            [
+                'baseUrl'            => 'http://paia.gbv.de/',
+            ]
+    ];
+
     protected $patron = [
         'id' => '08301001001',
         'firstname' => 'Nobody',
@@ -256,9 +267,31 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
             ]
     ];
 
+    protected $renewTestResult = [
+        'blocks' => false,
+        'details' => [
+            'http://uri.gbv.de/document/opac-de-830:bar:830$22061137' => [
+                'success' => true,
+                'new_date' => "2016-07-18",
+                'item_id' => 0,
+                'sysMessage' => "Successfully renewed"
+            ]
+        ]
+    ];
+
+    protected $storageRetrievalTestResult = [
+        'success' => true,
+        'sysMessage' => 'Successfully requested'
+    ];
+
+    protected $pwchangeTestResult = [
+        'success' => true,
+        'status' => "Successfully changed"
+    ];
+
     /******************* Test cases ***************/
     /*
-     !! changePassword
+     ok changePassword
      !! checkRequestIsValid
      !! checkStorageRetrievalRequestIsValid
      !! getMyProfile
@@ -268,9 +301,9 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
      ok getMyTransactions
      ok getRenewDetails
      ok getMyStorageRetrievalRequests
-     !! placeHold
-     !! renewMyItems
-     !! placeStorageRetrievalRequest
+     ok placeHold
+     ok renewMyItems
+     ok placeStorageRetrievalRequest
      */
 
     /**
@@ -288,26 +321,19 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
      */
     public function testChangePassword()
     {
-        // TODO: make this work
-        $this->markTestSkipped();
+        $changePasswordTestdata = [
+            "patron" => [
+                "cat_username" => "08301001001"
+             ],
+             "oldPassword" => "oldsecret",
+             "newPassword" => "newsecret"
+        ];
 
         $conn = $this->createConnector('changePassword.json');
-        $conn->setConfig(
-            [
-                'DAIA' =>
-                    [
-                        'baseUrl'            => 'http://daia.gbv.de/',
-                    ],
-                'PAIA' =>
-                    [
-                        'baseUrl'            => 'http://paia.gbv.de/',
-                    ]
-            ]
-        );
+        $conn->setConfig($this->validConfig);
         $conn->init();
-        $result = $conn->changePassword('08301001001');
-
-        $this->assertEquals($result, $this->pwchangeTestResult);
+        $result = $conn->changePassword($changePasswordTestdata);
+        $this->assertEquals($this->pwchangeTestResult, $result);
     }
 
     /**
@@ -318,18 +344,7 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
     public function testFees()
     {
         $conn = $this->createConnector('fees.json');
-        $conn->setConfig(
-            [
-                'DAIA' =>
-                    [
-                        'baseUrl'            => 'http://daia.gbv.de/',
-                    ],
-                'PAIA' =>
-                    [
-                        'baseUrl'            => 'http://paia.gbv.de/',
-                    ]
-            ]
-        );
+        $conn->setConfig($this->validConfig);
         $conn->init();
         $result = $conn->getMyFines($this->patron);
 
@@ -344,18 +359,7 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
     public function testHolds()
     {
         $conn = $this->createConnector('items.json');
-        $conn->setConfig(
-            [
-                'DAIA' =>
-                    [
-                        'baseUrl'            => 'http://daia.gbv.de/',
-                    ],
-                'PAIA' =>
-                    [
-                        'baseUrl'            => 'http://paia.gbv.de/',
-                    ]
-            ]
-        );
+        $conn->setConfig($this->validConfig);
         $conn->init();
         $result = $conn->getMyHolds($this->patron);
 
@@ -370,18 +374,7 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
     public function testRequests()
     {
         $conn = $this->createConnector('items.json');
-        $conn->setConfig(
-            [
-                'DAIA' =>
-                    [
-                        'baseUrl'            => 'http://daia.gbv.de/',
-                    ],
-                'PAIA' =>
-                    [
-                        'baseUrl'            => 'http://paia.gbv.de/',
-                    ]
-            ]
-        );
+        $conn->setConfig($this->validConfig);
         $conn->init();
         $result = $conn->getMyStorageRetrievalRequests($this->patron);
 
@@ -396,18 +389,7 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
     public function testTransactions()
     {
         $conn = $this->createConnector('items.json');
-        $conn->setConfig(
-            [
-                'DAIA' =>
-                    [
-                        'baseUrl'            => 'http://daia.gbv.de/',
-                    ],
-                'PAIA' =>
-                    [
-                        'baseUrl'            => 'http://paia.gbv.de/',
-                    ]
-            ]
-        );
+        $conn->setConfig($this->validConfig);
         $conn->init();
         $result = $conn->getMyTransactions($this->patron);
 
@@ -422,25 +404,14 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
     public function testProfile()
     {
         // TODO: make this work
+        // setting session needed
         $this->markTestSkipped();
 
         $conn = $this->createConnector('patron.json');
-        $conn->setConfig(
-            [
-                'DAIA' =>
-                    [
-                        'baseUrl'            => 'http://daia.gbv.de/',
-                    ],
-                'PAIA' =>
-                    [
-                        'baseUrl'            => 'http://paia.gbv.de/',
-                    ]
-            ]
-        );
+        $conn->setConfig($this->validConfig);
         $conn->init();
         $result = $conn->getMyProfile($this->patron);
 
-        // TODO: mockup getSession()
 
         $this->assertEquals($this->profileTestResult, $result);
     }
@@ -453,21 +424,11 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
     public function testLogin()
     {
         // TODO: make this work
+        // setting session needed
         $this->markTestSkipped();
 
         $conn = $this->createConnector('login.json');
-        $conn->setConfig(
-            [
-                'DAIA' =>
-                    [
-                        'baseUrl'            => 'http://daia.gbv.de/',
-                    ],
-                'PAIA' =>
-                    [
-                        'baseUrl'            => 'http://paia.gbv.de/',
-                    ]
-            ]
-        );
+        $conn->setConfig($this->validConfig);
         $conn->init();
         $result = $conn->patronLogin('08301001001', 'NOPASSWORD');
 
@@ -498,19 +459,11 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
      */
     public function testValidRequest()
     {
+        // TODO: add Session to PAIA object
+        $this->markTestSkipped();
+
         $conn = $this->createConnector('patron.json');
-        $conn->setConfig(
-            [
-                'DAIA' =>
-                    [
-                        'baseUrl'            => 'http://daia.gbv.de/',
-                    ],
-                'PAIA' =>
-                    [
-                        'baseUrl'            => 'http://paia.gbv.de/',
-                    ]
-            ]
-        );
+        $conn->setConfig($this->validConfig);
         $conn->init();
         $result = $conn->checkRequestIsValid(
             'http://paia.gbv.de/', [], $this->patron
@@ -531,9 +484,8 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
             'http://paia.gbv.de/', [], $this->patron_expired
         );
 
-        // TODO: true return value for valid user
-        //$this->assertEquals(true, $result);
-        //$this->assertEquals(true, $resultStorageRetrieval);
+        $this->assertEquals(true, $result);
+        $this->assertEquals(true, $resultStorageRetrieval);
         $this->assertEquals(false, $result_bad);
         $this->assertEquals(false, $resultStorage_bad);
         $this->assertEquals(false, $result_expired);
@@ -548,18 +500,7 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
     public function testRenewDetails()
     {
         $conn = $this->createConnector('');
-        $conn->setConfig(
-            [
-                'DAIA' =>
-                    [
-                        'baseUrl'            => 'http://daia.gbv.de/',
-                    ],
-                'PAIA' =>
-                    [
-                        'baseUrl'            => 'http://paia.gbv.de/',
-                    ]
-            ]
-        );
+        $conn->setConfig($this->validConfig);
         $conn->init();
         $result = $conn->getRenewDetails($this->transactionsTestResult[1]);
 
@@ -573,7 +514,18 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
      */
     public function testPlaceHold()
     {
-        // TODO: implement me
+        $sr_request = [
+            "item_id"     => "http://uri.gbv.de/document/opac-de-830:bar:830$24014292",
+            "patron" => [
+                "cat_username" => "08301001001"
+            ]
+        ];
+
+        $conn = $this->createConnector('storageretrieval.json');
+        $conn->setConfig($this->validConfig);
+        $conn->init();
+        $result = $conn->placeHold($sr_request);
+        $this->assertEquals($this->storageRetrievalTestResult, $result);
     }
 
     /**
@@ -581,9 +533,20 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
      *
      * @return void
      */
-    public function testPlaceRequest()
+    public function testPlaceStorageRetrievalRequest()
     {
-        // TODO: implement me
+        $sr_request = [
+            "item_id"     => "http://uri.gbv.de/document/opac-de-830:bar:830$24014292",
+            "patron" => [
+                "cat_username" => "08301001001"
+            ]
+        ];
+
+        $conn = $this->createConnector('storageretrieval.json');
+        $conn->setConfig($this->validConfig);
+        $conn->init();
+        $result = $conn->placeStorageRetrievalRequest($sr_request);
+        $this->assertEquals($this->storageRetrievalTestResult, $result);
     }
 
     /**
@@ -593,7 +556,30 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
      */
     public function testRenew()
     {
-        // TODO: implement me
+        $renew_request = [
+            "details" => [
+                "item"     => "http://uri.gbv.de/document/opac-de-830:bar:830$22061137"
+            ],
+            "patron" => [
+                "cat_username" => "08301001001"
+            ]
+        ];
+
+        $conn = $this->createConnector('renew_ok.json');
+        $conn->setConfig($this->validConfig);
+        $conn->init();
+        $result = $conn->renewMyItems($renew_request);
+
+        $this->assertEquals($this->renewTestResult, $result);
+
+    /* TODO: make me work
+        $conn_fail = $this->createConnector('renew_error.json');
+        $connfail->setConfig($this->validConfig);
+        $conn_fail->init();
+        $result_fail = $conn_fail->renewMyItems($renew_request);
+
+        $this->assertEquals($this->failedRenewTestResult, $result_fail);
+    */
     }
 
     /**
