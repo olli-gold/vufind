@@ -752,10 +752,6 @@ class DAIA extends AbstractBase implements
                 $result_item['locationid'] = $this->getItemDepartmentId($item);
                 // get location link
                 $result_item['location_href'] = $this->getItemDepartmentLink($item);
-                // for compatibility reasons with other drivers
-                // store the location link also in locationhref
-                // cf. VuFind/ILS/Logic/Holds::formatHoldings()
-                $result_item['locationhref'] = $this->getItemDepartmentLink($item);
                 // custom DAIA field
                 $result_item['storage'] = $this->getItemStorage($item);
                 // custom DAIA field
