@@ -1,13 +1,4 @@
 HTTP/1.1 200 OK
-{
-  "doc": [
-    {
-      "edition": "http://uri.gbv.de/document/opac-de-830:ppn:048430196",
-      "item": "http://uri.gbv.de/document/opac-de-830:bar:830$22061137"
-    }
-  ]
-}
-
 Server: vzg-paia/2.2-RC3 (Wed Jun 01 17:38:24 CEST 2016)
 Date: Mon, 20 Jun 2016 11:23:46 GMT
 Cache-Control: no-cache

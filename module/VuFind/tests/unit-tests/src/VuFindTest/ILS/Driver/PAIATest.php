@@ -289,13 +289,27 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
         'status' => "Successfully changed"
     ];
 
+    protected $profileTestResult = [
+        'firstname' => "Nobody",
+        'lastname' => "Nothing",
+        'address1' => NULL,
+        'address2' => NULL,
+        'city' => NULL,
+        'country' => NULL,
+        'zip' => NULL,
+        'phone' => NULL,
+        'group' => NULL,
+        'expires' => "12-31-9999",
+        'statuscode' => 0,
+        'canWrite' => true
+    ];
+
     /******************* Test cases ***************/
     /*
      ok changePassword
-     !! checkRequestIsValid
-     !! checkStorageRetrievalRequestIsValid
-     !! getMyProfile
-     !! patronLogin
+     ok checkRequestIsValid
+     ok checkStorageRetrievalRequestIsValid
+     ok getMyProfile
      ok getMyFines
      ok getMyHolds
      ok getMyTransactions
@@ -403,53 +417,13 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
      */
     public function testProfile()
     {
-        // TODO: make this work
-        // setting session needed
-        $this->markTestSkipped();
-
         $conn = $this->createConnector('patron.json');
         $conn->setConfig($this->validConfig);
         $conn->init();
+        $conn->addToSession('scope', [ 'write_items' ]);
         $result = $conn->getMyProfile($this->patron);
 
-
         $this->assertEquals($this->profileTestResult, $result);
-    }
-
-    /**
-     * Test
-     *
-     * @return void
-     */
-    public function testLogin()
-    {
-        // TODO: make this work
-        // setting session needed
-        $this->markTestSkipped();
-
-        $conn = $this->createConnector('login.json');
-        $conn->setConfig($this->validConfig);
-        $conn->init();
-        $result = $conn->patronLogin('08301001001', 'NOPASSWORD');
-
-        $conn_bad = $this->createConnector('login_bad.json');
-        $conn_bad->setConfig(
-            [
-                'DAIA' =>
-                    [
-                        'baseUrl'            => 'http://daia.gbv.de/',
-                    ],
-                'PAIA' =>
-                    [
-                        'baseUrl'            => 'http://paia.gbv.de/',
-                    ]
-            ]
-        );
-        $conn_bad->init();
-        $result_bad = $conn_bad->patronLogin('08301001001', 'NOPASSWORD');
-
-        $this->assertEquals($this->profileTestResult, $result);
-        $this->assertEquals($this->profileBadTestResult, $result_bad);
     }
 
     /**
@@ -459,12 +433,10 @@ class PAIATest extends \VuFindTest\Unit\ILSDriverTestCase
      */
     public function testValidRequest()
     {
-        // TODO: add Session to PAIA object
-        $this->markTestSkipped();
-
         $conn = $this->createConnector('patron.json');
         $conn->setConfig($this->validConfig);
         $conn->init();
+        $conn->addToSession('scope', [ 'write_items' ]);
         $result = $conn->checkRequestIsValid(
             'http://paia.gbv.de/', [], $this->patron
         );

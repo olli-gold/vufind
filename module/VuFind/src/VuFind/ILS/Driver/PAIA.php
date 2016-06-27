@@ -121,6 +121,20 @@ class PAIA extends DAIA
     }
 
     /**
+     * Get the session container (constructing it on demand if not already present)
+     *
+     * @return SessionContainer
+     */
+    public function addToSession($key, $value)
+    {
+        // SessionContainer not defined yet? Build it now:
+        if (null === $this->session) {
+            $this->getSession();
+        }
+        $this->session->offsetSet($key, $value);
+    }
+
+    /**
      * Initialize the driver.
      *
      * Validate configuration and perform all resource-intensive tasks needed to
